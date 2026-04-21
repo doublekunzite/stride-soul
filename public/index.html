@@ -69,71 +69,87 @@
     <button id="chat-toggle" onclick="toggleChat()">💬</button>
 
     <script>
-        // --- Configuration ---
-        // REPLACE THIS WITH YOUR ACTUAL VERCEL URL
-        const API_URL = 'https://stride-soul.vercel.app/api/chat'; 
+    const API_URL = 'https://stride-soul.vercel.app/api/chat';
 
-        // --- UI Logic ---
-        const chatWidget = document.getElementById('chat-widget');
-        const chatToggle = document.getElementById('chat-toggle');
-        const messagesDiv = document.getElementById('chat-messages');
-        const userInput = document.getElementById('user-input');
-        const sampleArea = document.getElementById('sample-area');
+    const chatWidget = document.getElementById('chat-widget');
+    const chatToggle = document.getElementById('chat-toggle');
+    const messagesDiv = document.getElementById('chat-messages');
+    const userInput = document.getElementById('user-input');
+    const sampleArea = document.getElementById('sample-area');
 
-        function toggleChat() {
-            const isVisible = chatWidget.style.display === 'flex';
-            chatWidget.style.display = isVisible ? 'none' : 'flex';
-            chatToggle.style.display = isVisible ? 'block' : 'none';
-        }
+    function toggleChat() {
+        const isVisible = chatWidget.style.display === 'flex';
+        chatWidget.style.display = isVisible ? 'none' : 'flex';
+        chatToggle.style.display = isVisible ? 'block' : 'none';
+    }
 
-        function addMessage(text, sender) {
-            const div = document.createElement('div');
-            div.classList.add('message', sender === 'user' ? 'user-msg' : 'bot-msg');
+    // --- IMPROVED FORMATTING FUNCTION ---
+    // This converts **text** to <b>text</b> and fixes new lines
+    function formatBotText(text) {
+        // 1. Replace **word** with <b>word</b>
+        let formatted = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        // 2. Preserve line breaks (optional, but good for lists)
+        formatted = formatted.replace(/\n/g, '<br>');
+        return formatted;
+    }
+
+    function addMessage(text, sender) {
+        const div = document.createElement('div');
+        div.classList.add('message', sender === 'user' ? 'user-msg' : 'bot-msg');
+        
+        if (sender === 'bot') {
+            // Use innerHTML so the <strong> tags work
+            div.innerHTML = formatBotText(text);
+        } else {
+            // Use textContent for user to be safe
             div.textContent = text;
-            messagesDiv.appendChild(div);
-            messagesDiv.scrollTop = messagesDiv.scrollHeight; 
         }
+        
+        messagesDiv.appendChild(div);
+        messagesDiv.scrollTop = messagesDiv.scrollHeight; 
+    }
 
-        function handleEnter(e) {
-            if (e.key === 'Enter') sendMessage();
+    function handleEnter(e) {
+        if (e.key === 'Enter') sendMessage();
+    }
+
+    function askSample(question) {
+        userInput.value = question;
+        sendMessage();
+    }
+
+    async function sendMessage() {
+        const text = userInput.value.trim();
+        if (!text) return;
+
+        addMessage(text, 'user');
+        userInput.value = '';
+        sampleArea.style.display = 'none'; 
+
+        const loadingDiv = document.createElement('div');
+        loadingDiv.classList.add('message', 'bot-msg');
+        loadingDiv.textContent = 'Thinking...';
+        messagesDiv.appendChild(loadingDiv);
+
+        try {
+            const response = await fetch(API_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    messages: [{ role: 'user', content: text }] 
+                })
+            });
+
+            const data = await response.json();
+            
+            // Apply formatting here
+            loadingDiv.innerHTML = formatBotText(data.reply) || "Sorry, I couldn't connect.";
+
+        } catch (error) {
+            loadingDiv.textContent = "Error connecting to server.";
+            console.error(error);
         }
-
-        function askSample(question) {
-            userInput.value = question;
-            sendMessage();
-        }
-
-        // --- Core Chat Logic ---
-        async function sendMessage() {
-            const text = userInput.value.trim();
-            if (!text) return;
-
-            addMessage(text, 'user');
-            userInput.value = '';
-            sampleArea.style.display = 'none'; 
-
-            const loadingDiv = document.createElement('div');
-            loadingDiv.classList.add('message', 'bot-msg');
-            loadingDiv.textContent = 'Thinking...';
-            messagesDiv.appendChild(loadingDiv);
-
-            try {
-                const response = await fetch(API_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ 
-                        messages: [{ role: 'user', content: text }] 
-                    })
-                });
-
-                const data = await response.json();
-                loadingDiv.textContent = data.reply || "Sorry, I couldn't connect to the database.";
-
-            } catch (error) {
-                loadingDiv.textContent = "Error connecting to server. Check the API URL.";
-                console.error(error);
-            }
-        }
-    </script>
+    }
+</script>
 </body>
 </html>
