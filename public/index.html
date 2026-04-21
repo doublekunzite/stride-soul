@@ -8,55 +8,146 @@
 </head>
 <body>
 
-    <!-- Background Blobs -->
+        <!-- Background Blobs -->
     <div class="blob-container">
-        <!-- These are simple SVG paths that look like shoe soles -->
-        <svg class="shoe-blob blob-1" viewBox="0 0 100 40">
-            <path d="M10,30 Q20,5 50,10 Q90,15 95,30 Q90,40 50,38 Q10,40 10,30 Z" />
+        
+        <!-- PINK Shoe (Back Left) -->
+        <svg class="shoe-blob blob-1" style="fill: #ffadad; top: 15%; left: 5%; width: 220px;" viewBox="0 0 100 55">
+            <!-- Improved Shoe Shape: Heel, Ankle, Laces, Toe -->
+            <path d="M10,40 Q5,15 20,10 Q35,0 50,5 Q70,5 85,15 Q100,25 95,40 Q90,50 50,50 Q10,50 10,40 Z M20,10 Q25,5 30,10" />
         </svg>
-        <svg class="shoe-blob blob-2" viewBox="0 0 100 40">
-            <path d="M10,30 Q20,5 50,10 Q90,15 95,30 Q90,40 50,38 Q10,40 10,30 Z" />
+
+        <!-- BLUE Shoe (Front Right) -->
+        <svg class="shoe-blob blob-2" style="fill: #a0c4ff; top: 60%; left: 75%; width: 250px; transform: scaleX(-1);" viewBox="0 0 100 55">
+            <path d="M10,40 Q5,15 20,10 Q35,0 50,5 Q70,5 85,15 Q100,25 95,40 Q90,50 50,50 Q10,50 10,40 Z M20,10 Q25,5 30,10" />
         </svg>
-        <svg class="shoe-blob blob-3" viewBox="0 0 100 40">
-            <path d="M10,30 Q20,5 50,10 Q90,15 95,30 Q90,40 50,38 Q10,40 10,30 Z" />
+
+        <!-- GREEN Shoe (Center) -->
+        <svg class="shoe-blob blob-3" style="fill: #caffbf; top: 25%; left: 55%; width: 180px;" viewBox="0 0 100 55">
+            <path d="M10,40 Q5,15 20,10 Q35,0 50,5 Q70,5 85,15 Q100,25 95,40 Q90,50 50,50 Q10,50 10,40 Z M20,10 Q25,5 30,10" />
         </svg>
-        <svg class="shoe-blob blob-4" viewBox="0 0 100 40">
-            <path d="M10,30 Q20,5 50,10 Q90,15 95,30 Q90,40 50,38 Q10,40 10,30 Z" />
+
+        <!-- PURPLE Shoe (Bottom Left) -->
+        <svg class="shoe-blob blob-4" style="fill: #bdb2ff; top: 70%; left: 10%; width: 280px; transform: scaleX(-1);" viewBox="0 0 100 55">
+            <path d="M10,40 Q5,15 20,10 Q35,0 50,5 Q70,5 85,15 Q100,25 95,40 Q90,50 50,50 Q10,50 10,40 Z M20,10 Q25,5 30,10" />
+        </svg>
+
+        <!-- YELLOW Shoe (Top Right) -->
+        <svg class="shoe-blob blob-5" style="fill: #ffd6a5; top: 5%; left: 70%; width: 200px;" viewBox="0 0 100 55">
+            <path d="M10,40 Q5,15 20,10 Q35,0 50,5 Q70,5 85,15 Q100,25 95,40 Q90,50 50,50 Q10,50 10,40 Z M20,10 Q25,5 30,10" />
+        </svg>
+
+        <!-- SECOND BLUE (Scattered) -->
+        <svg class="shoe-blob blob-6" style="fill: #a0c4ff; top: 40%; left: 35%; width: 160px; transform: scaleX(-1);" viewBox="0 0 100 55">
+             <path d="M10,40 Q5,15 20,10 Q35,0 50,5 Q70,5 85,15 Q100,25 95,40 Q90,50 50,50 Q10,50 10,40 Z M20,10 Q25,5 30,10" />
+        </svg>
+
+        <!-- SECOND PINK (Scattered) -->
+        <svg class="shoe-blob blob-7" style="fill: #ffadad; top: 85%; left: 50%; width: 240px;" viewBox="0 0 100 55">
+             <path d="M10,40 Q5,15 20,10 Q35,0 50,5 Q70,5 85,15 Q100,25 95,40 Q90,50 50,50 Q10,50 10,40 Z M20,10 Q25,5 30,10" />
         </svg>
     </div>
 
-    <!-- Main Site Content -->
     <header>
         <div class="logo">STRIDE & SOUL</div>
         <nav>
             <a href="#">Men</a>
             <a href="#">Women</a>
-            <a href="#">About</a>
+            <a href="#">Brands</a>
             <a href="#">Contact</a>
         </nav>
     </header>
 
     <section class="hero">
         <h1>Run Your Story.</h1>
-        <p>Premium running shoes designed for comfort, speed, and style.</p>
-        <button class="btn-primary">Shop Collection</button>
+        <p>Premium running shoes from top global brands.</p>
+        <button class="btn-primary">Shop New Arrivals</button>
+    </section>
+
+    <!-- Product Section (8 Items) -->
+    <section class="product-section" id="shop">
+        <h2>Featured Collection</h2>
+        <div class="product-grid">
+            
+            <!-- Hoka -->
+            <div class="product-card">
+                <div class="product-image" style="background-image: url('https://via.placeholder.com/300x200/2a2a2a/fff?text=Hoka+Clifton+9');"></div>
+                <div class="brand">Hoka</div>
+                <h3>Clifton 9</h3>
+                <div class="price">$145.00</div>
+            </div>
+            <div class="product-card">
+                <div class="product-image" style="background-image: url('https://via.placeholder.com/300x200/2a2a2a/fff?text=Hoka+Mach+6');"></div>
+                <div class="brand">Hoka</div>
+                <h3>Mach 6</h3>
+                <div class="price">$150.00</div>
+            </div>
+
+            <!-- Li-Ning -->
+            <div class="product-card">
+                <div class="product-image" style="background-image: url('https://via.placeholder.com/300x200/2a2a2a/fff?text=Li-Ning+Boom+5');"></div>
+                <div class="brand">Li-Ning</div>
+                <h3>Boom! 5 Pro</h3>
+                <div class="price">$160.00</div>
+            </div>
+            <div class="product-card">
+                <div class="product-image" style="background-image: url('https://via.placeholder.com/300x200/2a2a2a/fff?text=Li-Ning+Arc+Ace');"></div>
+                <div class="brand">Li-Ning</div>
+                <h3>Arc Ace</h3>
+                <div class="price">$130.00</div>
+            </div>
+
+            <!-- Asics -->
+            <div class="product-card">
+                <div class="product-image" style="background-image: url('https://via.placeholder.com/300x200/2a2a2a/fff?text=Asics+Kayano+30');"></div>
+                <div class="brand">Asics</div>
+                <h3>Gel-Kayano 30</h3>
+                <div class="price">$160.00</div>
+            </div>
+            <div class="product-card">
+                <div class="product-image" style="background-image: url('https://via.placeholder.com/300x200/2a2a2a/fff?text=Asics+Novablast+4');"></div>
+                <div class="brand">Asics</div>
+                <h3>Novablast 4</h3>
+                <div class="price">$140.00</div>
+            </div>
+
+            <!-- Brooks -->
+            <div class="product-card">
+                <div class="product-image" style="background-image: url('https://via.placeholder.com/300x200/2a2a2a/fff?text=Brooks+Ghost+15');"></div>
+                <div class="brand">Brooks</div>
+                <h3>Ghost 15</h3>
+                <div class="price">$140.00</div>
+            </div>
+            <div class="product-card">
+                <div class="product-image" style="background-image: url('https://via.placeholder.com/300x200/2a2a2a/fff?text=Brooks+Adrenaline');"></div>
+                <div class="brand">Brooks</div>
+                <h3>Adrenaline GTS 23</h3>
+                <div class="price">$140.00</div>
+            </div>
+
+        </div>
     </section>
 
     <!-- Chat Widget -->
     <div id="chat-widget">
         <div id="chat-header">
-            <span>🏃‍♂️ Running Expert</span>
-            <button onclick="toggleChat()" style="background:none; border:none; color:white; cursor:pointer; font-size:20px;">&times;</button>
+            <div class="title-row">
+                <span>🏃‍♂️ Running Expert</span>
+                <button onclick="toggleChat()" style="background:none; border:none; color:white; cursor:pointer; font-size:20px;">&times;</button>
+            </div>
+            <div class="subtitle">Powered by DeepSeek</div>
         </div>
         
         <div id="chat-messages">
-            <div class="message bot-msg">Hello! I'm your AI running coach. Ask me anything about shoes!</div>
+            <div class="message bot-msg">Hello! I'm your AI running coach. Ask me anything about our shoes!</div>
         </div>
 
+        <!-- Updated Sample Questions -->
         <div class="sample-questions" id="sample-area">
             <button class="sample-btn" onclick="askSample('I have flat feet, what do you recommend?')">Flat feet advice</button>
-            <button class="sample-btn" onclick="askSample('I need shoes for a marathon under $150')">Marathon budget</button>
-            <button class="sample-btn" onclick="askSample('What is the difference between the AirFlow and TrailBlazer?')">Compare models</button>
+            <button class="sample-btn" onclick="askSample('Compare the Hoka Clifton vs Asics Kayano')">Compare models</button>
+            <button class="sample-btn" onclick="askSample('What are the best shoes for a tight budget?')">Budget options</button>
+            <button class="sample-btn" onclick="askSample('I\\'m just starting out, which shoes are good for a beginner?')">Beginner advice</button>
         </div>
 
         <div id="chat-input-area">
@@ -64,92 +155,82 @@
             <button id="send-btn" onclick="sendMessage()">➤</button>
         </div>
     </div>
-
-    <!-- Chat Toggle Button -->
     <button id="chat-toggle" onclick="toggleChat()">💬</button>
 
     <script>
-    const API_URL = 'https://stride-soul.vercel.app/api/chat';
+        const API_URL = 'https://stride-soul.vercel.app/api/chat';
 
-    const chatWidget = document.getElementById('chat-widget');
-    const chatToggle = document.getElementById('chat-toggle');
-    const messagesDiv = document.getElementById('chat-messages');
-    const userInput = document.getElementById('user-input');
-    const sampleArea = document.getElementById('sample-area');
+        const chatWidget = document.getElementById('chat-widget');
+        const chatToggle = document.getElementById('chat-toggle');
+        const messagesDiv = document.getElementById('chat-messages');
+        const userInput = document.getElementById('user-input');
+        const sampleArea = document.getElementById('sample-area');
 
-    function toggleChat() {
-        const isVisible = chatWidget.style.display === 'flex';
-        chatWidget.style.display = isVisible ? 'none' : 'flex';
-        chatToggle.style.display = isVisible ? 'block' : 'none';
-    }
-
-    // --- IMPROVED FORMATTING FUNCTION ---
-    // This converts **text** to <b>text</b> and fixes new lines
-    function formatBotText(text) {
-        // 1. Replace **word** with <b>word</b>
-        let formatted = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-        // 2. Preserve line breaks (optional, but good for lists)
-        formatted = formatted.replace(/\n/g, '<br>');
-        return formatted;
-    }
-
-    function addMessage(text, sender) {
-        const div = document.createElement('div');
-        div.classList.add('message', sender === 'user' ? 'user-msg' : 'bot-msg');
-        
-        if (sender === 'bot') {
-            // Use innerHTML so the <strong> tags work
-            div.innerHTML = formatBotText(text);
-        } else {
-            // Use textContent for user to be safe
-            div.textContent = text;
+        function toggleChat() {
+            const isVisible = chatWidget.style.display === 'flex';
+            chatWidget.style.display = isVisible ? 'none' : 'flex';
+            chatToggle.style.display = isVisible ? 'block' : 'none';
         }
-        
-        messagesDiv.appendChild(div);
-        messagesDiv.scrollTop = messagesDiv.scrollHeight; 
-    }
 
-    function handleEnter(e) {
-        if (e.key === 'Enter') sendMessage();
-    }
+        function formatBotText(text) {
+            let formatted = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            formatted = formatted.replace(/\n/g, '<br>');
+            return formatted;
+        }
 
-    function askSample(question) {
-        userInput.value = question;
-        sendMessage();
-    }
-
-    async function sendMessage() {
-        const text = userInput.value.trim();
-        if (!text) return;
-
-        addMessage(text, 'user');
-        userInput.value = '';
-        sampleArea.style.display = 'none'; 
-
-        const loadingDiv = document.createElement('div');
-        loadingDiv.classList.add('message', 'bot-msg');
-        loadingDiv.textContent = 'Thinking...';
-        messagesDiv.appendChild(loadingDiv);
-
-        try {
-            const response = await fetch(API_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ 
-                    messages: [{ role: 'user', content: text }] 
-                })
-            });
-
-            const data = await response.json();
+        function addMessage(text, sender) {
+            const div = document.createElement('div');
+            div.classList.add('message', sender === 'user' ? 'user-msg' : 'bot-msg');
             
-            // Apply formatting here
-            loadingDiv.innerHTML = formatBotText(data.reply) || "Sorry, I couldn't connect.";
-
-        } catch (error) {
-            loadingDiv.textContent = "Error connecting to server.";
-            console.error(error);
+            if (sender === 'bot') {
+                div.innerHTML = formatBotText(text);
+            } else {
+                div.textContent = text;
+            }
+            
+            messagesDiv.appendChild(div);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight; 
         }
-    }
-</script>
+
+        function handleEnter(e) {
+            if (e.key === 'Enter') sendMessage();
+        }
+
+        function askSample(question) {
+            userInput.value = question;
+            sendMessage();
+        }
+
+        async function sendMessage() {
+            const text = userInput.value.trim();
+            if (!text) return;
+
+            addMessage(text, 'user');
+            userInput.value = '';
+            sampleArea.style.display = 'none'; 
+
+            const loadingDiv = document.createElement('div');
+            loadingDiv.classList.add('message', 'bot-msg');
+            loadingDiv.textContent = 'Thinking...';
+            messagesDiv.appendChild(loadingDiv);
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        messages: [{ role: 'user', content: text }] 
+                    })
+                });
+
+                const data = await response.json();
+                loadingDiv.innerHTML = formatBotText(data.reply) || "Sorry, I couldn't connect.";
+
+            } catch (error) {
+                loadingDiv.textContent = "Error connecting to server.";
+                console.error(error);
+            }
+        }
+    </script>
 </body>
 </html>

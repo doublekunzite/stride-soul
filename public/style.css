@@ -1,8 +1,10 @@
-/* --- Base Styles --- */
+/* --- Base Styles (Dark Theme) --- */
 :root {
   --primary-color: #4a90e2;
-  --secondary-color: #f5f7fa;
-  --text-color: #333;
+  --secondary-color: #1a1a1a;
+  --bg-color: #121212;
+  --text-color: #e0e0e0;
+  --card-bg: #1e1e1e;
   --accent-color: #ff6b6b;
 }
 
@@ -10,9 +12,9 @@ body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   margin: 0;
   padding: 0;
-  background-color: #ffffff;
+  background-color: var(--bg-color);
   color: var(--text-color);
-  overflow-x: hidden; /* Prevent horizontal scroll from blobs */
+  overflow-x: hidden;
 }
 
 /* --- Layout --- */
@@ -21,29 +23,30 @@ header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: white;
+  background: rgba(18, 18, 18, 0.9); /* Slight transparency */
+  backdrop-filter: blur(10px);
   position: sticky;
   top: 0;
-  z-index: 10; /* Above blobs */
-  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  z-index: 10;
+  border-bottom: 1px solid #333;
 }
 
 .logo {
   font-size: 1.5rem;
   font-weight: 800;
-  color: var(--primary-color);
+  color: #fff;
   letter-spacing: -1px;
 }
 
 nav a {
   margin-left: 20px;
   text-decoration: none;
-  color: var(--text-color);
+  color: #aaa;
   font-weight: 500;
   transition: color 0.3s;
 }
 
-nav a:hover { color: var(--primary-color); }
+nav a:hover { color: #fff; }
 
 /* --- Hero Section --- */
 .hero {
@@ -53,18 +56,22 @@ nav a:hover { color: var(--primary-color); }
   justify-content: center;
   align-items: center;
   text-align: center;
-  position: relative; /* Context for z-index */
+  position: relative;
   z-index: 2;
 }
 
 .hero h1 {
-  font-size: 3.5rem;
+  font-size: 4rem;
   margin-bottom: 10px;
+  font-weight: 800;
+  background: linear-gradient(to right, #fff, #aaa);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .hero p {
   font-size: 1.2rem;
-  color: #666;
+  color: #888;
   margin-bottom: 30px;
 }
 
@@ -81,65 +88,151 @@ nav a:hover { color: var(--primary-color); }
 
 .btn-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(74, 144, 226, 0.4);
+  box-shadow: 0 5px 20px rgba(74, 144, 226, 0.4);
 }
 
-/* --- Floating Shoe Blobs (The Visual Feature) --- */
+/* --- Floating Shoe Blobs (Updated) --- */
 .blob-container {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  pointer-events: none; /* Let clicks pass through */
-  z-index: 1; /* Behind content */
+  pointer-events: none;
+  z-index: 1;
   overflow: hidden;
 }
 
 .shoe-blob {
   position: absolute;
-  opacity: 0.06; /* Very subtle */
-  fill: var(--primary-color);
+  opacity: 0.25; /* Increased from 0.15 for better visibility */
   animation: drift linear infinite;
+  filter: blur(0.5px); /* Slight softening */
 }
 
-/* Specific positions and speeds for variety */
-.blob-1 { top: 10%; left: 10%; width: 150px; animation-duration: 25s; }
-.blob-2 { top: 60%; left: 80%; width: 200px; animation-duration: 35s; animation-delay: -5s; }
-.blob-3 { top: 30%; left: 70%; width: 120px; animation-duration: 20s; animation-delay: -10s; }
-.blob-4 { top: 80%; left: 20%; width: 180px; animation-duration: 30s; animation-delay: -15s; }
+/* More varied animations */
+.blob-1 { animation-duration: 20s; }
+.blob-2 { animation-duration: 25s; animation-delay: -5s; }
+.blob-3 { animation-duration: 30s; animation-delay: -10s; }
+.blob-4 { animation-duration: 22s; animation-delay: -2s; }
+.blob-5 { animation-duration: 28s; animation-delay: -12s; }
+.blob-6 { animation-duration: 35s; animation-delay: -8s; }
+.blob-7 { animation-duration: 18s; animation-delay: -15s; }
+.blob-8 { animation-duration: 32s; animation-delay: -3s; }
+
 
 @keyframes drift {
   0% {
-    transform: rotate(0deg) translateX(20px) rotate(0deg);
+    transform: rotate(0deg) translateX(30px) rotate(0deg);
   }
   100% {
-    transform: rotate(360deg) translateX(20px) rotate(-360deg);
+    transform: rotate(360deg) translateX(30px) rotate(-360deg);
   }
 }
 
-/* --- Chat Widget Styles --- */
+/* --- Product Grid (Dark Mode) --- */
+.product-section {
+  padding: 50px 40px;
+  background: var(--bg-color);
+  position: relative;
+  z-index: 2;
+}
+
+.product-section h2 {
+  text-align: center;
+  margin-bottom: 40px;
+  font-size: 2rem;
+  color: #fff;
+}
+
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 30px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.product-card {
+  background: var(--card-bg);
+  border-radius: 15px;
+  padding: 20px;
+  text-align: center;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  transition: transform 0.3s;
+  border: 1px solid #333;
+}
+
+.product-card:hover {
+  transform: translateY(-5px);
+  border-color: #444;
+}
+
+.product-image {
+  width: 100%;
+  height: 200px;
+  background-color: #2a2a2a;
+  background-size: cover;
+  background-position: center;
+  border-radius: 10px;
+  margin-bottom: 15px;
+}
+
+.product-card h3 {
+  margin: 10px 0 5px;
+  font-size: 1.2rem;
+  color: #fff;
+}
+
+.product-card .price {
+  color: var(--primary-color);
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+.product-card .brand {
+  color: #666;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* --- Chat Widget (Dark Mode) --- */
 #chat-widget { 
   position: fixed; bottom: 90px; right: 20px; width: 350px; 
-  background: white; border-radius: 15px; 
-  box-shadow: 0 10px 25px rgba(0,0,0,0.1); 
+  background: #1e1e1e; border-radius: 15px; 
+  box-shadow: 0 10px 25px rgba(0,0,0,0.5); 
   display: none; flex-direction: column; height: 500px; z-index: 9999;
-  border: 1px solid #eee;
+  border: 1px solid #333;
 }
 
 #chat-header { 
-  background: var(--primary-color); 
+  background: #252525; 
   color: white; padding: 15px; 
   border-radius: 15px 15px 0 0; 
+  display: flex;
+  flex-direction: column; /* Stack title and subtitle */
+  border-bottom: 1px solid #333;
+}
+
+#chat-header .title-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
+#chat-header .subtitle {
+  font-size: 0.7rem;
+  color: #888;
+  text-align: center;
+  margin-top: 5px;
+  letter-spacing: 0.5px;
+}
+
 #chat-messages { 
   flex: 1; padding: 15px; overflow-y: auto; 
   display: flex; flex-direction: column; gap: 10px; 
-  background: #fafafa;
+  background: #121212;
 }
 
 .message { 
@@ -153,23 +246,27 @@ nav a:hover { color: var(--primary-color); }
   border-bottom-right-radius: 2px;
 }
 .bot-msg { 
-  background: white; color: #333; 
+  background: #2a2a2a; color: #e0e0e0; 
   align-self: flex-start; 
-  border: 1px solid #eaeaea;
+  border: 1px solid #444;
   border-bottom-left-radius: 2px;
 }
 
 #chat-input-area { 
   display: flex; padding: 15px; 
-  border-top: 1px solid #eee; 
-  background: white;
+  border-top: 1px solid #333; 
+  background: #1e1e1e;
   border-radius: 0 0 15px 15px;
 }
 #user-input { 
-  flex: 1; padding: 10px; border: 1px solid #ddd; 
+  flex: 1; padding: 10px; border: 1px solid #444; 
   border-radius: 25px; outline: none; 
   font-size: 14px;
+  background: #121212;
+  color: #fff;
 }
+#user-input::placeholder { color: #666; }
+
 #send-btn { 
   background: var(--primary-color); color: white; 
   border: none; width: 40px; height: 40px; 
@@ -181,17 +278,18 @@ nav a:hover { color: var(--primary-color); }
 
 .sample-questions { 
   display: flex; flex-wrap: wrap; gap: 8px; 
-  padding: 10px 15px; background: #fff; 
-  border-top: 1px solid #eee;
+  padding: 10px 15px; background: #1e1e1e; 
+  border-top: 1px solid #333;
 }
 .sample-btn { 
-  background: white; border: 1px solid var(--primary-color); 
-  color: var(--primary-color); padding: 5px 12px; 
+  background: #121212; border: 1px solid #444; 
+  color: #ccc; padding: 5px 12px; 
   border-radius: 15px; font-size: 11px; cursor: pointer;
   transition: all 0.2s;
 }
 .sample-btn:hover { 
-  background: var(--primary-color); color: white; 
+  border-color: var(--primary-color);
+  color: var(--primary-color); 
 }
 
 #chat-toggle { 
@@ -204,66 +302,3 @@ nav a:hover { color: var(--primary-color); }
   z-index: 9998;
 }
 #chat-toggle:hover { transform: scale(1.1); }
-
-/* --- Product Grid --- */
-.product-section {
-  padding: 50px 40px;
-  background: #f9f9f9;
-  position: relative;
-  z-index: 2;
-}
-
-.product-section h2 {
-  text-align: center;
-  margin-bottom: 40px;
-  font-size: 2rem;
-}
-
-.product-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 30px;
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-.product-card {
-  background: white;
-  border-radius: 15px;
-  padding: 20px;
-  text-align: center;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-  transition: transform 0.3s;
-}
-
-.product-card:hover {
-  transform: translateY(-5px);
-}
-
-.product-image {
-  width: 100%;
-  height: 200px;
-  background-color: #eee; /* Placeholder color */
-  background-size: cover;
-  background-position: center;
-  border-radius: 10px;
-  margin-bottom: 15px;
-}
-
-.product-card h3 {
-  margin: 10px 0 5px;
-  font-size: 1.2rem;
-}
-
-.product-card .price {
-  color: var(--primary-color);
-  font-weight: bold;
-  font-size: 1.1rem;
-}
-
-.product-card .brand {
-  color: #888;
-  font-size: 0.9rem;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-}
