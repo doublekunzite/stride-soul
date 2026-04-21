@@ -1,13 +1,10 @@
 import OpenAI from 'openai';
 
 export default async function handler(req, res) {
-  // 1. Security: Only allow POST requests
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  // 2. Setup DeepSeek Client
-  // We use the environment variable DEEPSEEK_API_KEY so the key isn't in the code
   const openai = new OpenAI({
     baseURL: 'https://api.deepseek.com',
     apiKey: process.env.DEEPSEEK_API_KEY, 
@@ -15,23 +12,33 @@ export default async function handler(req, res) {
 
   const { messages } = req.body;
 
+  // The "Brain" - Inventory Context
+  const systemPrompt = `
+    You are a helpful running shoe expert for a store called "Stride & Soul". 
+    You must ONLY recommend shoes that are currently in stock in our inventory list below.
+    
+    CURRENT INVENTORY:
+    1. **Hoka Clifton 9** ($145) - Neutral, max cushion. Great for recovery days and long easy runs.
+    2. **Li-Ning Boom! 5 Pro** ($160) - Elite racing shoe. Carbon fiber plate. Very bouncy (BOOM technology). Great for marathons.
+    3. **Asics Gel-Kayano 30** ($160) - Stability shoe. Perfect for overpronators or flat feet. Excellent support.
+    4. **Brooks Ghost 15** ($140) - Reliable neutral daily trainer. Smooth ride, good for beginners.
+
+    RULES:
+    - If a customer asks for a shoe NOT on this list, apologize and suggest the closest match from the list.
+    - Keep answers short (2-3 sentences).
+    - Use markdown bolding (**) for shoe names to make them pop.
+    - Be enthusiastic.
+  `;
+
   try {
-    // 3. Call the API (DeepSeek-Chat is the fast model)
     const response = await openai.chat.completions.create({
-      model: 'deepseek-chat', // This is the fast "Instant" equivalent
+      model: 'deepseek-chat',
       messages: [
-        {
-          role: 'system',
-          content: `You are a helpful running shoe expert for a fictional store called "Stride & Soul". 
-                    Keep answers short, punchy, and friendly. 
-                    If asked for recommendations, mention specific fake shoe names like "AirFlow Pro" or "TrailBlazer X".`
-        },
+        { role: 'system', content: systemPrompt },
         ...messages
       ],
-      stream: false, // Set to true later if you want streaming (Level 3)
     });
 
-    // 4. Return the result
     res.status(200).json({ reply: response.choices[0].message.content });
 
   } catch (error) {
