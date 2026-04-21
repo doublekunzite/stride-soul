@@ -29,7 +29,7 @@ export default async function handler(req, res) {
 
     RULES:
     - If a customer asks for a shoe NOT on this list, apologize and suggest the closest match.
-    - Keep answers short (2-3 sentences max).
+    - Keep answers short (3-4 sentences max).
     - Use markdown bolding (**) for shoe names.
     - Be enthusiastic.
   `;
