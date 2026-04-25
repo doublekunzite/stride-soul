@@ -20,37 +20,48 @@ async function callDeepSeek(messages) {
   return data.choices[0].message.content;
 }
 
-// --- HELPER: Call Google Gemini (Vision) ---
-async function callGeminiVision(base64Image) {
-  const apiKey = process.env.GEMINI_API_KEY;
-  
-  // Gemini requires the base64 data without the prefix
+// --- HELPER: Call Hugging Face (Vision) ---
+async function callHuggingFaceVision(base64Image) {
+  const apiKey = process.env.HF_TOKEN; // Match the Vercel variable name
+
+  // We use LLaVA v1.6 Mistral - a powerful open source vision model
+  const modelUrl = "https://api-inference.huggingface.co/models/llava-hf/llava-v1.6-mistral-7b-hf";
+
+  // Clean base64 data (remove data:image/jpeg;base64,)
   const base64Data = base64Image.split(',')[1];
-  const mimeType = base64Image.split(';')[0].split(':')[1];
 
   const body = {
-    contents: [{
-      parts: [
-        { text: "Identify the exact Brand and Model of the shoe in this image. Return ONLY the Brand and Model name (e.g., 'New Balance 574'). Be precise." },
-        { inline_data: { mime_type: mimeType, data: base64Data } }
-      ]
-    }]
+    inputs: "User: <image>\nIdentify the exact Brand and Model of the shoe in this image. Return ONLY the Brand and Model name (e.g., 'New Balance 574'). Be precise.\nAssistant:",
+    parameters: {
+      "image": base64Data
+    }
   };
 
-  // FIX: Using v1 endpoint
-  const response = await fetch(`https://generativelanguage.googleapis.com/v1/models/gemini-pro-vision:generateContent?key=${apiKey}`, {
+  const response = await fetch(modelUrl, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${apiKey}`
+    },
     body: JSON.stringify(body)
   });
 
   const data = await response.json();
   if (!response.ok) {
-    console.error("Gemini Error:", data);
-    throw new Error("Vision API failed");
+    console.error("Hugging Face Error:", data);
+    throw new Error(data.error || "Vision API failed");
   }
   
-  return data.candidates[0].content.parts[0].text;
+  // Parse the output
+  // LLaVA usually returns an array: [{ generated_text: "..." }]
+  let resultText = "";
+  if (Array.isArray(data) && data[0]?.generated_text) {
+    resultText = data[0].generated_text;
+  } else {
+    resultText = JSON.stringify(data); // Fallback
+  }
+
+  return resultText;
 }
 
 // --- MAIN HANDLER ---
@@ -74,10 +85,10 @@ export default async function handler(req, res) {
       const imagePart = lastMessage.content.find(item => item.type === 'image_url');
       const imageUrl = imagePart.image_url.url;
       
-      console.log("Step 1: Sending image to Gemini...");
-      // 2. STEP 1: Use Gemini to Identify (The Eye)
-      const identifiedShoe = await callGeminiVision(imageUrl);
-      console.log("Gemini Identified:", identifiedShoe);
+      console.log("Step 1: Sending image to Hugging Face (LLaVA)...");
+      // 2. STEP 1: Use HF to Identify (The Eye)
+      const identifiedShoe = await callHuggingFaceVision(imageUrl);
+      console.log("Identified:", identifiedShoe);
 
       // 3. STEP 2: Use DeepSeek to Sell (The Brain)
       console.log("Step 2: Checking inventory with DeepSeek...");
