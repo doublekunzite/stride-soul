@@ -6,12 +6,17 @@ export default async function handler(req, res) {
   const { messages } = req.body;
   const apiKey = process.env.DEEPSEEK_API_KEY;
 
-  // 1. Define the System Prompt
+  // Refined System Prompt: Separates ID from Sales
   const systemPrompt = {
     role: 'system',
-    content: `You are a helpful running shoe expert for a store called "Stride & Soul". 
-    
-    CURRENT INVENTORY:
+    content: `You are a running shoe expert for "Stride & Soul".
+
+    CRITICAL INSTRUCTION FOR IMAGES:
+    1. FIRST, identify the shoe in the image honestly (Brand and Model). Do not guess if you are unsure.
+    2. SECOND, check if that specific model is in our inventory list below.
+    3. THIRD, if we do NOT have that exact shoe, clearly state "We don't currently stock [Brand Model], but..." and then recommend the closest functional alternative from our inventory.
+
+    OUR INVENTORY (We ONLY sell these):
     - **Hoka Clifton 9** ($145) - Neutral, max cushion.
     - **Hoka Mach 6** ($150) - Neutral, lighter and faster.
     - **Li-Ning Boom! 5 Pro** ($160) - Elite racing shoe.
@@ -21,42 +26,32 @@ export default async function handler(req, res) {
     - **Brooks Ghost 15** ($140) - Neutral, reliable.
     - **Brooks Adrenaline GTS 23** ($140) - Stability.
 
-    INSTRUCTIONS:
-    - If the user uploads an image, identify the shoe brand and model visually.
-    - If we have that shoe in stock, mention it.
-    - If we don't have that exact shoe, recommend the closest match from our inventory.
-    - If no image is provided, answer text questions as normal.
-    - Keep answers short (2-4 sentences).`
+    GENERAL RULES:
+    - Keep answers short (2-4 sentences).
+    - Never claim a shoe is in our inventory if it is not on the list above.`
   };
 
-  // 2. TRANSLATION LAYER (The Fix)
-  // DeepSeek expects images inside the text string using Markdown format, not JSON objects.
-  // We must convert the OpenAI-style array into a DeepSeek-compatible string.
+  // Translation Layer (DeepSeek expects Markdown for images)
   const formattedMessages = messages.map(msg => {
     if (Array.isArray(msg.content)) {
-      // This message contains an image (User Message)
       let textPart = "";
       let imageUrl = "";
 
-      // Extract text and image from the array
       msg.content.forEach(part => {
         if (part.type === 'text') textPart = part.text;
         if (part.type === 'image_url') imageUrl = part.image_url.url;
       });
 
-      // Construct the Markdown string: ![image](base64_data) followed by text
       const markdownContent = imageUrl 
         ? `![image](${imageUrl})\n${textPart}` 
         : textPart;
 
       return { role: msg.role, content: markdownContent };
     }
-    // Standard text message
     return msg;
   });
 
   try {
-    // 3. Send Request
     const response = await fetch('https://api.deepseek.com/chat/completions', {
       method: 'POST',
       headers: {
@@ -65,7 +60,8 @@ export default async function handler(req, res) {
       },
       body: JSON.stringify({
         model: 'deepseek-chat', 
-        messages: [systemPrompt, ...formattedMessages]
+        messages: [systemPrompt, ...formattedMessages],
+        temperature: 0.1 // Lower temperature = more factual, less "creative guessing"
       })
     });
 
