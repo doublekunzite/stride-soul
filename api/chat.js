@@ -1,3 +1,6 @@
+// api/chat.js
+// IMPORTANT: We are NOT using 'import OpenAI' anymore. We use native fetch.
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
@@ -6,7 +9,7 @@ export default async function handler(req, res) {
   const { messages } = req.body;
   const apiKey = process.env.DEEPSEEK_API_KEY;
 
-  // Refined System Prompt: Separates ID from Sales
+  // System Prompt: Honest ID first, then Sales
   const systemPrompt = {
     role: 'system',
     content: `You are a running shoe expert for "Stride & Soul".
@@ -14,7 +17,7 @@ export default async function handler(req, res) {
     CRITICAL INSTRUCTION FOR IMAGES:
     1. FIRST, identify the shoe in the image honestly (Brand and Model). Do not guess if you are unsure.
     2. SECOND, check if that specific model is in our inventory list below.
-    3. THIRD, if we do NOT have that exact shoe, clearly state "We don't currently stock [Brand Model], but..." and then recommend the closest functional alternative from our inventory.
+    3. THIRD, if we do NOT have that exact shoe, clearly state "We don't currently stock [Brand Model], but..." and recommend the closest functional alternative from our inventory.
 
     OUR INVENTORY (We ONLY sell these):
     - **Hoka Clifton 9** ($145) - Neutral, max cushion.
@@ -31,8 +34,10 @@ export default async function handler(req, res) {
     - Never claim a shoe is in our inventory if it is not on the list above.`
   };
 
-  // Translation Layer (DeepSeek expects Markdown for images)
+  // Translation Layer
+  // DeepSeek expects images inside the text string using Markdown format, not JSON objects.
   const formattedMessages = messages.map(msg => {
+    // If content is an array, it might contain an image
     if (Array.isArray(msg.content)) {
       let textPart = "";
       let imageUrl = "";
@@ -42,16 +47,19 @@ export default async function handler(req, res) {
         if (part.type === 'image_url') imageUrl = part.image_url.url;
       });
 
+      // Construct the Markdown string
       const markdownContent = imageUrl 
         ? `![image](${imageUrl})\n${textPart}` 
         : textPart;
 
       return { role: msg.role, content: markdownContent };
     }
+    // Standard text message
     return msg;
   });
 
   try {
+    // Native Fetch Request
     const response = await fetch('https://api.deepseek.com/chat/completions', {
       method: 'POST',
       headers: {
@@ -61,7 +69,7 @@ export default async function handler(req, res) {
       body: JSON.stringify({
         model: 'deepseek-chat', 
         messages: [systemPrompt, ...formattedMessages],
-        temperature: 0.1 // Lower temperature = more factual, less "creative guessing"
+        temperature: 0.1
       })
     });
 
