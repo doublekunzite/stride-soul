@@ -24,20 +24,15 @@ async function callDeepSeek(messages) {
 async function callHuggingFaceVision(base64Image) {
   const apiKey = process.env.HF_TOKEN; 
 
-  // Using LLaVA v1.5 which is extremely stable
-  const modelUrl = "https://api-inference.huggingface.co/models/llava-hf/llava-1.5-7b-hf";
+  // SWITCHED MODEL: Using vi-t-g/vit-gpt2-coco-demo (Open, no permission gates)
+  // This model is reliable and free, though slightly less detailed than LLaVA.
+  const modelUrl = "https://api-inference.huggingface.co/models/vi-t-g/vit-gpt2-coco-demo";
 
   // Clean base64 data
   const base64Data = base64Image.split(',')[1];
 
-  // Correct Prompt format for LLaVA 1.5: USER: <image>\nQuestion ASSISTANT:
-  const prompt = "USER: <image>\nIdentify the exact Brand and Model of the shoe in this image. Return ONLY the Brand and Model name (e.g., 'New Balance 574'). Be precise.\nASSISTANT:";
-
   const body = {
-    inputs: prompt,
-    parameters: {
-      "image": base64Data
-    }
+    inputs: base64Data
   };
 
   const response = await fetch(modelUrl, {
@@ -49,11 +44,11 @@ async function callHuggingFaceVision(base64Image) {
     body: JSON.stringify(body)
   });
 
-  // FIX: Read text first to avoid JSON parse crash on error pages
+  // Read text first to avoid JSON parse crash
   const resultText = await response.text();
 
   if (!response.ok) {
-    console.error("Hugging Face Error Response:", resultText); // Log the actual error
+    console.error("Hugging Face Error Response:", resultText);
     throw new Error("Vision API failed. Check logs for details.");
   }
   
@@ -61,11 +56,10 @@ async function callHuggingFaceVision(base64Image) {
   try {
     const data = JSON.parse(resultText);
     
-    // Extract the generated text
+    // This model returns an array of generated captions e.g. [{ "generated_text": "a shoe..." }]
     if (Array.isArray(data) && data[0]?.generated_text) {
       return data[0].generated_text;
     } else {
-      // Fallback for different response formats
       return JSON.stringify(data); 
     }
   } catch (e) {
