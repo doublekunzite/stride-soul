@@ -6,7 +6,7 @@ export default async function handler(req, res) {
   const { messages } = req.body;
   const apiKey = process.env.DEEPSEEK_API_KEY;
 
-  // Define the System Prompt
+  // 1. Define the System Prompt
   const systemPrompt = {
     role: 'system',
     content: `You are a helpful running shoe expert for a store called "Stride & Soul". 
@@ -29,8 +29,34 @@ export default async function handler(req, res) {
     - Keep answers short (2-4 sentences).`
   };
 
+  // 2. TRANSLATION LAYER (The Fix)
+  // DeepSeek expects images inside the text string using Markdown format, not JSON objects.
+  // We must convert the OpenAI-style array into a DeepSeek-compatible string.
+  const formattedMessages = messages.map(msg => {
+    if (Array.isArray(msg.content)) {
+      // This message contains an image (User Message)
+      let textPart = "";
+      let imageUrl = "";
+
+      // Extract text and image from the array
+      msg.content.forEach(part => {
+        if (part.type === 'text') textPart = part.text;
+        if (part.type === 'image_url') imageUrl = part.image_url.url;
+      });
+
+      // Construct the Markdown string: ![image](base64_data) followed by text
+      const markdownContent = imageUrl 
+        ? `![image](${imageUrl})\n${textPart}` 
+        : textPart;
+
+      return { role: msg.role, content: markdownContent };
+    }
+    // Standard text message
+    return msg;
+  });
+
   try {
-    // We use fetch directly to have full control over the JSON payload
+    // 3. Send Request
     const response = await fetch('https://api.deepseek.com/chat/completions', {
       method: 'POST',
       headers: {
@@ -38,14 +64,13 @@ export default async function handler(req, res) {
         'Authorization': `Bearer ${apiKey}`
       },
       body: JSON.stringify({
-        model: 'deepseek-chat', // DeepSeek-V3 is multimodal
-        messages: [systemPrompt, ...messages]
+        model: 'deepseek-chat', 
+        messages: [systemPrompt, ...formattedMessages]
       })
     });
 
     const data = await response.json();
 
-    // Check for API errors
     if (!response.ok) {
       console.error("DeepSeek API Error:", data);
       return res.status(500).json({ error: data.error?.message || 'API request failed' });
