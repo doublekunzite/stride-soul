@@ -22,16 +22,19 @@ async function callDeepSeek(messages) {
 
 // --- HELPER: Call Hugging Face (Vision) ---
 async function callHuggingFaceVision(base64Image) {
-  const apiKey = process.env.HF_TOKEN; // Match the Vercel variable name
+  const apiKey = process.env.HF_TOKEN; 
 
-  // We use LLaVA v1.6 Mistral - a powerful open source vision model
-  const modelUrl = "https://api-inference.huggingface.co/models/llava-hf/llava-v1.6-mistral-7b-hf";
+  // Using LLaVA v1.5 which is extremely stable
+  const modelUrl = "https://api-inference.huggingface.co/models/llava-hf/llava-1.5-7b-hf";
 
-  // Clean base64 data (remove data:image/jpeg;base64,)
+  // Clean base64 data
   const base64Data = base64Image.split(',')[1];
 
+  // Correct Prompt format for LLaVA 1.5: USER: <image>\nQuestion ASSISTANT:
+  const prompt = "USER: <image>\nIdentify the exact Brand and Model of the shoe in this image. Return ONLY the Brand and Model name (e.g., 'New Balance 574'). Be precise.\nASSISTANT:";
+
   const body = {
-    inputs: "User: <image>\nIdentify the exact Brand and Model of the shoe in this image. Return ONLY the Brand and Model name (e.g., 'New Balance 574'). Be precise.\nAssistant:",
+    inputs: prompt,
     parameters: {
       "image": base64Data
     }
@@ -46,11 +49,30 @@ async function callHuggingFaceVision(base64Image) {
     body: JSON.stringify(body)
   });
 
-  const data = await response.json();
+  // FIX: Read text first to avoid JSON parse crash on error pages
+  const resultText = await response.text();
+
   if (!response.ok) {
-    console.error("Hugging Face Error:", data);
-    throw new Error(data.error || "Vision API failed");
+    console.error("Hugging Face Error Response:", resultText); // Log the actual error
+    throw new Error("Vision API failed. Check logs for details.");
   }
+  
+  // Parse the text to JSON
+  try {
+    const data = JSON.parse(resultText);
+    
+    // Extract the generated text
+    if (Array.isArray(data) && data[0]?.generated_text) {
+      return data[0].generated_text;
+    } else {
+      // Fallback for different response formats
+      return JSON.stringify(data); 
+    }
+  } catch (e) {
+    console.error("JSON Parse Error:", e);
+    throw new Error("Failed to parse Vision response.");
+  }
+}
   
   // Parse the output
   // LLaVA usually returns an array: [{ generated_text: "..." }]
