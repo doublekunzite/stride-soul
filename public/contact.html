@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact - Stride & Soul</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .contact-container {
+            min-height: 80vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            z-index: 2;
+            padding: 40px;
+        }
+        .contact-title { font-size: 3rem; margin-bottom: 15px; color: #fff; }
+        .contact-subtitle { color: #888; margin-bottom: 40px; max-width: 500px; }
+        
+        .contact-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: #0077B5; /* LinkedIn Blue */
+            color: white;
+            padding: 15px 30px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .contact-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 119, 181, 0.4);
+        }
+        .contact-link svg { width: 24px; height: 24px; fill: white; }
+    </style>
+</head>
+<body>
+
+    <!-- Background Blobs for consistency -->
+    <div class="blob-container">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+    </div>
+
+    <header>
+        <a href="index.html" class="logo">STRIDE & SOUL</a>
+        <nav>
+            <a href="process.html">Process</a>
+            <a href="contact.html">Contact</a>
+        </nav>
+    </header>
+
+    <div class="contact-container">
+        <h1 class="contact-title">Get in Touch</h1>
+        <p class="contact-subtitle">Have questions about the project or want to discuss opportunities? Feel free to connect with me on LinkedIn.</p>
+        
+        <!-- LinkedIn Placeholder Link -->
+        <a href="https://www.linkedin.com/in/your-profile-name" target="_blank" rel="noopener noreferrer" class="contact-link">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+            </svg>
+            Connect on LinkedIn
+        </a>
+    </div>
+
+</body>
+</html>
