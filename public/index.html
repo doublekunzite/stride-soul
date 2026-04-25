@@ -96,7 +96,7 @@
         </div>
     </section>
 
-    <!-- Chat Widget -->
+        <!-- Chat Widget -->
     <div id="chat-widget">
         <div id="chat-header">
             <div class="title-row">
@@ -107,7 +107,15 @@
         </div>
         
         <div id="chat-messages">
-            <div class="message bot-msg">Hello! I'm your AI running coach. Ask me anything about our shoes!</div>
+            <div class="message bot-msg">Hello! I'm your AI running coach. Ask me anything or upload a photo of a shoe!</div>
+        </div>
+
+        <!-- Image Preview Container (Hidden by default) -->
+        <div id="image-preview-container" style="display: none; padding: 0 15px; background: #1e1e1e;">
+            <div style="position: relative; display: inline-block; margin-bottom: 5px;">
+                <img id="image-preview" src="" alt="Preview" style="max-width: 100px; max-height: 100px; border-radius: 8px; border: 1px solid #444;">
+                <button onclick="clearImage()" style="position: absolute; top: -5px; right: -5px; background: #ff6b6b; color: white; border: none; border-radius: 50%; width: 20px; height: 20px; cursor: pointer; font-size: 12px;">&times;</button>
+            </div>
         </div>
 
         <!-- Updated Sample Questions -->
@@ -119,7 +127,12 @@
         </div>
 
         <div id="chat-input-area">
-            <input type="text" id="user-input" placeholder="Type a message..." onkeypress="handleEnter(event)">
+            <!-- Hidden File Input -->
+            <input type="file" id="image-input" accept="image/*" style="display: none;" onchange="handleImageSelect(event)">
+            
+            <button onclick="document.getElementById('image-input').click()" style="background:none; border:none; color:#888; cursor:pointer; font-size:20px; margin-right:5px;">📷</button>
+            
+            <input type="text" id="user-input" placeholder="Type a message..." onkeypress="handleEnter(event)" style="flex:1;">
             <button id="send-btn" onclick="sendMessage()">➤</button>
         </div>
     </div>
@@ -133,6 +146,11 @@
         const messagesDiv = document.getElementById('chat-messages');
         const userInput = document.getElementById('user-input');
         const sampleArea = document.getElementById('sample-area');
+        const imageInput = document.getElementById('image-input');
+        const imagePreviewContainer = document.getElementById('image-preview-container');
+        const imagePreviewImg = document.getElementById('image-preview');
+
+        let currentImageBase64 = null; // Store the image data
 
         function toggleChat() {
             const isVisible = chatWidget.style.display === 'flex';
@@ -146,14 +164,25 @@
             return formatted;
         }
 
-        function addMessage(text, sender) {
+        function addMessage(text, sender, imageUrl = null) {
             const div = document.createElement('div');
             div.classList.add('message', sender === 'user' ? 'user-msg' : 'bot-msg');
             
+            // If there is an image, append it first
+            if (imageUrl) {
+                const img = document.createElement('img');
+                img.src = imageUrl;
+                img.style.maxWidth = '100%';
+                img.style.borderRadius = '8px';
+                img.style.marginBottom = '5px';
+                div.appendChild(img);
+            }
+
+            // Append text
             if (sender === 'bot') {
-                div.innerHTML = formatBotText(text);
+                div.innerHTML += formatBotText(text);
             } else {
-                div.textContent = text;
+                div.innerHTML += text; // User text is just text
             }
             
             messagesDiv.appendChild(div);
@@ -169,14 +198,55 @@
             sendMessage();
         }
 
+        // --- NEW: Image Handling ---
+        function handleImageSelect(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                currentImageBase64 = e.target.result; // Store base64 string
+                imagePreviewImg.src = currentImageBase64;
+                imagePreviewContainer.style.display = 'block'; // Show preview
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function clearImage() {
+            currentImageBase64 = null;
+            imageInput.value = ''; // Reset file input
+            imagePreviewContainer.style.display = 'none';
+        }
+
         async function sendMessage() {
             const text = userInput.value.trim();
-            if (!text) return;
+            
+            // Don't send if no text AND no image
+            if (!text && !currentImageBase64) return;
 
-            addMessage(text, 'user');
+            // Add user message to UI (with image if present)
+            addMessage(text || "Look at this shoe", 'user', currentImageBase64);
+            
+            // Construct payload
+            let messageContent;
+            
+            if (currentImageBase64) {
+                // Multimodal format: Array of text + image
+                messageContent = [
+                    { type: 'text', text: text || "What shoe is this?" },
+                    { type: 'image_url', image_url: { url: currentImageBase64 } }
+                ];
+            } else {
+                // Text only format: String
+                messageContent = text;
+            }
+
+            // Clear inputs immediately
             userInput.value = '';
-            sampleArea.style.display = 'none'; 
+            sampleArea.style.display = 'none';
+            clearImage(); // Clear image after sending
 
+            // Loading indicator
             const loadingDiv = document.createElement('div');
             loadingDiv.classList.add('message', 'bot-msg');
             loadingDiv.textContent = 'Thinking...';
@@ -187,12 +257,12 @@
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ 
-                        messages: [{ role: 'user', content: text }] 
+                        messages: [{ role: 'user', content: messageContent }] 
                     })
                 });
 
                 const data = await response.json();
-                loadingDiv.innerHTML = formatBotText(data.reply) || "Sorry, I couldn't connect.";
+                loadingDiv.innerHTML = formatBotText(data.reply) || "Sorry, I couldn't process that.";
 
             } catch (error) {
                 loadingDiv.textContent = "Error connecting to server.";

@@ -12,35 +12,41 @@ export default async function handler(req, res) {
 
   const { messages } = req.body;
 
-  // Updated Inventory List
-  const systemPrompt = `
-    You are a helpful running shoe expert for a store called "Stride & Soul". 
-    You must ONLY recommend shoes from the inventory list below.
+  // Check if the latest message contains an image
+  // We look at the last message from the user
+  const lastMessage = messages[messages.length - 1];
+  const hasImage = Array.isArray(lastMessage.content) && 
+                   lastMessage.content.some(item => item.type === 'image_url');
+
+  // Select Model: Use 'deepseek-vl' for vision, 'deepseek-chat' for text
+  const model = hasImage ? 'deepseek-vl' : 'deepseek-chat';
+
+  const systemPrompt = {
+    role: 'system',
+    content: `You are a helpful running shoe expert for a store called "Stride & Soul". 
     
     CURRENT INVENTORY:
-    - **Hoka Clifton 9** ($145) - Neutral, max cushion. Great for recovery and easy miles.
-    - **Hoka Mach 6** ($150) - Neutral, lighter and faster than Clifton. Good for daily training.
-    - **Li-Ning Boom! 5 Pro** ($160) - Elite racing shoe with carbon plate. "BOOM" technology for high energy return.
-    - **Li-Ning Arc Ace** ($130) - Stability shoe. Great support for overpronation.
-    - **Asics Gel-Kayano 30** ($160) - Stability. Legendary support and comfort for long runs.
-    - **Asics Novablast 4** ($140) - Neutral. Very bouncy and energetic, great for faster runs.
-    - **Brooks Ghost 15** ($140) - Neutral. Smooth, reliable, great for beginners.
-    - **Brooks Adrenaline GTS 23** ($140) - Stability. Classic support shoe, good for flat feet.
+    - **Hoka Clifton 9** ($145) - Neutral, max cushion.
+    - **Hoka Mach 6** ($150) - Neutral, lighter and faster.
+    - **Li-Ning Boom! 5 Pro** ($160) - Elite racing shoe.
+    - **Li-Ning Arc Ace** ($130) - Stability.
+    - **Asics Gel-Kayano 30** ($160) - Stability.
+    - **Asics Novablast 4** ($140) - Neutral, bouncy.
+    - **Brooks Ghost 15** ($140) - Neutral, reliable.
+    - **Brooks Adrenaline GTS 23** ($140) - Stability.
 
-    RULES:
-    - If a customer asks for a shoe NOT on this list, apologize and suggest the closest match.
-    - Keep answers short (3-4 sentences max).
-    - Use markdown bolding (**) for shoe names.
-    - Be enthusiastic.
-  `;
+    INSTRUCTIONS:
+    - If the user uploads an image, identify the shoe brand and model visually.
+    - If we have that shoe in stock, mention it.
+    - If we don't have that exact shoe, recommend the closest match from our inventory.
+    - If no image is provided, answer text questions as normal.
+    - Keep answers short (2-4 sentences).`
+  };
 
   try {
     const response = await openai.chat.completions.create({
-      model: 'deepseek-chat',
-      messages: [
-        { role: 'system', content: systemPrompt },
-        ...messages
-      ],
+      model: model, // Dynamic model selection
+      messages: [systemPrompt, ...messages],
     });
 
     res.status(200).json({ reply: response.choices[0].message.content });
