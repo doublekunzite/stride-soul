@@ -1,26 +1,12 @@
-import OpenAI from 'openai';
-
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const openai = new OpenAI({
-    baseURL: 'https://api.deepseek.com',
-    apiKey: process.env.DEEPSEEK_API_KEY, 
-  });
-
   const { messages } = req.body;
+  const apiKey = process.env.DEEPSEEK_API_KEY;
 
-  // Check if the latest message contains an image
-  const lastMessage = messages[messages.length - 1];
-  const hasImage = Array.isArray(lastMessage.content) && 
-                   lastMessage.content.some(item => item.type === 'image_url');
-
-  // FIX: DeepSeek-V3 ('deepseek-chat') handles BOTH text and vision.
-  // Do not switch to 'deepseek-vl'.
-  const model = 'deepseek-chat'; 
-
+  // Define the System Prompt
   const systemPrompt = {
     role: 'system',
     content: `You are a helpful running shoe expert for a store called "Stride & Soul". 
@@ -44,15 +30,31 @@ export default async function handler(req, res) {
   };
 
   try {
-    const response = await openai.chat.completions.create({
-      model: model, 
-      messages: [systemPrompt, ...messages],
+    // We use fetch directly to have full control over the JSON payload
+    const response = await fetch('https://api.deepseek.com/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${apiKey}`
+      },
+      body: JSON.stringify({
+        model: 'deepseek-chat', // DeepSeek-V3 is multimodal
+        messages: [systemPrompt, ...messages]
+      })
     });
 
-    res.status(200).json({ reply: response.choices[0].message.content });
+    const data = await response.json();
+
+    // Check for API errors
+    if (!response.ok) {
+      console.error("DeepSeek API Error:", data);
+      return res.status(500).json({ error: data.error?.message || 'API request failed' });
+    }
+
+    res.status(200).json({ reply: data.choices[0].message.content });
 
   } catch (error) {
-    console.error("DeepSeek API Error:", error); // Log the specific error to Vercel logs
+    console.error("Server Error:", error);
     res.status(500).json({ error: 'Something went wrong with the AI request.' });
   }
 }
