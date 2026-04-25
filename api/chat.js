@@ -13,13 +13,13 @@ export default async function handler(req, res) {
   const { messages } = req.body;
 
   // Check if the latest message contains an image
-  // We look at the last message from the user
   const lastMessage = messages[messages.length - 1];
   const hasImage = Array.isArray(lastMessage.content) && 
                    lastMessage.content.some(item => item.type === 'image_url');
 
-  // Select Model: Use 'deepseek-vl' for vision, 'deepseek-chat' for text
-  const model = hasImage ? 'deepseek-vl' : 'deepseek-chat';
+  // FIX: DeepSeek-V3 ('deepseek-chat') handles BOTH text and vision.
+  // Do not switch to 'deepseek-vl'.
+  const model = 'deepseek-chat'; 
 
   const systemPrompt = {
     role: 'system',
@@ -45,14 +45,14 @@ export default async function handler(req, res) {
 
   try {
     const response = await openai.chat.completions.create({
-      model: model, // Dynamic model selection
+      model: model, 
       messages: [systemPrompt, ...messages],
     });
 
     res.status(200).json({ reply: response.choices[0].message.content });
 
   } catch (error) {
-    console.error(error);
+    console.error("DeepSeek API Error:", error); // Log the specific error to Vercel logs
     res.status(500).json({ error: 'Something went wrong with the AI request.' });
   }
 }
