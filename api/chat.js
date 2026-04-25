@@ -24,8 +24,7 @@ async function callDeepSeek(messages) {
 async function callHuggingFaceVision(base64Image) {
   const apiKey = process.env.HF_TOKEN; 
 
-  // SWITCHED MODEL: Using vi-t-g/vit-gpt2-coco-demo (Open, no permission gates)
-  // This model is reliable and free, though slightly less detailed than LLaVA.
+  // Verified Public Model URL
   const modelUrl = "https://api-inference.huggingface.co/models/vi-t-g/vit-gpt2-coco-demo";
 
   // Clean base64 data
@@ -56,28 +55,17 @@ async function callHuggingFaceVision(base64Image) {
   try {
     const data = JSON.parse(resultText);
     
-    // This model returns an array of generated captions e.g. [{ "generated_text": "a shoe..." }]
+    // This model returns an array like: [{ "generated_text": "a shoe..." }]
     if (Array.isArray(data) && data[0]?.generated_text) {
       return data[0].generated_text;
     } else {
+      // Fallback
       return JSON.stringify(data); 
     }
   } catch (e) {
     console.error("JSON Parse Error:", e);
     throw new Error("Failed to parse Vision response.");
   }
-}
-  
-  // Parse the output
-  // LLaVA usually returns an array: [{ generated_text: "..." }]
-  let resultText = "";
-  if (Array.isArray(data) && data[0]?.generated_text) {
-    resultText = data[0].generated_text;
-  } else {
-    resultText = JSON.stringify(data); // Fallback
-  }
-
-  return resultText;
 }
 
 // --- MAIN HANDLER ---
@@ -101,7 +89,7 @@ export default async function handler(req, res) {
       const imagePart = lastMessage.content.find(item => item.type === 'image_url');
       const imageUrl = imagePart.image_url.url;
       
-      console.log("Step 1: Sending image to Hugging Face (LLaVA)...");
+      console.log("Step 1: Sending image to Hugging Face...");
       // 2. STEP 1: Use HF to Identify (The Eye)
       const identifiedShoe = await callHuggingFaceVision(imageUrl);
       console.log("Identified:", identifiedShoe);
