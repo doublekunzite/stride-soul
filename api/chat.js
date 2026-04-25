@@ -1,9 +1,8 @@
 // api/chat.js
 
-// Helper function to call DeepSeek API
-async function callDeepSeek(messages, temperature = 0.1) {
+// --- HELPER: Call DeepSeek (Text) ---
+async function callDeepSeek(messages) {
   const apiKey = process.env.DEEPSEEK_API_KEY;
-  
   const response = await fetch('https://api.deepseek.com/chat/completions', {
     method: 'POST',
     headers: {
@@ -13,26 +12,53 @@ async function callDeepSeek(messages, temperature = 0.1) {
     body: JSON.stringify({
       model: 'deepseek-chat', 
       messages: messages,
-      temperature: temperature
+      temperature: 0.1
     })
+  });
+  const data = await response.json();
+  if (!response.ok) throw new Error(data.error?.message);
+  return data.choices[0].message.content;
+}
+
+// --- HELPER: Call Google Gemini (Vision) ---
+async function callGeminiVision(base64Image) {
+  const apiKey = process.env.GEMINI_API_KEY;
+  
+  // Gemini requires the base64 data without the prefix
+  const base64Data = base64Image.split(',')[1];
+  const mimeType = base64Image.split(';')[0].split(':')[1];
+
+  const body = {
+    contents: [{
+      parts: [
+        { text: "Identify the exact Brand and Model of the shoe in this image. Return ONLY the Brand and Model name (e.g., 'New Balance 574'). Be precise." },
+        { inline_data: { mime_type: mimeType, data: base64Data } }
+      ]
+    }]
+  };
+
+  const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
   });
 
   const data = await response.json();
   if (!response.ok) {
-    console.error("DeepSeek API Error:", data);
-    throw new Error(data.error?.message || 'API request failed');
+    console.error("Gemini Error:", data);
+    throw new Error("Vision API failed");
   }
-  return data.choices[0].message.content;
+  
+  return data.candidates[0].content.parts[0].text;
 }
 
+// --- MAIN HANDLER ---
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
   const { messages } = req.body;
-
-  // 1. DETECT INPUT TYPE
   const lastMessage = messages[messages.length - 1];
   const hasImage = Array.isArray(lastMessage.content) && 
                    lastMessage.content.some(item => item.type === 'image_url');
@@ -41,33 +67,19 @@ export default async function handler(req, res) {
     let finalReply = "";
 
     if (hasImage) {
-      // --- STRATEGY: TWO-STEP AGENT ---
+      // --- HYBRID LOGIC ---
 
-      // TRANSLATION LAYER for Step 1
-      // Convert the user's message (image + text) into Markdown format for DeepSeek
-      const formattedContent = lastMessage.content.map(part => {
-        if (part.type === 'text') return part.text;
-        if (part.type === 'image_url') return `![image](${part.image_url.url})`;
-        return "";
-      }).join('\n');
+      // 1. Extract Image Data
+      const imagePart = lastMessage.content.find(item => item.type === 'image_url');
+      const imageUrl = imagePart.image_url.url;
+      
+      console.log("Step 1: Sending image to Gemini...");
+      // 2. STEP 1: Use Gemini to Identify (The Eye)
+      const identifiedShoe = await callGeminiVision(imageUrl);
+      console.log("Gemini Identified:", identifiedShoe);
 
-      // STEP 1: The "Eye" - Identify the shoe without inventory bias
-      const visionPrompt = [
-        { 
-          role: 'system', 
-          content: "You are a visual identification expert. Identify the specific Brand and Model of the shoe in the image. Return ONLY the Brand and Model name (e.g., 'New Balance 574', 'Nike Air Max 90'). If you are unsure, provide your best guess." 
-        },
-        { 
-          role: 'user', 
-          content: `What shoe is in this image? ${formattedContent}` 
-        }
-      ];
-
-      // Call 1
-      const identifiedShoe = await callDeepSeek(visionPrompt, 0.1);
-      console.log("Identified Shoe:", identifiedShoe); // Log for debugging
-
-      // STEP 2: The "Brain" - Compare with inventory and generate response
+      // 3. STEP 2: Use DeepSeek to Sell (The Brain)
+      console.log("Step 2: Checking inventory with DeepSeek...");
       const salesPrompt = [
         { 
           role: 'system', 
@@ -95,12 +107,10 @@ export default async function handler(req, res) {
         }
       ];
 
-      // Call 2
-      finalReply = await callDeepSeek(salesPrompt, 0.1);
+      finalReply = await callDeepSeek(salesPrompt);
 
     } else {
-      // --- STRATEGY: TEXT ONLY ---
-
+      // --- TEXT ONLY LOGIC ---
       const textPrompt = [
         { 
           role: 'system', 
@@ -108,21 +118,20 @@ export default async function handler(req, res) {
           You ONLY discuss shoes found in our inventory.
 
           INVENTORY:
-          - **Hoka Clifton 9** ($145) - Neutral, max cushion.
-          - **Hoka Mach 6** ($150) - Neutral, lighter.
-          - **Li-Ning Boom! 5 Pro** ($160) - Elite racing.
-          - **Li-Ning Arc Ace** ($130) - Stability.
-          - **Asics Gel-Kayano 30** ($160) - Stability.
-          - **Asics Novablast 4** ($140) - Neutral, bouncy.
-          - **Brooks Ghost 15** ($140) - Neutral.
-          - **Brooks Adrenaline GTS 23** ($140) - Stability.
+          - **Hoka Clifton 9** ($145)
+          - **Hoka Mach 6** ($150)
+          - **Li-Ning Boom! 5 Pro** ($160)
+          - **Li-Ning Arc Ace** ($130)
+          - **Asics Gel-Kayano 30** ($160)
+          - **Asics Novablast 4** ($140)
+          - **Brooks Ghost 15** ($140)
+          - **Brooks Adrenaline GTS 23** ($140)
 
           Keep answers short.`
         },
         ...messages
       ];
-
-      finalReply = await callDeepSeek(textPrompt, 0.1);
+      finalReply = await callDeepSeek(textPrompt);
     }
 
     res.status(200).json({ reply: finalReply });
