@@ -51,6 +51,15 @@ function retrieveContext(userMessage) {
     const results = shoes.filter(s => s.brand === "Li-Ning");
     context = "Here are the Li-Ning models in stock:\n\n" + results.map(formatShoe).join("\n\n");
   }
+  
+    // 3.5 Intent: Budget Specific
+  else if (msg.includes("$") || msg.includes("budget") || msg.includes("cheap") || msg.includes("afford")) {
+    // Simple logic: find shoes $145 or less
+    const results = shoes.filter(s => s.price <= 145);
+    context = "The user is on a budget. Here are shoes under $145:\n\n" + 
+      results.map(formatShoe).join("\n\n");
+  }
+  
   // 4. Default
   else {
     context = "Here is our current inventory summary:\n" + 

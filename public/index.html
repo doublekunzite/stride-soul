@@ -98,12 +98,16 @@
 
         <!-- Chat Widget -->
     <div id="chat-widget">
-        <div id="chat-header">
+                <div id="chat-header">
             <div class="title-row">
                 <span>🏃‍♂️ Running Expert</span>
-                <button onclick="toggleChat()" style="background:none; border:none; color:white; cursor:pointer; font-size:20px;">&times;</button>
+                <button onclick="toggleChat()" style="background:none; border:none; color:white; cursor:pointer; font-size:22px; opacity:0.8;">&times;</button>
             </div>
-            <div class="subtitle">Powered by DeepSeek</div>
+            <!-- New Tech Badge -->
+            <div class="tech-badge">
+                <span class="dot"></span>
+                <span>Powered by DeepSeek V4 Flash</span>
+            </div>
         </div>
         
         <div id="chat-messages">
@@ -114,10 +118,10 @@
 
                 <!-- Updated Sample Questions -->
         <div class="sample-questions" id="sample-area">
+            <button class="sample-btn" onclick="askSample('Which shoe is the lightest?')">Lightest Shoe</button>
             <button class="sample-btn" onclick="askSample('I have flat feet, what do you recommend?')">Flat feet advice</button>
-            <button class="sample-btn" onclick="askSample('Which shoe is the lightest?')">Lightest shoe</button>
-            <button class="sample-btn" onclick="askSample('Compare the Hoka Clifton vs Asics Kayano')">Compare models</button>
-            <button class="sample-btn" onclick="askSample('What are the best shoes for a tight budget?')">Budget options</button>
+            <button class="sample-btn" onclick="askSample('Compare the Hoka Clifton 9 vs Mach 6')">Compare Models</button>
+            <button class="sample-btn" onclick="askSample('I have $140, what are my options?')">Budget Filter</button>
         </div>
 
         <div id="chat-input-area">

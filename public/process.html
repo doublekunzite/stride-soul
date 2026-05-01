@@ -54,42 +54,42 @@
             
             <div class="dev-card">
                 <div class="dev-card-header">
-                    <span class="dev-card-title">Serverless API Configuration</span>
+                    <span class="dev-card-title">RAG Implementation</span>
                     <span class="dev-card-badge">Backend</span>
                 </div>
-                <p class="dev-challenge">Challenge: The chatbot returned a 404 error on Vercel deployment, despite working locally.</p>
-                <div class="dev-prompt">"I made all the changes you said... but the chatbot isn't working (unable to connect to database)."</div>
-                <p class="dev-solution"><strong>Solution:</strong> Identified that Vercel wasn't detecting the backend function due to incorrect Root Directory settings. Updated project configuration to point to the correct root and added a <code>package.json</code> with <code>type: module</code> to support modern ES6 import syntax.</p>
+                <p class="dev-challenge">Challenge: The AI hallucinated shoe specs because it relied on general training data, not store inventory.</p>
+                <div class="dev-prompt">"The bot is confused about both the inventory and IDing incorrectly... we need a separate logic."</div>
+                <p class="dev-solution"><strong>Solution:</strong> Implemented <strong>Retrieval-Augmented Generation (RAG)</strong>. Built a structured JSON dataset of 8 shoes with specific fields (Weight, Type, Price). Created a <code>retrieveContext()</code> function to filter this data before sending it to the LLM.</p>
             </div>
 
             <div class="dev-card">
                 <div class="dev-card-header">
-                    <span class="dev-card-title">Background Visuals Pivot</span>
-                    <span class="dev-card-badge">CSS</span>
+                    <span class="dev-card-title">API Error Handling</span>
+                    <span class="dev-card-badge">Frontend</span>
                 </div>
-                <p class="dev-challenge">Challenge: Complex SVG shapes were inconsistent and difficult to style dynamically.</p>
-                <div class="dev-prompt">"The blobs are still not shoe shaped... let's change the blobs to just actual blobs? random rough circle shapes."</div>
-                <p class="dev-solution"><strong>Solution:</strong> Pivoted from rigid SVG paths to CSS-styled <code>div</code> elements. Used <code>border-radius</code> with percentage values and <code>@keyframes</code> to create a "Lava Lamp" morphing effect that is smoother and more performant.</p>
+                <p class="dev-challenge">Challenge: Chatbot hung indefinitely ("Thinking...") when server errors occurred.</p>
+                <div class="dev-prompt">"The bot hangs indefinitely and doesn't respond... TypeError: Cannot set properties of null."</div>
+                <p class="dev-solution"><strong>Solution:</strong> Added robust <code>try/catch</code> blocks and improved frontend response checking to handle HTTP errors (like 402 Payment Required) gracefully instead of failing silently.</p>
             </div>
 
             <div class="dev-card">
                 <div class="dev-card-header">
-                    <span class="dev-card-title">Chat Input Security</span>
-                    <span class="dev-card-badge">Logic</span>
+                    <span class="dev-card-title">Module Import Debugging</span>
+                    <span class="dev-card-badge">Ops</span>
                 </div>
-                <p class="dev-challenge">Challenge: Sample question button broke the JavaScript functionality due to unescaped characters.</p>
-                <div class="dev-prompt">"The 'beginner advice' button in the chatbot does not work."</div>
-                <p class="dev-solution"><strong>Solution:</strong> Identified that the apostrophe in "I'm" was terminating the JS string early. Sanitized the HTML attribute by using double backslashes or removing the contraction entirely to ensure valid syntax.</p>
+                <p class="dev-challenge">Challenge: Vercel serverless functions crashed silently when importing local JSON files.</p>
+                <div class="dev-prompt">"I no longer get the server error, but... the bot hangs indefinitely."</div>
+                <p class="dev-solution"><strong>Solution:</strong> Identified that <code>import data from '../data.json'</code> fails in the specific Vercel runtime environment. Hardcoded the data object directly into the function file to guarantee availability.</p>
             </div>
             
             <div class="dev-card">
                 <div class="dev-card-header">
-                    <span class="dev-card-title">DeepSeek Integration</span>
-                    <span class="dev-card-badge">AI</span>
+                    <span class="dev-card-title">Vision Feature Pivot</span>
+                    <span class="dev-card-badge">Strategy</span>
                 </div>
-                <p class="dev-challenge">Challenge: Needed a fast, cost-effective LLM API with strict inventory constraints.</p>
-                <div class="dev-prompt">"I want to create a sample e-commerce website... using an API from an LLM... is Deepseek an option?"</div>
-                <p class="dev-solution"><strong>Solution:</strong> Integrated DeepSeek Chat API. Engineered the system prompt to act as a "constraint engine," forcing the model to only recommend products from a provided JSON-like inventory list, preventing hallucinations.</p>
+                <p class="dev-challenge">Challenge: External Vision APIs (HuggingFace, Google Gemini) were unreliable or required complex authentication that failed in the portfolio context.</p>
+                <div class="dev-prompt">"This vision thing is proving too complicated, let's scrap the vision function..."</div>
+                <p class="dev-solution"><strong>Solution:</strong> Pivoted to a pure Text-Based RAG system. This focused the project on data accuracy and logical querying, which are higher-value skills for backend engineering roles.</p>
             </div>
 
         </div>
@@ -101,24 +101,24 @@
             <div class="timeline-node">
                 <div class="timeline-dot"></div>
                 <div class="timeline-content">
-                    <h3 class="timeline-title">Iterative Debugging</h3>
-                    <p class="timeline-desc">When the Vercel deployment failed, we didn't rewrite the whole code. We isolated the issue (Build Logs vs. Function Logs) and confirmed success by verifying the "Functions" tab appeared in the deployment summary before moving on.</p>
+                    <h3 class="timeline-title">Structured Data Engineering</h3>
+                    <p class="timeline-desc">Instead of relying on the LLM to "know" facts, we shifted to a "Grounding" strategy. By maintaining a clean <code>data.json</code> schema, we ensure the AI's answers are always factually correct regarding price and specs.</p>
                 </div>
             </div>
 
             <div class="timeline-node">
                 <div class="timeline-dot"></div>
                 <div class="timeline-content">
-                    <h3 class="timeline-title">Visual Prototyping</h3>
-                    <p class="timeline-desc">Instead of guessing shapes, we used an SVG converter tool to try specific silhouettes. When that didn't fit the aesthetic, we quickly pivoted to a pure CSS solution to match the "Dark Theme" vibe perfectly.</p>
+                    <h3 class="timeline-title">Debugging via Logs</h3>
+                    <p class="timeline-desc">Used Vercel's Realtime Logs to diagnose API failures. This allowed us to distinguish between "Network Errors," "Authentication Errors," and "Runtime Crashes," significantly speeding up the debugging loop.</p>
                 </div>
             </div>
 
             <div class="timeline-node">
                 <div class="timeline-dot"></div>
                 <div class="timeline-content">
-                    <h3 class="timeline-title">Security-First Architecture</h3>
-                    <p class="timeline-desc">Recognized that exposing API keys on a static GitHub Pages site is a security risk. Implemented a "Serverless Proxy" pattern using Vercel Functions to keep secrets secure on the backend while keeping the frontend lightweight.</p>
+                    <h3 class="timeline-title">Fail-Fast Mentality</h3>
+                    <p class="timeline-desc">When the Vision API integration proved unstable, we quickly evaluated the ROI and pivoted to a Text-RAG system. This ensured the core portfolio value (backend logic) wasn't compromised by a flaky 3rd party dependency.</p>
                 </div>
             </div>
         </div>
