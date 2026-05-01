@@ -90,7 +90,7 @@
                     <span class="dev-card-badge">Prompting</span>
                 </div>
                 <p class="dev-challenge">Challenge: The AI was using robotic labels like "PIVOT:" in its responses, breaking the user immersion.</p>
-                <div class="dev-prompt">"Adjust the prompting so that it does write 'acknowledge' etc and speaks in a natural, casual tone."</div>
+                <div class="dev-prompt">"Adjust the prompting so that it doesn't write 'acknowledge' etc and speaks in a natural, casual tone."</div>
                 <p class="dev-solution"><strong>Solution:</strong> Refined the System Prompt to enforce a "Natural Logic." The AI is instructed to follow the logic steps *silently* and output only conversational text, resulting in a helpful salesperson tone rather than a robotic flowchart.</p>
             </div>
 
@@ -169,7 +169,7 @@
                     <span class="dev-card-title">Logic Isolation</span>
                     <span class="dev-card-badge">Architecture</span>
                 </div>
-                <div class="dev-prompt">"Can we restrict that new logic to this specific question type... like a logic tree, if [question about outside shoe] then [logic]. Then we can avoid contaminating the other types of questions."</div>
+                <div class="dev-prompt">"Can we restrict that new logic [for questions about competing brands] to this specific question type... like a logic tree, if [question about outside shoe] then [logic]. Then we can avoid contaminating the other types of questions."</div>
                 <p class="dev-solution"><strong>Analysis:</strong> I recognized that a global prompt change would hurt existing functionality. I proposed a conditional logic flow (Logic Tree) to isolate the risk. This is a senior-level architectural decision that prevents "feature creep" from breaking core features.</p>
             </div>
 
