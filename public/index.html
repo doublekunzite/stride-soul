@@ -5,12 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Stride & Soul - Premium Running Shoes</title>
     <link rel="stylesheet" href="style.css">
-    <!-- Favicon Link -->
+    <!-- Favicon (Root folder) -->
     <link rel="icon" type="image/png" href="/favicon.png">
 </head>
 <body>
 
-    <!-- Background Blobs (Lava Lamp Style) -->
+    <!-- Background Blobs -->
     <div class="blob-container">
         <div class="blob blob-1"></div>
         <div class="blob blob-2"></div>
@@ -33,25 +33,25 @@
         <a href="#shop" class="btn-primary">Shop New Arrivals</a>
     </section>
 
-    <!-- NEW: Nature Photo Banner -->
+    <!-- Nature Photo Banner (Root folder) -->
     <section class="nature-banner">
         <div class="banner-overlay"></div>
     </section>
 
-    <!-- Product Section (8 Items) -->
+    <!-- Product Section -->
     <section class="product-section" id="shop">
         <h2>Featured Collection</h2>
         <div class="product-grid">
             
             <!-- Hoka -->
             <div class="product-card">
-                <div class="product-image" style="background-image: url('1.png');"></div>
+                <div class="product-image" style="background-image: url('images/1.png');"></div>
                 <div class="brand">Hoka</div>
                 <h3>Clifton 9</h3>
                 <div class="price">$145.00</div>
             </div>
             <div class="product-card">
-                <div class="product-image" style="background-image: url('2.png');"></div>
+                <div class="product-image" style="background-image: url('images/2.png');"></div>
                 <div class="brand">Hoka</div>
                 <h3>Mach 6</h3>
                 <div class="price">$140.00</div>
@@ -59,13 +59,13 @@
 
             <!-- Li-Ning -->
             <div class="product-card">
-                <div class="product-image" style="background-image: url('3.png');"></div>
+                <div class="product-image" style="background-image: url('images/3.png');"></div>
                 <div class="brand">Li-Ning</div>
                 <h3>Challenger 5</h3>
                 <div class="price">$160.00</div>
             </div>
             <div class="product-card">
-                <div class="product-image" style="background-image: url('4.png');"></div>
+                <div class="product-image" style="background-image: url('images/4.png');"></div>
                 <div class="brand">Li-Ning</div>
                 <h3>Arc Ace</h3>
                 <div class="price">$130.00</div>
@@ -73,13 +73,13 @@
 
             <!-- Asics -->
             <div class="product-card">
-                <div class="product-image" style="background-image: url('5.png');"></div>
+                <div class="product-image" style="background-image: url('images/5.png');"></div>
                 <div class="brand">Asics</div>
                 <h3>Gel-Kayano 30</h3>
                 <div class="price">$160.00</div>
             </div>
             <div class="product-card">
-                <div class="product-image" style="background-image: url('6.png');"></div>
+                <div class="product-image" style="background-image: url('images/6.png');"></div>
                 <div class="brand">Asics</div>
                 <h3>Novablast 4</h3>
                 <div class="price">$140.00</div>
@@ -87,13 +87,13 @@
 
             <!-- Brooks -->
             <div class="product-card">
-                <div class="product-image" style="background-image: url('7.png');"></div>
+                <div class="product-image" style="background-image: url('images/7.png');"></div>
                 <div class="brand">Brooks</div>
                 <h3>Ghost 15</h3>
                 <div class="price">$140.00</div>
             </div>
             <div class="product-card">
-                <div class="product-image" style="background-image: url('8.png');"></div>
+                <div class="product-image" style="background-image: url('images/8.png');"></div>
                 <div class="brand">Brooks</div>
                 <h3>Adrenaline GTS 23</h3>
                 <div class="price">$140.00</div>
@@ -125,7 +125,6 @@
             <div class="message bot-msg">Hello! I'm your AI running coach. Ask me anything about our shoes!</div>
         </div>
 
-        <!-- Sample Questions -->
         <div class="sample-questions" id="sample-area">
             <button class="sample-btn" onclick="askSample('Which shoe is the lightest?')">Lightest Shoe</button>
             <button class="sample-btn" onclick="askSample('I have flat feet, what do you recommend?')">Flat feet advice</button>
@@ -206,7 +205,6 @@
                     })
                 });
 
-                // Check for HTTP errors
                 if (!response.ok) {
                     const errorData = await response.json();
                     throw new Error(errorData.error || `Server Error: ${response.status}`);
