@@ -515,11 +515,11 @@ nav a:hover { color: #fff; }
 
 /* --- Nature Photo Banner --- */
 .nature-banner {
-    /* Point directly to the file in the public folder */
-    background-image: url('banner.jpg'); 
+    /* Replace 'images/banner.jpg' with your actual file path */
+    background-image: url('banner.jpg');
     background-size: cover;
     background-position: center;
-    background-attachment: fixed; 
+    background-attachment: fixed; /* Parallax effect for Desktop */
     height: 450px;
     width: 100%;
     position: relative;
@@ -533,12 +533,19 @@ nav a:hover { color: #fff; }
 .banner-overlay {
     position: absolute;
     top: 0; left: 0; right: 0; bottom: 0;
+    /* Desktop Overlay: Darker for contrast */
     background: linear-gradient(to bottom, rgba(18,18,18,0.3), rgba(18,18,18,0.8));
 }
 
+/* Responsive adjustment for mobile */
 @media (max-width: 768px) {
     .nature-banner {
         height: 300px;
-        background-attachment: scroll;
+        background-attachment: scroll; /* Mobile standard scroll */
+    }
+    
+    /* MOBILE FIX: Lighten the overlay to remove desaturation */
+    .banner-overlay {
+        background: linear-gradient(to bottom, rgba(18,18,18,0.1), rgba(18,18,18,0.4);
     }
 }
