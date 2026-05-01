@@ -39,7 +39,7 @@
         .timeline-title { font-size: 1.1rem; color: #fff; margin-bottom: 8px; }
         .timeline-desc { font-size: 0.9rem; color: #aaa; line-height: 1.6; }
     </style>
-	    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="icon" type="image/png" href="/favicon.png">
 
 </head>
 <body>
@@ -140,7 +140,38 @@
                 <p class="dev-solution"><strong>Solution:</strong> Identified that <code>import data from '../data.json'</code> fails in the specific Vercel runtime environment. Hardcoded the data object directly into the function file to guarantee availability.</p>
             </div>
 
-          
+        </div>
+
+        <!-- SECTION 3: SAMPLE PROMPTS -->
+        <h2 class="section-title">Sample Prompts</h2>
+        <div class="dev-grid">
+
+            <div class="dev-card">
+                <div class="dev-card-header">
+                    <span class="dev-card-title">Strategic Pivoting</span>
+                    <span class="dev-card-badge">Workflow</span>
+                </div>
+                <div class="dev-prompt">"This vision thing is proving too complicated, let's scrap the vision function and move on to one of the other projects."</div>
+                <p class="dev-solution"><strong>Analysis:</strong> I realized the Vision API integration was becoming a time sink with diminishing returns. Instead of forcing a broken feature, I made the strategic decision to pivot to a text-based RAG system. This ensured the portfolio focused on stable, high-quality backend logic rather than flaky third-party dependencies.</p>
+            </div>
+
+            <div class="dev-card">
+                <div class="dev-card-header">
+                    <span class="dev-card-title">Hallucination Detection</span>
+                    <span class="dev-card-badge">Debugging</span>
+                </div>
+                <div class="dev-prompt">"Is it possible that you're hallucinating these URLs? LLMs often struggle with URLs... if there's a way for me to provide you with the valid URL for these models that might work better, right?"</div>
+                <p class="dev-solution"><strong>Analysis:</strong> I identified a specific weakness in LLMs (fabricating endpoints) and proposed a verification workflow. Instead of blindly trusting the output, I changed my strategy to provide verified data, turning a technical failure into a successful manual override.</p>
+            </div>
+
+            <div class="dev-card">
+                <div class="dev-card-header">
+                    <span class="dev-card-title">Logic Isolation</span>
+                    <span class="dev-card-badge">Architecture</span>
+                </div>
+                <div class="dev-prompt">"Can we restrict that new logic to this specific question type... like a logic tree, if [question about outside shoe] then [logic]. Then we can avoid contaminating the other types of questions."</div>
+                <p class="dev-solution"><strong>Analysis:</strong> I recognized that a global prompt change would hurt existing functionality. I proposed a conditional logic flow (Logic Tree) to isolate the risk. This is a senior-level architectural decision that prevents "feature creep" from breaking core features.</p>
+            </div>
 
         </div>
 
@@ -152,7 +183,7 @@
                 <div class="timeline-dot"></div>
                 <div class="timeline-content">
                     <h3 class="timeline-title">Prompt Engineering</h3>
-                    <p class="timeline-desc">Rather than just asking the AI to implement a solution or a new feature, I tell it to hold off making changes to the code and first give me some options for implementation. I give detailed, descriptive prompts about exactly what I want so the AI does as little guessing as possible. Alternatively, sometimes I give the AI leeway to be "creative" or help me brainstorm ideas.</p>
+                    <p class="timeline-desc">Rather than just asking the AI to implement a solution, I often tell it to hold off making changes and first give me options. I use detailed, descriptive prompts to minimize guessing, but I also know when to give the AI leeway to be "creative" during brainstorming phases.</p>
                 </div>
             </div>
 
@@ -168,7 +199,7 @@
                 <div class="timeline-dot"></div>
                 <div class="timeline-content">
                     <h3 class="timeline-title">Creative Problem Solving</h3>
-                    <p class="timeline-desc">I help guide the AI through its blind spots and help it identify problems. For example, I know LLMs struggle with hallucination when providing URLs, so rather than have the LLM retrieve a URL, I'll have it put a placeholder in the code and retrieve the correct URL myself.</p>
+                    <p class="timeline-desc">I actively guide the AI through its blind spots. For example, knowing LLMs struggle with hallucination when providing URLs, I'll have the AI put a placeholder in the code and retrieve the correct URL myself, effectively manual-fixing the "last mile" of the code.</p>
                 </div>
             </div>
         </div>
