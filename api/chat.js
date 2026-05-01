@@ -76,7 +76,7 @@ function detectIntent(userMessage) {
 
 // --- LOGIC TREE: Response Generation ---
 
-// HANDLER 1: Competitor Logic (The complex one)
+// HANDLER 1: Competitor Logic
 async function handleCompetitorQuestion(userMessage) {
   const msg = userMessage.toLowerCase();
   
@@ -97,6 +97,25 @@ async function handleCompetitorQuestion(userMessage) {
     context = `User wants a recommendation similar to a popular model.
     OUR INVENTORY: ${inventory.map(s => `${s.name} (${s.type})`).join(", ")}.`;
   }
+
+  const systemPrompt = {
+    role: 'system',
+    content: `You are a helpful, casual running shoe expert.
+
+    INSTRUCTIONS:
+    Answer the user's question using natural, conversational language. 
+    Do NOT use labels like "ACKNOWLEDGE" or "PIVOT". 
+    Instead, follow this flow silently:
+    1. Briefly describe the shoe they asked about (positive tone).
+    2. Mention naturally that it's not in stock right now.
+    3. Recommend the closest match from OUR INVENTORY and explain why it's a good alternative.
+    
+    DATA:
+    ${context}`
+  };
+
+  return await callDeepSeek([systemPrompt, { role: 'user', content: userMessage }]);
+}
 
   const systemPrompt = {
     role: 'system',
