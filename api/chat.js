@@ -1,91 +1,19 @@
 // api/chat.js
 
-// --- DATA SOURCE (Embedded for stability) ---
-// We moved the data inside the file to avoid Vercel path issues.
+// --- DATA SOURCE (Hardcoded for Vercel Stability) ---
+// We put the data directly here to avoid "Module not found" or import crashes.
 const shoes = [
-  {
-    "id": 1,
-    "name": "Hoka Clifton 9",
-    "brand": "Hoka",
-    "price": 145,
-    "weight_grams": 248,
-    "type": "Neutral",
-    "cushion": "High",
-    "description": "A highly cushioned daily trainer that delivers a soft, balanced ride for easy miles and long runs."
-  },
-  {
-    "id": 2,
-    "name": "Hoka Mach 6",
-    "brand": "Hoka",
-    "price": 140,
-    "weight_grams": 232,
-    "type": "Neutral",
-    "cushion": "Responsive",
-    "description": "A responsive, low-profile neutral trainer built for tempo runs and faster daily efforts."
-  },
-  {
-    "id": 3,
-    "name": "Li-Ning Challenger 5",
-    "brand": "Li-Ning",
-    "price": 160,
-    "weight_grams": 210,
-    "type": "Racing",
-    "cushion": "High",
-    "description": "An elite carbon-plated racing shoe designed for speed with Boom foam technology."
-  },
-  {
-    "id": 4,
-    "name": "Li-Ning Arc Ace",
-    "brand": "Li-Ning",
-    "price": 130,
-    "weight_grams": 280,
-    "type": "Stability",
-    "cushion": "Medium",
-    "description": "A stability-oriented shoe built on Li-Ning's Arc cushion platform."
-  },
-  {
-    "id": 5,
-    "name": "Asics Gel-Kayano 30",
-    "brand": "Asics",
-    "price": 160,
-    "weight_grams": 303,
-    "type": "Stability",
-    "cushion": "High",
-    "description": "The flagship stability trainer renowned for its plush, supportive ride."
-  },
-  {
-    "id": 6,
-    "name": "Asics Novablast 4",
-    "brand": "Asics",
-    "price": 140,
-    "weight_grams": 260,
-    "type": "Neutral",
-    "cushion": "High",
-    "description": "A bouncy, energetic neutral daily trainer with a trampoline-inspired midsole."
-  },
-  {
-    "id": 7,
-    "name": "Brooks Ghost 15",
-    "brand": "Brooks",
-    "price": 140,
-    "weight_grams": 260,
-    "type": "Neutral",
-    "cushion": "Medium",
-    "description": "A dependable, no-fuss neutral trainer and an ideal entry point for new runners."
-  },
-  {
-    "id": 8,
-    "name": "Brooks Adrenaline GTS 23",
-    "brand": "Brooks",
-    "price": 140,
-    "weight_grams": 286,
-    "type": "Stability",
-    "cushion": "Medium",
-    "description": "A classic stability shoe that pairs GuideRails support with a balanced ride."
-  }
+  { id: 1, name: "Hoka Clifton 9", brand: "Hoka", price: 145, weight_grams: 248, type: "Neutral", cushion: "High", description: "A highly cushioned daily trainer that delivers a soft, balanced ride for easy miles and long runs." },
+  { id: 2, name: "Hoka Mach 6", brand: "Hoka", price: 140, weight_grams: 232, type: "Neutral", cushion: "Responsive", description: "A responsive, low-profile neutral trainer built for tempo runs and faster daily efforts." },
+  { id: 3, name: "Li-Ning Challenger 5", brand: "Li-Ning", price: 160, weight_grams: 210, type: "Racing", cushion: "High", description: "An elite carbon-plated racing shoe designed for speed with Boom foam technology." },
+  { id: 4, name: "Li-Ning Arc Ace", brand: "Li-Ning", price: 130, weight_grams: 280, type: "Stability", cushion: "Medium", description: "A stability-oriented shoe built on Li-Ning's Arc cushion platform." },
+  { id: 5, name: "Asics Gel-Kayano 30", brand: "Asics", price: 160, weight_grams: 303, type: "Stability", cushion: "High", description: "The flagship stability trainer renowned for its plush, supportive ride." },
+  { id: 6, name: "Asics Novablast 4", brand: "Asics", price: 140, weight_grams: 260, type: "Neutral", cushion: "High", description: "A bouncy, energetic neutral daily trainer with a trampoline-inspired midsole." },
+  { id: 7, name: "Brooks Ghost 15", brand: "Brooks", price: 140, weight_grams: 260, type: "Neutral", cushion: "Medium", description: "A dependable, no-fuss neutral trainer and an ideal entry point for new runners." },
+  { id: 8, name: "Brooks Adrenaline GTS 23", brand: "Brooks", price: 140, weight_grams: 286, type: "Stability", cushion: "Medium", description: "A classic stability shoe that pairs GuideRails support with a balanced ride." }
 ];
 
-// --- RAG LOGIC: The "Retrieval" Step ---
+// --- RAG LOGIC ---
 function retrieveContext(userMessage) {
   let context = "";
   const msg = userMessage.toLowerCase();
@@ -123,7 +51,7 @@ function retrieveContext(userMessage) {
     const results = shoes.filter(s => s.brand === "Li-Ning");
     context = "Here are the Li-Ning models in stock:\n\n" + results.map(formatShoe).join("\n\n");
   }
-  // 4. Default: Just names and prices
+  // 4. Default
   else {
     context = "Here is our current inventory summary:\n" + 
       shoes.map(s => `- ${s.name} ($${s.price})`).join("\n");
@@ -132,7 +60,7 @@ function retrieveContext(userMessage) {
   return context;
 }
 
-// --- HELPER: Call DeepSeek (Text) ---
+// --- HELPER: Call DeepSeek ---
 async function callDeepSeek(messages) {
   const apiKey = process.env.DEEPSEEK_API_KEY;
   const response = await fetch('https://api.deepseek.com/chat/completions', {
@@ -158,11 +86,11 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { messages } = req.body;
-  const lastMessage = messages[messages.length - 1];
-  const userText = lastMessage.content;
-
   try {
+    const { messages } = req.body;
+    const lastMessage = messages[messages.length - 1];
+    const userText = lastMessage.content;
+
     // RAG STEP 1: Retrieve Context
     const contextData = retrieveContext(userText);
 
