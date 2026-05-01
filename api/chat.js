@@ -28,96 +28,6 @@ const marketKnowledge = [
   { name: "Nike Pegasus 41", type: "Neutral", description: "Dependable neutral workhorse for everyday training." }
 ];
 
-// --- RAG LOGIC ---
-function retrieveContext(userMessage) {
-  let context = "";
-  const msg = userMessage.toLowerCase();
-
-  // Helpers
-  const formatInventory = (s) => 
-    `Model: ${s.name}\nBrand: ${s.brand}\nPrice: $${s.price}\nWeight: ${s.weight_grams}g\nType: ${s.type}\nDetails: ${s.description}`;
-  
-  const formatKnowledge = (s) => 
-    `Model: ${s.name} (${s.type})\nDetails: ${s.description}`;
-
-  const formatDescriptionOnly = (s) => 
-    `Model: ${s.name} (${s.type})\nDetails: ${s.description}`;
-
-  // 1. Intent: Specs (Weight/Price)
-  if (msg.includes("lightest") || msg.includes("heaviest") || msg.includes("weight") || msg.includes("gram") || msg.includes("spec")) {
-    const sorted = [...inventory].sort((a, b) => a.weight_grams - b.weight_grams);
-    const lightest = sorted.slice(0, 3);
-    const heaviest = sorted.slice(-3).reverse();
-    context = "User wants TECHNICAL SPECS. Here is the data:\n\n" + 
-      "LIGHTEST:\n" + lightest.map(formatInventory).join("\n\n") + 
-      "\n\nHEAVIEST:\n" + heaviest.map(formatInventory).join("\n\n");
-  } 
-  // 2. Intent: Budget
-  else if (msg.includes("$") || msg.includes("price") || msg.includes("budget") || msg.includes("afford") || msg.includes("cheap")) {
-    const sorted = [...inventory].sort((a, b) => a.price - b.price);
-    context = "User cares about PRICE. Sort by price:\n\n" + sorted.map(formatInventory).join("\n\n");
-  }
-  // 3. Intent: Stability / Flat Feet
-  else if (msg.includes("stability") || msg.includes("flat feet") || msg.includes("overpronat")) {
-    const results = inventory.filter(s => s.type === "Stability");
-    context = "User needs STABILITY support. Focus on description:\n\n" + results.map(formatDescriptionOnly).join("\n\n");
-  }
-  
-  // 4. NEW: Competitor Mention / Similar / Alternative
-  // Detects if user mentions Nike, Adidas, etc., OR words like "similar", "alternative", "vs".
-  else if (
-    msg.includes("nike") || msg.includes("adidas") || msg.includes("saucony") || msg.includes("new balance") || 
-    msg.includes("similar") || msg.includes("alternative") || msg.includes("equivalent") || msg.includes("like the")
-  ) {
-    // A. Find the specific competitor shoe mentioned (if any)
-    const foundKnowledge = marketKnowledge.find(s => msg.includes(s.name.toLowerCase()) || msg.includes(s.name.toLowerCase().split(" ")[0])); // Match "Pegasus" or "Nike Pegasus"
-    
-    // B. Get our inventory to offer alternatives
-    const ourStock = inventory.map(s => `- ${s.name} ($${s.price})`).join("\n");
-
-    if (foundKnowledge) {
-      context = `User is asking about a competitor shoe: ${foundKnowledge.name}.
-      
-      KNOWLEDGE ABOUT COMPETITOR:
-      ${formatKnowledge(foundKnowledge)}
-      
-      OUR STORE INVENTORY (Recommend from this list):
-      ${ourStock}`;
-    } else {
-      // User asked for "similar" or "alternative" but didn't name a specific shoe
-      context = `User is looking for recommendations similar to a popular model.
-      
-      OUR STORE INVENTORY:
-      ${inventory.map(formatDescriptionOnly).join("\n\n")}`;
-    }
-  }
-
-  // 5. Brand Mention (Internal)
-  else if (msg.includes("hoka")) {
-    const results = inventory.filter(s => s.brand === "Hoka");
-    context = "Hoka models in stock:\n\n" + results.map(formatInventory).join("\n\n");
-  }
-  else if (msg.includes("asics")) {
-    const results = inventory.filter(s => s.brand === "Asics");
-    context = "Asics models in stock:\n\n" + results.map(formatInventory).join("\n\n");
-  }
-  else if (msg.includes("brooks")) {
-    const results = inventory.filter(s => s.brand === "Brooks");
-    context = "Brooks models in stock:\n\n" + results.map(formatInventory).join("\n\n");
-  }
-  else if (msg.includes("li-ning") || msg.includes("lining")) {
-    const results = inventory.filter(s => s.brand === "Li-Ning");
-    context = "Li-Ning models in stock:\n\n" + results.map(formatInventory).join("\n\n");
-  }
-  // 6. Default
-  else {
-    context = "Here is a summary of our inventory:\n" + 
-      inventory.map(s => `- ${s.name} ($${s.price})`).join("\n");
-  }
-
-  return context;
-}
-
 // --- HELPER: Call DeepSeek ---
 async function callDeepSeek(messages) {
   const apiKey = process.env.DEEPSEEK_API_KEY;
@@ -130,12 +40,115 @@ async function callDeepSeek(messages) {
     body: JSON.stringify({
       model: 'deepseek-chat', 
       messages: messages,
-      temperature: 0.5 // Balanced temp for natural comparison
+      temperature: 0.5 
     })
   });
   const data = await response.json();
   if (!response.ok) throw new Error(data.error?.message);
   return data.choices[0].message.content;
+}
+
+// --- LOGIC TREE: Intent Detection ---
+function detectIntent(userMessage) {
+  const msg = userMessage.toLowerCase();
+
+  // DETECTOR: Is the user asking about a competitor?
+  // We check if any market shoe name is in the message
+  const isCompetitorMention = marketKnowledge.some(s => 
+    msg.includes(s.name.toLowerCase()) || msg.includes(s.name.toLowerCase().split(" ")[1]) // matches "Pegasus" or "Nike Pegasus"
+  );
+
+  // DETECTOR: Is the user asking for a comparison or alternative?
+  const isComparison = msg.includes("similar") || msg.includes("alternative") || msg.includes("like the") || msg.includes("equivalent");
+
+  if (isCompetitorMention || isComparison) {
+    return "COMPETITOR_QUESTION";
+  }
+
+  // Standard Inventory Intents
+  if (msg.includes("lightest") || msg.includes("heaviest") || msg.includes("weight")) return "SPECS";
+  if (msg.includes("$") || msg.includes("price") || msg.includes("budget")) return "BUDGET";
+  if (msg.includes("stability") || msg.includes("flat feet")) return "STABILITY";
+  
+  // Default
+  return "INVENTORY";
+}
+
+// --- LOGIC TREE: Response Generation ---
+
+// HANDLER 1: Competitor Logic (The complex one)
+async function handleCompetitorQuestion(userMessage) {
+  const msg = userMessage.toLowerCase();
+  
+  // 1. Find the specific competitor shoe mentioned
+  const foundShoe = marketKnowledge.find(s => 
+    msg.includes(s.name.toLowerCase()) || msg.includes(s.name.toLowerCase().split(" ")[1])
+  );
+
+  // 2. Construct the specific "Competitor Prompt"
+  let context = "";
+  
+  if (foundShoe) {
+    context = `You asked about the ${foundShoe.name}. 
+    KNOWLEDGE: ${foundShoe.description}.
+    STATUS: We do NOT sell this shoe.
+    OUR INVENTORY: ${inventory.map(s => s.name).join(", ")}.`;
+  } else {
+    context = `User wants a recommendation similar to a popular model.
+    OUR INVENTORY: ${inventory.map(s => `${s.name} (${s.type})`).join(", ")}.`;
+  }
+
+  const systemPrompt = {
+    role: 'system',
+    content: `You are a helpful expert. Follow this EXACT 3-STEP LOGIC:
+    1. ACKNOWLEDGE: Describe the shoe the user asked about using the KNOWLEDGE provided.
+    2. CLARIFY: State clearly that "We don't currently stock the [Shoe Name]..."
+    3. PIVOT: "...but based on your interest, I recommend the [Our Shoe Name]." Pick the best match from OUR INVENTORY.
+    
+    DATA:
+    ${context}`
+  };
+
+  return await callDeepSeek([systemPrompt, { role: 'user', content: userMessage }]);
+}
+
+// HANDLER 2: Inventory Logic (The standard one)
+async function handleInventoryQuestion(intent, userMessage) {
+  const msg = userMessage.toLowerCase();
+  let contextData = "";
+
+  // Helper formatting
+  const formatFull = (s) => `Model: ${s.name}\nBrand: ${s.brand}\nPrice: $${s.price}\nWeight: ${s.weight_grams}g\nType: ${s.type}\nDetails: ${s.description}`;
+  const formatDesc = (s) => `Model: ${s.name}\nType: ${s.type}\nDetails: ${s.description}`;
+
+  // Context Retrieval
+  if (intent === "SPECS") {
+    const sorted = [...inventory].sort((a, b) => a.weight_grams - b.weight_grams);
+    contextData = "User wants SPECS. Lightest:\n" + sorted.slice(0, 3).map(formatFull).join("\n\n");
+  } else if (intent === "BUDGET") {
+    const sorted = [...inventory].sort((a, b) => a.price - b.price);
+    contextData = "User cares about PRICE. Cheapest first:\n" + sorted.map(formatFull).join("\n\n");
+  } else if (intent === "STABILITY") {
+    const results = inventory.filter(s => s.type === "Stability");
+    contextData = "User needs STABILITY:\n" + results.map(formatDesc).join("\n\n");
+  } else {
+    // Default
+    contextData = "Our Inventory:\n" + inventory.map(s => `- ${s.name} ($${s.price})`).join("\n");
+  }
+
+  const systemPrompt = {
+    role: 'system',
+    content: `You are a salesperson for "Stride & Soul".
+    RULES:
+    1. Use ONLY the data below.
+    2. Be concise.
+    3. Do NOT mention price/weight unless specifically asked (Intent: ${intent}).
+    
+    DATA:
+    ${contextData}`
+  };
+
+  return await callDeepSeek([systemPrompt, { role: 'user', content: userMessage }]);
 }
 
 // --- MAIN HANDLER ---
@@ -149,28 +162,19 @@ export default async function handler(req, res) {
     const lastMessage = messages[messages.length - 1];
     const userText = lastMessage.content;
 
-    const contextData = retrieveContext(userText);
+    // 1. DETECT INTENT
+    const intent = detectIntent(userText);
+    console.log("Detected Intent:", intent);
 
-    // SMART PROMPT
-    const systemPrompt = {
-      role: 'system',
-      content: `You are a helpful, expert running shoe salesperson for "Stride & Soul".
-
-      CRITICAL RULES:
-      1. DATA SEPARATION:
-         - If the data says "KNOWLEDGE ABOUT COMPETITOR", acknowledge that shoe's qualities honestly.
-         - You must then RECOMMEND the closest match from "OUR STORE INVENTORY".
-      2. SALES GOAL: Your goal is to sell shoes from "OUR STORE INVENTORY". Use the competitor info to bridge the conversation to our products.
-      3. GROUNDING: Do not make up facts. Use the provided data.
-      4. NATURAL TONE: Do not list specs (weight/price) unless asked. Focus on "feel" and "ride".
-      
-      DATA:
-      ${contextData}`
-    };
-
-    const responseMessages = [systemPrompt, ...messages];
-    
-    const reply = await callDeepSeek(responseMessages);
+    // 2. ROUTE TO CORRECT HANDLER
+    let reply;
+    if (intent === "COMPETITOR_QUESTION") {
+      console.log("Routing to Competitor Handler...");
+      reply = await handleCompetitorQuestion(userText);
+    } else {
+      console.log("Routing to Inventory Handler...");
+      reply = await handleInventoryQuestion(intent, userText);
+    }
 
     res.status(200).json({ reply: reply });
 
