@@ -39,6 +39,8 @@
         .timeline-title { font-size: 1.1rem; color: #fff; margin-bottom: 8px; }
         .timeline-desc { font-size: 0.9rem; color: #aaa; line-height: 1.6; }
     </style>
+	    <link rel="icon" type="image/png" href="/favicon.png">
+
 </head>
 <body>
 
@@ -150,7 +152,7 @@
                 <div class="timeline-dot"></div>
                 <div class="timeline-content">
                     <h3 class="timeline-title">Prompt Engineering</h3>
-                    <p class="timeline-desc">Rather than just asking the AI to implement a solution or a new feature, I tell it to hold off making changes to the code and first give me some options for implementation.</p>
+                    <p class="timeline-desc">Rather than just asking the AI to implement a solution or a new feature, I tell it to hold off making changes to the code and first give me some options for implementation. I give detailed, descriptive prompts about exactly what I want so the AI does as little guessing as possible. Alternatively, sometimes I give the AI leeway to be creative or help me brainstorm ideas.</p>
                 </div>
             </div>
 
@@ -158,7 +160,7 @@
                 <div class="timeline-dot"></div>
                 <div class="timeline-content">
                     <h3 class="timeline-title">Structured Data Engineering</h3>
-                    <p class="timeline-desc">Instead of relying on the LLM to "know" facts, we shifted to a "Grounding" strategy. By maintaining a clean JSON schema (a backend data file for the chatbot), we ensure the AI's answers are always factually correct regarding price and specs.</p>
+                    <p class="timeline-desc">Instead of relying on the chatbot to "know" facts, I used a "Grounding" strategy. By maintaining a clean JSON schema (a backend data file for the chatbot), we ensure the AI's answers are always factually correct regarding price and specs.</p>
                 </div>
             </div>
 
@@ -166,7 +168,7 @@
                 <div class="timeline-dot"></div>
                 <div class="timeline-content">
                     <h3 class="timeline-title">Creative Problem Solving</h3>
-                    <p class="timeline-desc">A prompt I used while building the chatbot: "as you can see in this screenshot the chatbot is confused about the store's inventory and is recommending shoes that are not in the inventory... is this going to be an ongoing issue from including the other market data, or are there possible workarounds here? what is going wrong with the chatbot's internal logic?"</p>
+                    <p class="timeline-desc">I help guide the AI through its blind spots and help it identify problems. For example, I know LLMs struggle with hallucination when providing URLs, so rather than have the LLM retrieve a URL, I'll have it put a placeholder in the code and retrieve the correct URL myself.</p>
                 </div>
             </div>
         </div>
