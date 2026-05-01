@@ -54,22 +54,32 @@
             
             <div class="dev-card">
                 <div class="dev-card-header">
-                    <span class="dev-card-title">RAG Implementation</span>
+                    <span class="dev-card-title">Context-Aware RAG</span>
                     <span class="dev-card-badge">Backend</span>
                 </div>
-                <p class="dev-challenge">Challenge: The AI hallucinated shoe specs because it relied on general training data, not store inventory.</p>
-                <div class="dev-prompt">"The bot is confused about both the inventory and IDing incorrectly... we need a separate logic."</div>
-                <p class="dev-solution"><strong>Solution:</strong> Implemented <strong>Retrieval-Augmented Generation (RAG)</strong>. Built a structured JSON dataset of 8 shoes with specific fields (Weight, Type, Price). Created a <code>retrieveContext()</code> function to filter this data before sending it to the LLM.</p>
+                <p class="dev-challenge">Challenge: The bot was reciting shoe weights (e.g., "303g") in inappropriate contexts like general comfort questions.</p>
+                <div class="dev-prompt">"It can mention the weights if asked, but it should behave more naturally... not even mention the price."</div>
+                <p class="dev-solution"><strong>Solution:</strong> Implemented "Intent-Based Retrieval." The system now filters data before sending it to the LLM. If the user asks about "comfort," we strip price/weight data from the context window, forcing the AI to focus purely on descriptive text.</p>
             </div>
 
             <div class="dev-card">
                 <div class="dev-card-header">
-                    <span class="dev-card-title">API Error Handling</span>
+                    <span class="dev-card-title">Market Knowledge Base</span>
+                    <span class="dev-card-badge">Data</span>
+                </div>
+                <p class="dev-challenge">Challenge: The bot was restricted to store inventory and couldn't discuss popular competitor shoes users might ask about.</p>
+                <div class="dev-prompt">"Let's again make it more like an actual sales person... who would certainly be able to discuss other shoes."</div>
+                <p class="dev-solution"><strong>Solution:</strong> Created a secondary <code>marketKnowledge</code> array containing data on top-selling competitor shoes (Nike, Adidas, etc.). The bot uses this to answer general questions but pivots back to store inventory for sales.</p>
+            </div>
+
+            <div class="dev-card">
+                <div class="dev-card-header">
+                    <span class="dev-card-title">Glassmorphism UI</span>
                     <span class="dev-card-badge">Frontend</span>
                 </div>
-                <p class="dev-challenge">Challenge: Chatbot hung indefinitely ("Thinking...") when server errors occurred.</p>
-                <div class="dev-prompt">"The bot hangs indefinitely and doesn't respond... TypeError: Cannot set properties of null."</div>
-                <p class="dev-solution"><strong>Solution:</strong> Added robust <code>try/catch</code> blocks and improved frontend response checking to handle HTTP errors (like 402 Payment Required) gracefully instead of failing silently.</p>
+                <p class="dev-challenge">Challenge: The chat window looked "rudimentary" and flat against the dark background.</p>
+                <div class="dev-prompt">"Can we polish this up... glassy appearance, and something that gives it a bit of 3d texture so it pops?"</div>
+                <p class="dev-solution"><strong>Solution:</strong> Applied CSS <code>backdrop-filter: blur()</code> for a frosted glass effect, layered shadows for 3D depth, and designed a "Tech Stack" badge to professionally display the model version (DeepSeek V4 Flash).</p>
             </div>
 
             <div class="dev-card">
@@ -81,16 +91,6 @@
                 <div class="dev-prompt">"I no longer get the server error, but... the bot hangs indefinitely."</div>
                 <p class="dev-solution"><strong>Solution:</strong> Identified that <code>import data from '../data.json'</code> fails in the specific Vercel runtime environment. Hardcoded the data object directly into the function file to guarantee availability.</p>
             </div>
-            
-            <div class="dev-card">
-                <div class="dev-card-header">
-                    <span class="dev-card-title">Vision Feature Pivot</span>
-                    <span class="dev-card-badge">Strategy</span>
-                </div>
-                <p class="dev-challenge">Challenge: External Vision APIs (HuggingFace, Google Gemini) were unreliable or required complex authentication that failed in the portfolio context.</p>
-                <div class="dev-prompt">"This vision thing is proving too complicated, let's scrap the vision function..."</div>
-                <p class="dev-solution"><strong>Solution:</strong> Pivoted to a pure Text-Based RAG system. This focused the project on data accuracy and logical querying, which are higher-value skills for backend engineering roles.</p>
-            </div>
 
         </div>
 
@@ -101,24 +101,24 @@
             <div class="timeline-node">
                 <div class="timeline-dot"></div>
                 <div class="timeline-content">
-                    <h3 class="timeline-title">Structured Data Engineering</h3>
-                    <p class="timeline-desc">Instead of relying on the LLM to "know" facts, we shifted to a "Grounding" strategy. By maintaining a clean <code>data.json</code> schema, we ensure the AI's answers are always factually correct regarding price and specs.</p>
+                    <h3 class="timeline-title">Persona Engineering</h3>
+                    <p class="timeline-desc">We moved beyond simple system prompts. By defining a strict "Salesperson Persona" and explicitly whitelisting when to show technical specs, we made the AI's tone adaptable to the conversation context.</p>
                 </div>
             </div>
 
             <div class="timeline-node">
                 <div class="timeline-dot"></div>
                 <div class="timeline-content">
-                    <h3 class="timeline-title">Debugging via Logs</h3>
-                    <p class="timeline-desc">Used Vercel's Realtime Logs to diagnose API failures. This allowed us to distinguish between "Network Errors," "Authentication Errors," and "Runtime Crashes," significantly speeding up the debugging loop.</p>
+                    <h3 class="timeline-title">Data Separation</h3>
+                    <p class="timeline-desc">We maintained a clear distinction between <strong>Inventory</strong> (what we sell) and <strong>Knowledge</strong> (what we know). This architecture allows the store to be honest about stock while still being helpful about the broader market.</p>
                 </div>
             </div>
 
             <div class="timeline-node">
                 <div class="timeline-dot"></div>
                 <div class="timeline-content">
-                    <h3 class="timeline-title">Fail-Fast Mentality</h3>
-                    <p class="timeline-desc">When the Vision API integration proved unstable, we quickly evaluated the ROI and pivoted to a Text-RAG system. This ensured the core portfolio value (backend logic) wasn't compromised by a flaky 3rd party dependency.</p>
+                    <h3 class="timeline-title">Iterative UX Polish</h3>
+                    <p class="timeline-desc">Visual updates (Glassmorphism, Tech Badges) were driven by user feedback. This mirrors a real product cycle where functional completeness is followed by aesthetic refinement.</p>
                 </div>
             </div>
         </div>
