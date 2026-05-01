@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Stride & Soul - Premium Running Shoes</title>
     <link rel="stylesheet" href="style.css">
-	<link rel="icon" type="image/png" href="/favicon.png">
-
+    <!-- Favicon Link -->
+    <link rel="icon" type="image/png" href="/favicon.png">
 </head>
 <body>
 
@@ -30,11 +30,11 @@
     <section class="hero">
         <h1>Run Your Story.</h1>
         <p>Premium running shoes from top global brands.</p>
-        <!-- Updated to scroll to the shop section -->
         <a href="#shop" class="btn-primary">Shop New Arrivals</a>
     </section>
-	
-	ection class="nature-banner">
+
+    <!-- NEW: Nature Photo Banner -->
+    <section class="nature-banner">
         <div class="banner-overlay"></div>
     </section>
 
@@ -45,13 +45,13 @@
             
             <!-- Hoka -->
             <div class="product-card">
-                <div class="product-image" style="background-image: url('images/1.png');"></div>
+                <div class="product-image" style="background-image: url('1.png');"></div>
                 <div class="brand">Hoka</div>
                 <h3>Clifton 9</h3>
                 <div class="price">$145.00</div>
             </div>
             <div class="product-card">
-                <div class="product-image" style="background-image: url('images/2.png');"></div>
+                <div class="product-image" style="background-image: url('2.png');"></div>
                 <div class="brand">Hoka</div>
                 <h3>Mach 6</h3>
                 <div class="price">$140.00</div>
@@ -59,13 +59,13 @@
 
             <!-- Li-Ning -->
             <div class="product-card">
-                <div class="product-image" style="background-image: url('images/3.png');"></div>
+                <div class="product-image" style="background-image: url('3.png');"></div>
                 <div class="brand">Li-Ning</div>
                 <h3>Challenger 5</h3>
                 <div class="price">$160.00</div>
             </div>
             <div class="product-card">
-                <div class="product-image" style="background-image: url('images/4.png');"></div>
+                <div class="product-image" style="background-image: url('4.png');"></div>
                 <div class="brand">Li-Ning</div>
                 <h3>Arc Ace</h3>
                 <div class="price">$130.00</div>
@@ -73,13 +73,13 @@
 
             <!-- Asics -->
             <div class="product-card">
-                <div class="product-image" style="background-image: url('images/5.png');"></div>
+                <div class="product-image" style="background-image: url('5.png');"></div>
                 <div class="brand">Asics</div>
                 <h3>Gel-Kayano 30</h3>
                 <div class="price">$160.00</div>
             </div>
             <div class="product-card">
-                <div class="product-image" style="background-image: url('images/6.png');"></div>
+                <div class="product-image" style="background-image: url('6.png');"></div>
                 <div class="brand">Asics</div>
                 <h3>Novablast 4</h3>
                 <div class="price">$140.00</div>
@@ -87,37 +87,34 @@
 
             <!-- Brooks -->
             <div class="product-card">
-                <div class="product-image" style="background-image: url('images/7.png');"></div>
+                <div class="product-image" style="background-image: url('7.png');"></div>
                 <div class="brand">Brooks</div>
                 <h3>Ghost 15</h3>
                 <div class="price">$140.00</div>
             </div>
             <div class="product-card">
-                <div class="product-image" style="background-image: url('images/8.png');"></div>
+                <div class="product-image" style="background-image: url('8.png');"></div>
                 <div class="brand">Brooks</div>
                 <h3>Adrenaline GTS 23</h3>
                 <div class="price">$140.00</div>
             </div>
 
         </div>
-		
-		<!-- ADD THIS DISCLAIMER BELOW THE GRID -->
+
+        <!-- Stock Image Disclaimer -->
         <p class="stock-disclaimer">
             <strong>Note:</strong> Product images used on this site are for demonstration purposes only. They are royalty-free stock images intended to showcase layout and design.
         </p>
-		
-    </section>
-	
-	
 
-        <!-- Chat Widget -->
+    </section>
+
+    <!-- Chat Widget -->
     <div id="chat-widget">
-                <div id="chat-header">
+        <div id="chat-header">
             <div class="title-row">
                 <span>🏃‍♂️ Running Expert</span>
                 <button onclick="toggleChat()" style="background:none; border:none; color:white; cursor:pointer; font-size:22px; opacity:0.8;">&times;</button>
             </div>
-            <!-- New Tech Badge -->
             <div class="tech-badge">
                 <span class="dot"></span>
                 <span>Powered by DeepSeek V4 Flash</span>
@@ -125,12 +122,10 @@
         </div>
         
         <div id="chat-messages">
-            <div class="message bot-msg">Hello! I'm your AI running coach. Ask me anything about running shoes!</div>
+            <div class="message bot-msg">Hello! I'm your AI running coach. Ask me anything about our shoes!</div>
         </div>
 
-       
-
-                <!-- Updated Sample Questions -->
+        <!-- Sample Questions -->
         <div class="sample-questions" id="sample-area">
             <button class="sample-btn" onclick="askSample('Which shoe is the lightest?')">Lightest Shoe</button>
             <button class="sample-btn" onclick="askSample('I have flat feet, what do you recommend?')">Flat feet advice</button>
@@ -139,9 +134,7 @@
         </div>
 
         <div id="chat-input-area">
-            
-                     
-            <input type="text" id="user-input" placeholder="Type a message..." onkeypress="handleEnter(event)" style="flex:1;">
+            <input type="text" id="user-input" placeholder="Type a message..." onkeypress="handleEnter(event)">
             <button id="send-btn" onclick="sendMessage()">➤</button>
         </div>
     </div>
@@ -155,11 +148,6 @@
         const messagesDiv = document.getElementById('chat-messages');
         const userInput = document.getElementById('user-input');
         const sampleArea = document.getElementById('sample-area');
-        const imageInput = document.getElementById('image-input');
-        const imagePreviewContainer = document.getElementById('image-preview-container');
-        const imagePreviewImg = document.getElementById('image-preview');
-
-        let currentImageBase64 = null; // Store the image data
 
         function toggleChat() {
             const isVisible = chatWidget.style.display === 'flex';
@@ -173,25 +161,14 @@
             return formatted;
         }
 
-        function addMessage(text, sender, imageUrl = null) {
+        function addMessage(text, sender) {
             const div = document.createElement('div');
             div.classList.add('message', sender === 'user' ? 'user-msg' : 'bot-msg');
             
-            // If there is an image, append it first
-            if (imageUrl) {
-                const img = document.createElement('img');
-                img.src = imageUrl;
-                img.style.maxWidth = '100%';
-                img.style.borderRadius = '8px';
-                img.style.marginBottom = '5px';
-                div.appendChild(img);
-            }
-
-            // Append text
             if (sender === 'bot') {
-                div.innerHTML += formatBotText(text);
+                div.innerHTML = formatBotText(text);
             } else {
-                div.innerHTML += text; // User text is just text
+                div.textContent = text;
             }
             
             messagesDiv.appendChild(div);
@@ -207,37 +184,14 @@
             sendMessage();
         }
 
-        
-       
-
         async function sendMessage() {
             const text = userInput.value.trim();
-            
-            // Don't send if no text AND no image
-            if (!text && !currentImageBase64) return;
+            if (!text) return;
 
-            // Add user message to UI (with image if present)
-            addMessage(text || "What shoe model is this?", 'user', currentImageBase64);
-            
-            // Construct payload
-            let messageContent;
-            
-            if (currentImageBase64) {
-                // Multimodal format: Array of text + image
-                messageContent = [
-                    { type: 'text', text: text || "What shoe is this?" },
-                    { type: 'image_url', image_url: { url: currentImageBase64 } }
-                ];
-            } else {
-                // Text only format: String
-                messageContent = text;
-            }
-
-            // Clear inputs immediately
+            addMessage(text, 'user');
             userInput.value = '';
-            sampleArea.style.display = 'none';
+            sampleArea.style.display = 'none'; 
 
-            // Loading indicator
             const loadingDiv = document.createElement('div');
             loadingDiv.classList.add('message', 'bot-msg');
             loadingDiv.textContent = 'Thinking...';
@@ -248,15 +202,21 @@
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ 
-                        messages: [{ role: 'user', content: messageContent }] 
+                        messages: [{ role: 'user', content: text }] 
                     })
                 });
+
+                // Check for HTTP errors
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || `Server Error: ${response.status}`);
+                }
 
                 const data = await response.json();
                 loadingDiv.innerHTML = formatBotText(data.reply) || "Sorry, I couldn't process that.";
 
             } catch (error) {
-                loadingDiv.textContent = "Error connecting to server.";
+                loadingDiv.textContent = `Error: ${error.message}`;
                 console.error(error);
             }
         }
