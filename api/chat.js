@@ -1,8 +1,9 @@
 // api/chat.js
 
-// --- DATA SOURCE (Hardcoded for Vercel Stability) ---
-// We put the data directly here to avoid "Module not found" or import crashes.
-const shoes = [
+// --- DATA SOURCE ---
+
+// 1. OUR INVENTORY (What we SELL - has Price & Weight)
+const inventory = [
   { id: 1, name: "Hoka Clifton 9", brand: "Hoka", price: 145, weight_grams: 248, type: "Neutral", cushion: "High", description: "A highly cushioned daily trainer that delivers a soft, balanced ride for easy miles and long runs." },
   { id: 2, name: "Hoka Mach 6", brand: "Hoka", price: 140, weight_grams: 232, type: "Neutral", cushion: "Responsive", description: "A responsive, low-profile neutral trainer built for tempo runs and faster daily efforts." },
   { id: 3, name: "Li-Ning Challenger 5", brand: "Li-Ning", price: 160, weight_grams: 210, type: "Racing", cushion: "High", description: "An elite carbon-plated racing shoe designed for speed with Boom foam technology." },
@@ -13,57 +14,76 @@ const shoes = [
   { id: 8, name: "Brooks Adrenaline GTS 23", brand: "Brooks", price: 140, weight_grams: 286, type: "Stability", cushion: "Medium", description: "A classic stability shoe that pairs GuideRails support with a balanced ride." }
 ];
 
+// 2. MARKET KNOWLEDGE (What we KNOW ABOUT - No price/weight)
+const marketKnowledge = [
+  { name: "Adidas Adizero Evo SL", type: "Performance", description: "A lightweight, plate-free performance trainer with a springy Lightstrike Pro midsole." },
+  { name: "Brooks Ghost 17", type: "Neutral", description: "Award-winning neutral trainer with DNA Loft v3 cushioning, great for beginners." },
+  { name: "Asics Novablast 5", type: "Neutral", description: "Versatile daily trainer with a bouncy midsole, good for building a rotation." },
+  { name: "Nike Vomero Plus", type: "Neutral", description: "Max-cushioned trainer with ZoomX midsole for energetic comfort." },
+  { name: "New Balance Ellipse", type: "Neutral", description: "A 'Goldilocks' trainer blending soft cushioning with performance feel." },
+  { name: "Saucony Ride 19", type: "Neutral", description: "Well-balanced trainer with an 8mm drop for smooth transitions." },
+  { name: "Hoka Bondi 9", type: "Neutral", description: "Max-cushioned road shoe, great for recovery days." },
+  { name: "Brooks Glycerin 23", type: "Neutral", description: "Popular cushioned shoe ideal for long walks and recovery sessions." },
+  { name: "Asics Gel-Kayano 32", type: "Stability", description: "Latest version of the gold-standard stability trainer." },
+  { name: "Nike Pegasus 41", type: "Neutral", description: "Dependable neutral workhorse for everyday training." }
+];
+
 // --- RAG LOGIC ---
 function retrieveContext(userMessage) {
   let context = "";
   const msg = userMessage.toLowerCase();
 
-  // Helper to format a shoe object
-  const formatShoe = (s) => 
+  // Helpers
+  const formatInventory = (s) => 
     `Model: ${s.name}\nBrand: ${s.brand}\nPrice: $${s.price}\nWeight: ${s.weight_grams}g\nType: ${s.type}\nDetails: ${s.description}`;
+  
+  const formatKnowledge = (s) => 
+    `Model: ${s.name} (${s.type})\nDetails: ${s.description}`;
 
-  // 1. Intent: Lightest Shoe
-  if (msg.includes("lightest") || msg.includes("light weight")) {
-    const lightest = [...shoes].sort((a, b) => a.weight_grams - b.weight_grams).slice(0, 3);
-    context = "The user is looking for the lightest shoes. Here are the top 3 lightest options:\n\n" + 
-      lightest.map(formatShoe).join("\n\n");
+  // 1. Intent: Specific Specs (Weight/Lightest/Heaviest)
+  if (msg.includes("lightest") || msg.includes("heaviest") || msg.includes("weight") || msg.includes("gram")) {
+    const sorted = [...inventory].sort((a, b) => a.weight_grams - b.weight_grams);
+    const lightest = sorted.slice(0, 3);
+    const heaviest = sorted.slice(-3).reverse();
+    
+    context = "User wants technical specs. Here is our inventory data:\n\n" + 
+      "TOP 3 LIGHTEST:\n" + lightest.map(formatInventory).join("\n\n") + 
+      "\n\nTOP 3 HEAVIEST:\n" + heaviest.map(formatInventory).join("\n\n");
   } 
-  // 2. Intent: Stability / Flat Feet
+  // 2. Intent: Budget/Price
+  else if (msg.includes("$") || msg.includes("price") || msg.includes("budget") || msg.includes("afford")) {
+    const sorted = [...inventory].sort((a, b) => a.price - b.price);
+    context = "User cares about price. Here is our inventory sorted by price:\n\n" + 
+      sorted.map(formatInventory).join("\n\n");
+  }
+  // 3. Intent: Stability / Flat Feet (Focus on Description)
   else if (msg.includes("stability") || msg.includes("flat feet") || msg.includes("overpronat")) {
-    const results = shoes.filter(s => s.type === "Stability");
-    context = "The user needs stability shoes. Here are the relevant options:\n\n" + 
-      results.map(formatShoe).join("\n\n");
+    const results = inventory.filter(s => s.type === "Stability");
+    // We intentionally DO NOT include weight/price here
+    context = "User needs stability support. Here are relevant models from our store:\n\n" + 
+      results.map(s => `Model: ${s.name}\nType: ${s.type}\nDetails: ${s.description}`).join("\n\n");
   }
-  // 3. Intent: Brand Specific
-  else if (msg.includes("hoka")) {
-    const results = shoes.filter(s => s.brand === "Hoka");
-    context = "Here are the Hoka models in stock:\n\n" + results.map(formatShoe).join("\n\n");
+  // 4. Intent: Brand Mention (Check Inventory, then Market Knowledge)
+  else if (msg.includes("nike") || msg.includes("adidas") || msg.includes("saucony") || msg.includes("new balance")) {
+    // Find if we stock it
+    const inStock = inventory.filter(s => s.brand.toLowerCase().includes(msg.split(' ')[0])); // simplified check
+    // Find if we know it
+    const known = marketKnowledge.filter(s => s.name.toLowerCase().includes(msg.split(' ')[0]));
+
+    context = "User asked about a competitor brand.\n";
+    if (inStock.length > 0) {
+      context += "We stock these models:\n" + inStock.map(formatInventory).join("\n\n");
+    } else {
+      context += "We don't stock this brand, but here is general knowledge:\n" + known.map(formatKnowledge).join("\n\n");
+      context += "\n\n(Note: Recommend similar shoes from our Inventory list if appropriate).";
+    }
   }
-  else if (msg.includes("asics")) {
-    const results = shoes.filter(s => s.brand === "Asics");
-    context = "Here are the Asics models in stock:\n\n" + results.map(formatShoe).join("\n\n");
-  }
-  else if (msg.includes("brooks")) {
-    const results = shoes.filter(s => s.brand === "Brooks");
-    context = "Here are the Brooks models in stock:\n\n" + results.map(formatShoe).join("\n\n");
-  }
-  else if (msg.includes("li-ning") || msg.includes("lining")) {
-    const results = shoes.filter(s => s.brand === "Li-Ning");
-    context = "Here are the Li-Ning models in stock:\n\n" + results.map(formatShoe).join("\n\n");
-  }
-  
-    // 3.5 Intent: Budget Specific
-  else if (msg.includes("$") || msg.includes("budget") || msg.includes("cheap") || msg.includes("afford")) {
-    // Simple logic: find shoes $145 or less
-    const results = shoes.filter(s => s.price <= 145);
-    context = "The user is on a budget. Here are shoes under $145:\n\n" + 
-      results.map(formatShoe).join("\n\n");
-  }
-  
-  // 4. Default
+  // 5. Default: Show Inventory Names & Market Knowledge List
   else {
-    context = "Here is our current inventory summary:\n" + 
-      shoes.map(s => `- ${s.name} ($${s.price})`).join("\n");
+    context = "Here is a summary of our store inventory:\n" + 
+      inventory.map(s => `- ${s.name} ($${s.price})`).join("\n") +
+      "\n\nWe also have general knowledge about these popular market models: " + 
+      marketKnowledge.map(s => s.name).join(", ");
   }
 
   return context;
@@ -81,7 +101,7 @@ async function callDeepSeek(messages) {
     body: JSON.stringify({
       model: 'deepseek-chat', 
       messages: messages,
-      temperature: 0.1
+      temperature: 0.7 // Slightly higher temp for more natural conversation
     })
   });
   const data = await response.json();
@@ -100,20 +120,21 @@ export default async function handler(req, res) {
     const lastMessage = messages[messages.length - 1];
     const userText = lastMessage.content;
 
-    // RAG STEP 1: Retrieve Context
     const contextData = retrieveContext(userText);
 
-    // RAG STEP 2: Augment Prompt
+    // IMPROVED PROMPT: Defines Persona clearly
     const systemPrompt = {
       role: 'system',
-      content: `You are a helpful running shoe expert for "Stride & Soul".
+      content: `You are a friendly, expert running shoe salesperson for "Stride & Soul".
       
-      Use the following DATA to answer the user's question. If the answer is not in the DATA, say you don't know.
+      RULES:
+      1. Use the provided DATA to answer.
+      2. **NATURAL CONVERSATION**: Do NOT list Price or Weight unless the user specifically asks about budget, specs, or "lightest".
+      3. If discussing a shoe we DON'T sell (Market Knowledge), describe it helpfully, but try to pivot back to what we offer if it makes sense.
+      4. Be helpful and conversational, like a human shop employee.
       
       DATA:
-      ${contextData}
-      
-      Keep answers short and friendly.`
+      ${contextData}`
     };
 
     const responseMessages = [systemPrompt, ...messages];
