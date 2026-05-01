@@ -138,15 +138,7 @@
                 <p class="dev-solution"><strong>Solution:</strong> Identified that <code>import data from '../data.json'</code> fails in the specific Vercel runtime environment. Hardcoded the data object directly into the function file to guarantee availability.</p>
             </div>
 
-            <div class="dev-card">
-                <div class="dev-card-header">
-                    <span class="dev-card-title">Vision Feature Pivot</span>
-                    <span class="dev-card-badge">Strategy</span>
-                </div>
-                <p class="dev-challenge">Challenge: External Vision APIs (HuggingFace, Google Gemini) were unreliable or required complex authentication that failed in the portfolio context.</p>
-                <div class="dev-prompt">"This vision thing is proving too complicated, let's scrap the vision function..."</div>
-                <p class="dev-solution"><strong>Solution:</strong> Pivoted to a pure Text-Based RAG system. This focused the project on data accuracy and logical querying, which are higher-value skills for backend engineering roles.</p>
-            </div>
+          
 
         </div>
 
@@ -157,8 +149,8 @@
             <div class="timeline-node">
                 <div class="timeline-dot"></div>
                 <div class="timeline-content">
-                    <h3 class="timeline-title">Iterative UX Polish</h3>
-                    <p class="timeline-desc">Visual updates (Glassmorphism, Tech Badges) were driven by user feedback. This mirrors a real product cycle where functional completeness is followed by aesthetic refinement.</p>
+                    <h3 class="timeline-title">Prompt Engineering</h3>
+                    <p class="timeline-desc">Rather than just asking the AI to implement a solution or a new feature, I tell it to hold off making changes to the code and first give me some options for implementation.</p>
                 </div>
             </div>
 
@@ -166,15 +158,15 @@
                 <div class="timeline-dot"></div>
                 <div class="timeline-content">
                     <h3 class="timeline-title">Structured Data Engineering</h3>
-                    <p class="timeline-desc">Instead of relying on the LLM to "know" facts, we shifted to a "Grounding" strategy. By maintaining a clean JSON schema, we ensure the AI's answers are always factually correct regarding price and specs.</p>
+                    <p class="timeline-desc">Instead of relying on the LLM to "know" facts, we shifted to a "Grounding" strategy. By maintaining a clean JSON schema (a backend data file for the chatbot), we ensure the AI's answers are always factually correct regarding price and specs.</p>
                 </div>
             </div>
 
             <div class="timeline-node">
                 <div class="timeline-dot"></div>
                 <div class="timeline-content">
-                    <h3 class="timeline-title">Fail-Fast Mentality</h3>
-                    <p class="timeline-desc">When the Vision API integration proved unstable, we quickly evaluated the ROI and pivoted to a Text-RAG system. This ensured the core portfolio value (backend logic) wasn't compromised by a flaky 3rd party dependency.</p>
+                    <h3 class="timeline-title">Creative Problem Solving</h3>
+                    <p class="timeline-desc">A prompt I used while building the chatbot: "as you can see in this screenshot the chatbot is confused about the store's inventory and is recommending shoes that are not in the inventory... is this going to be an ongoing issue from including the other market data, or are there possible workarounds here? what is going wrong with the chatbot's internal logic?"</p>
                 </div>
             </div>
         </div>
