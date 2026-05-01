@@ -189,25 +189,8 @@
             sendMessage();
         }
 
-        // --- NEW: Image Handling ---
-        function handleImageSelect(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                currentImageBase64 = e.target.result; // Store base64 string
-                imagePreviewImg.src = currentImageBase64;
-                imagePreviewContainer.style.display = 'block'; // Show preview
-            };
-            reader.readAsDataURL(file);
-        }
-
-        function clearImage() {
-            currentImageBase64 = null;
-            imageInput.value = ''; // Reset file input
-            imagePreviewContainer.style.display = 'none';
-        }
+        
+       
 
         async function sendMessage() {
             const text = userInput.value.trim();
@@ -235,7 +218,6 @@
             // Clear inputs immediately
             userInput.value = '';
             sampleArea.style.display = 'none';
-            clearImage(); // Clear image after sending
 
             // Loading indicator
             const loadingDiv = document.createElement('div');
