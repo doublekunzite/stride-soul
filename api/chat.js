@@ -1,4 +1,58 @@
 // api/chat.js
+import shoes from '../data.json' assert { type: 'json' };
+
+// --- RAG LOGIC: The "Retrieval" Step ---
+function retrieveContext(userMessage) {
+  let context = "";
+  const msg = userMessage.toLowerCase();
+
+  // Helper to format a shoe object into a readable string for the AI
+  const formatShoe = (s) => 
+    `Model: ${s.name}
+Brand: ${s.brand}
+Price: $${s.price}
+Weight: ${s.weight_grams}g (Men's Size 9)
+Type: ${s.type}
+Cushion: ${s.cushion}
+Details: ${s.description}`;
+
+  // 1. Intent: Lightest Shoe
+  if (msg.includes("lightest") || msg.includes("light weight")) {
+    const lightest = [...shoes].sort((a, b) => a.weight_grams - b.weight_grams).slice(0, 3);
+    context = "The user is looking for the lightest shoes. Here are the top 3 lightest options:\n\n" + 
+      lightest.map(formatShoe).join("\n\n");
+  } 
+  // 2. Intent: Stability / Overpronation
+  else if (msg.includes("stability") || msg.includes("flat feet") || msg.includes("overpronat")) {
+    const results = shoes.filter(s => s.type === "Stability");
+    context = "The user needs stability shoes. Here are the relevant options:\n\n" + 
+      results.map(formatShoe).join("\n\n");
+  }
+  // 3. Intent: Brand Specific
+  else if (msg.includes("hoka")) {
+    const results = shoes.filter(s => s.brand === "Hoka");
+    context = "Here are the Hoka models in stock:\n\n" + results.map(formatShoe).join("\n\n");
+  }
+  else if (msg.includes("asics")) {
+    const results = shoes.filter(s => s.brand === "Asics");
+    context = "Here are the Asics models in stock:\n\n" + results.map(formatShoe).join("\n\n");
+  }
+  else if (msg.includes("brooks")) {
+    const results = shoes.filter(s => s.brand === "Brooks");
+    context = "Here are the Brooks models in stock:\n\n" + results.map(formatShoe).join("\n\n");
+  }
+  else if (msg.includes("li-ning") || msg.includes("lining")) {
+    const results = shoes.filter(s => s.brand === "Li-Ning");
+    context = "Here are the Li-Ning models in stock:\n\n" + results.map(formatShoe).join("\n\n");
+  }
+  // 4. Default: Just names and prices (for general queries)
+  else {
+    context = "Here is our current inventory summary:\n" + 
+      shoes.map(s => `- ${s.name} ($${s.price})`).join("\n");
+  }
+
+  return context;
+}
 
 // --- HELPER: Call DeepSeek (Text) ---
 async function callDeepSeek(messages) {
@@ -20,54 +74,6 @@ async function callDeepSeek(messages) {
   return data.choices[0].message.content;
 }
 
-// --- HELPER: Call Hugging Face (Vision) ---
-async function callHuggingFaceVision(base64Image) {
-  const apiKey = process.env.HF_TOKEN; 
-
-  // Verified Public Model URL
-  const modelUrl = "https://api-inference.huggingface.co/models/vi-t-g/vit-gpt2-coco-demo";
-
-  // Clean base64 data
-  const base64Data = base64Image.split(',')[1];
-
-  const body = {
-    inputs: base64Data
-  };
-
-  const response = await fetch(modelUrl, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${apiKey}`
-    },
-    body: JSON.stringify(body)
-  });
-
-  // Read text first to avoid JSON parse crash
-  const resultText = await response.text();
-
-  if (!response.ok) {
-    console.error("Hugging Face Error Response:", resultText);
-    throw new Error("Vision API failed. Check logs for details.");
-  }
-  
-  // Parse the text to JSON
-  try {
-    const data = JSON.parse(resultText);
-    
-    // This model returns an array like: [{ "generated_text": "a shoe..." }]
-    if (Array.isArray(data) && data[0]?.generated_text) {
-      return data[0].generated_text;
-    } else {
-      // Fallback
-      return JSON.stringify(data); 
-    }
-  } catch (e) {
-    console.error("JSON Parse Error:", e);
-    throw new Error("Failed to parse Vision response.");
-  }
-}
-
 // --- MAIN HANDLER ---
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -76,81 +82,30 @@ export default async function handler(req, res) {
 
   const { messages } = req.body;
   const lastMessage = messages[messages.length - 1];
-  const hasImage = Array.isArray(lastMessage.content) && 
-                   lastMessage.content.some(item => item.type === 'image_url');
+  const userText = lastMessage.content;
 
   try {
-    let finalReply = "";
+    // RAG STEP 1: Retrieve Context
+    const contextData = retrieveContext(userText);
 
-    if (hasImage) {
-      // --- HYBRID LOGIC ---
-
-      // 1. Extract Image Data
-      const imagePart = lastMessage.content.find(item => item.type === 'image_url');
-      const imageUrl = imagePart.image_url.url;
+    // RAG STEP 2: Augment Prompt
+    const systemPrompt = {
+      role: 'system',
+      content: `You are a helpful running shoe expert for "Stride & Soul".
       
-      console.log("Step 1: Sending image to Hugging Face...");
-      // 2. STEP 1: Use HF to Identify (The Eye)
-      const identifiedShoe = await callHuggingFaceVision(imageUrl);
-      console.log("Identified:", identifiedShoe);
+      Use the following DATA to answer the user's question. If the answer is not in the DATA, say you don't know.
+      
+      DATA:
+      ${contextData}
+      
+      Keep answers short and friendly.`
+    };
 
-      // 3. STEP 2: Use DeepSeek to Sell (The Brain)
-      console.log("Step 2: Checking inventory with DeepSeek...");
-      const salesPrompt = [
-        { 
-          role: 'system', 
-          content: `You are a sales assistant for "Stride & Soul". 
-          An image recognition tool identified a customer's shoe as: "${identifiedShoe}".
+    const responseMessages = [systemPrompt, ...messages];
+    
+    const reply = await callDeepSeek(responseMessages);
 
-          OUR INVENTORY:
-          - **Hoka Clifton 9** ($145)
-          - **Hoka Mach 6** ($150)
-          - **Li-Ning Boom! 5 Pro** ($160)
-          - **Li-Ning Arc Ace** ($130)
-          - **Asics Gel-Kayano 30** ($160)
-          - **Asics Novablast 4** ($140)
-          - **Brooks Ghost 15** ($140)
-          - **Brooks Adrenaline GTS 23** ($140)
-
-          RULES:
-          1. If the identified shoe IS in our inventory: Confirm it and give the price.
-          2. If the identified shoe IS NOT in our inventory: State "We don't currently stock [Identified Shoe], but..." and recommend the closest match from our inventory.
-          3. Keep answers short (2-3 sentences).`
-        },
-        { 
-          role: 'user', 
-          content: `The tool identified the shoe as: "${identifiedShoe}". What should I tell the customer?` 
-        }
-      ];
-
-      finalReply = await callDeepSeek(salesPrompt);
-
-    } else {
-      // --- TEXT ONLY LOGIC ---
-      const textPrompt = [
-        { 
-          role: 'system', 
-          content: `You are a helpful running shoe expert for "Stride & Soul".
-          You ONLY discuss shoes found in our inventory.
-
-          INVENTORY:
-          - **Hoka Clifton 9** ($145)
-          - **Hoka Mach 6** ($150)
-          - **Li-Ning Boom! 5 Pro** ($160)
-          - **Li-Ning Arc Ace** ($130)
-          - **Asics Gel-Kayano 30** ($160)
-          - **Asics Novablast 4** ($140)
-          - **Brooks Ghost 15** ($140)
-          - **Brooks Adrenaline GTS 23** ($140)
-
-          Keep answers short.`
-        },
-        ...messages
-      ];
-      finalReply = await callDeepSeek(textPrompt);
-    }
-
-    res.status(200).json({ reply: finalReply });
+    res.status(200).json({ reply: reply });
 
   } catch (error) {
     console.error("Server Error:", error);
