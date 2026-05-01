@@ -52,6 +52,31 @@
         <h2 style="font-size: 1.8rem; margin-bottom: 25px; color: #fff;">Key Iterations</h2>
         <div class="dev-grid">
             
+            <!-- Original: Serverless Config -->
+            <div class="dev-card">
+                <div class="dev-card-header">
+                    <span class="dev-card-title">Serverless API Configuration</span>
+                    <span class="dev-card-badge">Backend</span>
+                </div>
+                <p class="dev-challenge">Challenge: The chatbot returned a 404 error on Vercel deployment, despite working locally.</p>
+                <div class="dev-prompt">"I made all the changes you said... but the chatbot isn't working."</div>
+                <p class="dev-solution"><strong>Solution:</strong> Identified that Vercel wasn't detecting the backend function due to incorrect Root Directory settings. Updated project configuration and added <code>package.json</code> with <code>type: module</code> to support modern ES6 syntax.</p>
+            </div>
+
+            <!-- Original: Visuals Pivot -->
+            <div class="dev-card">
+                <div class="dev-card-header">
+                    <span class="dev-card-title">Background Visuals Pivot</span>
+                    <span class="dev-card-badge">CSS</span>
+                </div>
+                <p class="dev-challenge">Challenge: Complex SVG shapes were inconsistent and difficult to style dynamically.</p>
+                <div class="dev-prompt">"The blobs are still not shoe shaped... let's change the blobs to just actual blobs."</div>
+                <p class="dev-solution"><strong>Solution:</strong> Pivoted from rigid SVG paths to CSS-styled <code>div</code> elements. Used <code>border-radius</code> with percentage values and <code>@keyframes</code> to create a "Lava Lamp" morphing effect that is smoother and more performant.</p>
+            </div>
+
+           
+
+            <!-- New: Context-Aware RAG -->
             <div class="dev-card">
                 <div class="dev-card-header">
                     <span class="dev-card-title">Context-Aware RAG</span>
@@ -62,16 +87,18 @@
                 <p class="dev-solution"><strong>Solution:</strong> Implemented "Intent-Based Retrieval." The system now filters data before sending it to the LLM. If the user asks about "comfort," we strip price/weight data from the context window, forcing the AI to focus purely on descriptive text.</p>
             </div>
 
+            <!-- New: Data Grounding -->
             <div class="dev-card">
                 <div class="dev-card-header">
-                    <span class="dev-card-title">Market Knowledge Base</span>
+                    <span class="dev-card-title">Strict Data Grounding</span>
                     <span class="dev-card-badge">Data</span>
                 </div>
-                <p class="dev-challenge">Challenge: The bot was restricted to store inventory and couldn't discuss popular competitor shoes users might ask about.</p>
-                <div class="dev-prompt">"Let's again make it more like an actual sales person... who would certainly be able to discuss other shoes."</div>
-                <p class="dev-solution"><strong>Solution:</strong> Created a secondary <code>marketKnowledge</code> array containing data on top-selling competitor shoes (Nike, Adidas, etc.). The bot uses this to answer general questions but pivots back to store inventory for sales.</p>
+                <p class="dev-challenge">Challenge: The bot recommended competitor shoes (Saucony, Nike) that were not in the store's inventory.</p>
+                <div class="dev-prompt">"The chatbot is confused about the store's inventory and is recommending shoes that are not in the inventory."</div>
+                <p class="dev-solution"><strong>Solution:</strong> Removed external knowledge sources. Added strict prompt engineering constraints ("OFF-LIST RESTRICTION") to force the bot to acknowledge competitor interest but pivot immediately to available stock.</p>
             </div>
 
+            <!-- New: Glassmorphism UI -->
             <div class="dev-card">
                 <div class="dev-card-header">
                     <span class="dev-card-title">Glassmorphism UI</span>
@@ -79,9 +106,10 @@
                 </div>
                 <p class="dev-challenge">Challenge: The chat window looked "rudimentary" and flat against the dark background.</p>
                 <div class="dev-prompt">"Can we polish this up... glassy appearance, and something that gives it a bit of 3d texture so it pops?"</div>
-                <p class="dev-solution"><strong>Solution:</strong> Applied CSS <code>backdrop-filter: blur()</code> for a frosted glass effect, layered shadows for 3D depth, and designed a "Tech Stack" badge to professionally display the model version (DeepSeek V4 Flash).</p>
+                <p class="dev-solution"><strong>Solution:</strong> Applied CSS <code>backdrop-filter: blur()</code> for a frosted glass effect, layered shadows for 3D depth, and designed a "Tech Stack" badge to professionally display the model version.</p>
             </div>
 
+            <!-- Original: Module Import Debug -->
             <div class="dev-card">
                 <div class="dev-card-header">
                     <span class="dev-card-title">Module Import Debugging</span>
@@ -91,6 +119,8 @@
                 <div class="dev-prompt">"I no longer get the server error, but... the bot hangs indefinitely."</div>
                 <p class="dev-solution"><strong>Solution:</strong> Identified that <code>import data from '../data.json'</code> fails in the specific Vercel runtime environment. Hardcoded the data object directly into the function file to guarantee availability.</p>
             </div>
+
+           
 
         </div>
 
@@ -109,8 +139,8 @@
             <div class="timeline-node">
                 <div class="timeline-dot"></div>
                 <div class="timeline-content">
-                    <h3 class="timeline-title">Data Separation</h3>
-                    <p class="timeline-desc">We maintained a clear distinction between <strong>Inventory</strong> (what we sell) and <strong>Knowledge</strong> (what we know). This architecture allows the store to be honest about stock while still being helpful about the broader market.</p>
+                    <h3 class="timeline-title">Structured Data Engineering</h3>
+                    <p class="timeline-desc">Instead of relying on the LLM to "know" facts, we shifted to a "Grounding" strategy. By maintaining a clean JSON schema, we ensure the AI's answers are always factually correct regarding price and specs.</p>
                 </div>
             </div>
 
@@ -119,6 +149,14 @@
                 <div class="timeline-content">
                     <h3 class="timeline-title">Iterative UX Polish</h3>
                     <p class="timeline-desc">Visual updates (Glassmorphism, Tech Badges) were driven by user feedback. This mirrors a real product cycle where functional completeness is followed by aesthetic refinement.</p>
+                </div>
+            </div>
+            
+            <div class="timeline-node">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <h3 class="timeline-title">Fail-Fast Mentality</h3>
+                    <p class="timeline-desc">When the Vision API integration proved unstable, we quickly evaluated the ROI and pivoted to a Text-RAG system. This ensured the core portfolio value (backend logic) wasn't compromised by a flaky 3rd party dependency.</p>
                 </div>
             </div>
         </div>

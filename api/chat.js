@@ -1,6 +1,8 @@
 // api/chat.js
 
-// --- DATA SOURCE (Strictly Our Inventory) ---
+// --- DATA SOURCE ---
+
+// 1. OUR INVENTORY (What we SELL - has Price & Weight)
 const inventory = [
   { id: 1, name: "Hoka Clifton 9", brand: "Hoka", price: 145, weight_grams: 248, type: "Neutral", cushion: "High", description: "A highly cushioned daily trainer that delivers a soft, balanced ride for easy miles and long runs." },
   { id: 2, name: "Hoka Mach 6", brand: "Hoka", price: 140, weight_grams: 232, type: "Neutral", cushion: "Responsive", description: "A responsive, low-profile neutral trainer built for tempo runs and faster daily efforts." },
@@ -12,16 +14,33 @@ const inventory = [
   { id: 8, name: "Brooks Adrenaline GTS 23", brand: "Brooks", price: 140, weight_grams: 286, type: "Stability", cushion: "Medium", description: "A classic stability shoe that pairs GuideRails support with a balanced ride." }
 ];
 
+// 2. MARKET KNOWLEDGE (What we KNOW ABOUT - No price/weight)
+const marketKnowledge = [
+  { name: "Adidas Adizero Evo SL", type: "Performance", description: "A lightweight, plate-free performance trainer with a springy Lightstrike Pro midsole." },
+  { name: "Brooks Ghost 17", type: "Neutral", description: "Award-winning neutral trainer with DNA Loft v3 cushioning, great for beginners." },
+  { name: "Asics Novablast 5", type: "Neutral", description: "Versatile daily trainer with a bouncy midsole, good for building a rotation." },
+  { name: "Nike Vomero Plus", type: "Neutral", description: "Max-cushioned trainer with ZoomX midsole for energetic comfort." },
+  { name: "New Balance Ellipse", type: "Neutral", description: "A 'Goldilocks' trainer blending soft cushioning with performance feel." },
+  { name: "Saucony Ride 19", type: "Neutral", description: "Well-balanced trainer with an 8mm drop for smooth transitions." },
+  { name: "Hoka Bondi 9", type: "Neutral", description: "Max-cushioned road shoe, great for recovery days." },
+  { name: "Brooks Glycerin 23", type: "Neutral", description: "Popular cushioned shoe ideal for long walks and recovery sessions." },
+  { name: "Asics Gel-Kayano 32", type: "Stability", description: "Latest version of the gold-standard stability trainer." },
+  { name: "Nike Pegasus 41", type: "Neutral", description: "Dependable neutral workhorse for everyday training." }
+];
+
 // --- RAG LOGIC ---
 function retrieveContext(userMessage) {
   let context = "";
   const msg = userMessage.toLowerCase();
 
-  // Helper to format data
-  const formatFull = (s) => 
+  // Helpers
+  const formatInventory = (s) => 
     `Model: ${s.name}\nBrand: ${s.brand}\nPrice: $${s.price}\nWeight: ${s.weight_grams}g\nType: ${s.type}\nDetails: ${s.description}`;
   
-  const formatDescription = (s) => 
+  const formatKnowledge = (s) => 
+    `Model: ${s.name} (${s.type})\nDetails: ${s.description}`;
+
+  const formatDescriptionOnly = (s) => 
     `Model: ${s.name} (${s.type})\nDetails: ${s.description}`;
 
   // 1. Intent: Specs (Weight/Price)
@@ -30,37 +49,67 @@ function retrieveContext(userMessage) {
     const lightest = sorted.slice(0, 3);
     const heaviest = sorted.slice(-3).reverse();
     context = "User wants TECHNICAL SPECS. Here is the data:\n\n" + 
-      "LIGHTEST:\n" + lightest.map(formatFull).join("\n\n") + 
-      "\n\nHEAVIEST:\n" + heaviest.map(formatFull).join("\n\n");
+      "LIGHTEST:\n" + lightest.map(formatInventory).join("\n\n") + 
+      "\n\nHEAVIEST:\n" + heaviest.map(formatInventory).join("\n\n");
   } 
   // 2. Intent: Budget
   else if (msg.includes("$") || msg.includes("price") || msg.includes("budget") || msg.includes("afford") || msg.includes("cheap")) {
     const sorted = [...inventory].sort((a, b) => a.price - b.price);
-    context = "User cares about PRICE. Sort by price:\n\n" + sorted.map(formatFull).join("\n\n");
+    context = "User cares about PRICE. Sort by price:\n\n" + sorted.map(formatInventory).join("\n\n");
   }
   // 3. Intent: Stability / Flat Feet
   else if (msg.includes("stability") || msg.includes("flat feet") || msg.includes("overpronat")) {
     const results = inventory.filter(s => s.type === "Stability");
-    context = "User needs STABILITY support. Focus on description:\n\n" + results.map(formatDescription).join("\n\n");
+    context = "User needs STABILITY support. Focus on description:\n\n" + results.map(formatDescriptionOnly).join("\n\n");
   }
-  // 4. Brand Mention
+  
+  // 4. NEW: Competitor Mention / Similar / Alternative
+  // Detects if user mentions Nike, Adidas, etc., OR words like "similar", "alternative", "vs".
+  else if (
+    msg.includes("nike") || msg.includes("adidas") || msg.includes("saucony") || msg.includes("new balance") || 
+    msg.includes("similar") || msg.includes("alternative") || msg.includes("equivalent") || msg.includes("like the")
+  ) {
+    // A. Find the specific competitor shoe mentioned (if any)
+    const foundKnowledge = marketKnowledge.find(s => msg.includes(s.name.toLowerCase()) || msg.includes(s.name.toLowerCase().split(" ")[0])); // Match "Pegasus" or "Nike Pegasus"
+    
+    // B. Get our inventory to offer alternatives
+    const ourStock = inventory.map(s => `- ${s.name} ($${s.price})`).join("\n");
+
+    if (foundKnowledge) {
+      context = `User is asking about a competitor shoe: ${foundKnowledge.name}.
+      
+      KNOWLEDGE ABOUT COMPETITOR:
+      ${formatKnowledge(foundKnowledge)}
+      
+      OUR STORE INVENTORY (Recommend from this list):
+      ${ourStock}`;
+    } else {
+      // User asked for "similar" or "alternative" but didn't name a specific shoe
+      context = `User is looking for recommendations similar to a popular model.
+      
+      OUR STORE INVENTORY:
+      ${inventory.map(formatDescriptionOnly).join("\n\n")}`;
+    }
+  }
+
+  // 5. Brand Mention (Internal)
   else if (msg.includes("hoka")) {
     const results = inventory.filter(s => s.brand === "Hoka");
-    context = "Hoka models in stock:\n\n" + results.map(formatFull).join("\n\n");
+    context = "Hoka models in stock:\n\n" + results.map(formatInventory).join("\n\n");
   }
   else if (msg.includes("asics")) {
     const results = inventory.filter(s => s.brand === "Asics");
-    context = "Asics models in stock:\n\n" + results.map(formatFull).join("\n\n");
+    context = "Asics models in stock:\n\n" + results.map(formatInventory).join("\n\n");
   }
   else if (msg.includes("brooks")) {
     const results = inventory.filter(s => s.brand === "Brooks");
-    context = "Brooks models in stock:\n\n" + results.map(formatFull).join("\n\n");
+    context = "Brooks models in stock:\n\n" + results.map(formatInventory).join("\n\n");
   }
   else if (msg.includes("li-ning") || msg.includes("lining")) {
     const results = inventory.filter(s => s.brand === "Li-Ning");
-    context = "Li-Ning models in stock:\n\n" + results.map(formatFull).join("\n\n");
+    context = "Li-Ning models in stock:\n\n" + results.map(formatInventory).join("\n\n");
   }
-  // 5. Default: Just list names
+  // 6. Default
   else {
     context = "Here is a summary of our inventory:\n" + 
       inventory.map(s => `- ${s.name} ($${s.price})`).join("\n");
@@ -81,7 +130,7 @@ async function callDeepSeek(messages) {
     body: JSON.stringify({
       model: 'deepseek-chat', 
       messages: messages,
-      temperature: 0.1
+      temperature: 0.5 // Balanced temp for natural comparison
     })
   });
   const data = await response.json();
@@ -102,17 +151,20 @@ export default async function handler(req, res) {
 
     const contextData = retrieveContext(userText);
 
-    // STRICT PROMPT
+    // SMART PROMPT
     const systemPrompt = {
       role: 'system',
-      content: `You are a salesperson for "Stride & Soul". You MUST follow these rules:
+      content: `You are a helpful, expert running shoe salesperson for "Stride & Soul".
 
-      1. GROUNDING: You can ONLY recommend shoes found in the "INVENTORY DATA" below.
-      2. OFF-LIST RESTRICTION: If the user asks for a shoe NOT in the data (like Nike or Saucony), you MUST say: "We don't currently stock [Brand], but..." and then recommend the closest match from our inventory.
-      3. NATURAL LANGUAGE: Do not mention weight or price unless the user specifically asks about specs, budget, or "lightest".
-      4. TONE: Be helpful and concise.
-
-      INVENTORY DATA:
+      CRITICAL RULES:
+      1. DATA SEPARATION:
+         - If the data says "KNOWLEDGE ABOUT COMPETITOR", acknowledge that shoe's qualities honestly.
+         - You must then RECOMMEND the closest match from "OUR STORE INVENTORY".
+      2. SALES GOAL: Your goal is to sell shoes from "OUR STORE INVENTORY". Use the competitor info to bridge the conversation to our products.
+      3. GROUNDING: Do not make up facts. Use the provided data.
+      4. NATURAL TONE: Do not list specs (weight/price) unless asked. Focus on "feel" and "ride".
+      
+      DATA:
       ${contextData}`
     };
 
