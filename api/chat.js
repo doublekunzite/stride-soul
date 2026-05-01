@@ -117,20 +117,6 @@ async function handleCompetitorQuestion(userMessage) {
   return await callDeepSeek([systemPrompt, { role: 'user', content: userMessage }]);
 }
 
-  const systemPrompt = {
-    role: 'system',
-    content: `You are a helpful expert. Follow this EXACT 3-STEP LOGIC:
-    1. ACKNOWLEDGE: Describe the shoe the user asked about using the KNOWLEDGE provided.
-    2. CLARIFY: State clearly that "We don't currently stock the [Shoe Name]..."
-    3. PIVOT: "...but based on your interest, I recommend the [Our Shoe Name]." Pick the best match from OUR INVENTORY.
-    
-    DATA:
-    ${context}`
-  };
-
-  return await callDeepSeek([systemPrompt, { role: 'user', content: userMessage }]);
-}
-
 // HANDLER 2: Inventory Logic (The standard one)
 async function handleInventoryQuestion(intent, userMessage) {
   const msg = userMessage.toLowerCase();
