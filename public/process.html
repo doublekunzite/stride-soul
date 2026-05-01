@@ -148,20 +148,20 @@
 
             <div class="dev-card">
                 <div class="dev-card-header">
-                    <span class="dev-card-title">Strategic Pivoting</span>
+                    <span class="dev-card-title">Diagnostic Analysis</span>
                     <span class="dev-card-badge">Workflow</span>
                 </div>
-                <div class="dev-prompt">"This vision thing is proving too complicated, let's scrap the vision function and move on to one of the other projects."</div>
-                <p class="dev-solution"><strong>Analysis:</strong> I realized the Vision API integration was becoming a time sink with diminishing returns. Instead of forcing a broken feature, I made the strategic decision to pivot to a text-based RAG system. This ensured the portfolio focused on stable, high-quality backend logic rather than flaky third-party dependencies.</p>
+                <div class="dev-prompt">"The bot is confused about both the inventory and IDing incorrectly. don't change the code further yet; what do you think could be happening here and what are some possible solutions?"</div>
+                <p class="dev-solution"><strong>Analysis:</strong> Instead of just reporting a bug, I asked for a root cause analysis. By instructing the AI not to change code yet, I forced it to explain the problem first, which helped me understand the distinction between "Knowledge" and "Inventory" in the RAG system.</p>
             </div>
 
             <div class="dev-card">
                 <div class="dev-card-header">
-                    <span class="dev-card-title">Hallucination Detection</span>
-                    <span class="dev-card-badge">Debugging</span>
+                    <span class="dev-card-title">Behavioral Specification</span>
+                    <span class="dev-card-badge">Prompting</span>
                 </div>
-                <div class="dev-prompt">"Is it possible that you're hallucinating these URLs? LLMs often struggle with URLs... if there's a way for me to provide you with the valid URL for these models that might work better, right?"</div>
-                <p class="dev-solution"><strong>Analysis:</strong> I identified a specific weakness in LLMs (fabricating endpoints) and proposed a verification workflow. Instead of blindly trusting the output, I changed my strategy to provide verified data, turning a technical failure into a successful manual override.</p>
+                <div class="dev-prompt">"It can mention the weights if asked, but it should behave more naturally... not even mention the price, just the model, if asked about flat feet for example. also... let's again make it more like an actual sales person."</div>
+                <p class="dev-solution"><strong>Analysis:</strong> I used conditional logic in my prompt ("if asked... then...") to guide the AI's behavior. This goes beyond simple feature requests by defining the <em>context</em> in which specific data should be used, effectively "programming" the persona's social skills.</p>
             </div>
 
             <div class="dev-card">
