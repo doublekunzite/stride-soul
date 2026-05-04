@@ -5,7 +5,7 @@
     --fg: #e8e8e3;
     --muted: #888888;
     --accent: #b8956e;
-    --primary-color: #b8956e; /* Mapped for consistency */
+    --primary-color: #b8956e;
     --card: #131313;
     --border: #222222;
 }
@@ -15,38 +15,41 @@ html { scroll-behavior: smooth; }
 
 body {
     font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    background: var(--bg);
     color: var(--fg);
     overflow-x: hidden;
     line-height: 1.6;
+    /* CRITICAL: No background color here. It goes on .blob-container */
+    background-color: transparent; 
 }
 
-/* --- ANIMATED BLOBS (Restored) --- */
+/* --- ANIMATED BLOBS (Fixed Visibility) --- */
 .blob-container {
     position: fixed;
     top: 0; left: 0; right: 0; bottom: 0;
+    z-index: -2; /* Behind content */
+    background-color: var(--bg); /* The dark background sits HERE */
     overflow: hidden;
-    z-index: -1; /* Behind everything */
     pointer-events: none;
 }
 .blob {
     position: absolute;
     border-radius: 50%;
     filter: blur(80px);
-    opacity: 0.4;
+    opacity: 0.5;
     animation: float 20s infinite alternate;
+    animation-timing-function: ease-in-out;
 }
 .blob-1 { top: 10%; left: 10%; width: 40vw; height: 40vw; background: #1a1a1a; animation-delay: 0s; }
-.blob-2 { top: 60%; left: 70%; width: 50vw; height: 50vw; background: #0f0f0f; animation-delay: -5s; }
+.blob-2 { top: 60%; left: 70%; width: 50vw; height: 50vw; background: #141414; animation-delay: -5s; }
 .blob-3 { top: 40%; left: 30%; width: 30vw; height: 30vw; background: #111; animation-delay: -10s; }
-.blob-4 { top: 80%; left: 10%; width: 20vw; height: 20vw; background: #161616; animation-delay: -15s; }
+.blob-4 { top: 80%; left: 10%; width: 20vw; height: 20vw; background: #181818; animation-delay: -15s; }
 .blob-5 { top: 10%; left: 80%; width: 25vw; height: 25vw; background: #101010; animation-delay: -3s; }
 
 @keyframes float {
-    0% { transform: translate(0, 0) scale(1); }
-    33% { transform: translate(30px, -50px) scale(1.1); }
-    66% { transform: translate(-20px, 20px) scale(0.9); }
-    100% { transform: translate(20px, 50px) scale(1.05); }
+    0% { transform: translate(0, 0) scale(1) rotate(0deg); }
+    33% { transform: translate(30px, -50px) scale(1.1) rotate(5deg); }
+    66% { transform: translate(-20px, 20px) scale(0.9) rotate(-5deg); }
+    100% { transform: translate(20px, 50px) scale(1.05) rotate(3deg); }
 }
 
 /* --- HEADER --- */
@@ -56,7 +59,7 @@ header {
     z-index: 100;
     padding: 1.5rem 2rem;
     display: flex;
-    justify-content: flex-start; /* Align items to start */
+    justify-content: flex-start;
     align-items: center;
     background: rgba(9, 9, 9, 0.85);
     backdrop-filter: blur(12px);
@@ -69,7 +72,7 @@ header {
     letter-spacing: 2px;
     color: var(--fg);
     text-decoration: none;
-    margin-right: 40px; /* Space between logo and nav */
+    margin-right: 40px;
 }
 .logo:hover { color: var(--accent); }
 
@@ -77,7 +80,7 @@ nav {
     display: flex;
     gap: 2rem;
     align-items: center;
-    margin-left: auto; /* PUSHES NAV TO THE RIGHT */
+    margin-left: auto; /* Pushes nav to right */
 }
 nav a {
     font-size: 0.8rem;
@@ -99,7 +102,7 @@ nav a:hover { color: var(--accent); }
     text-align: center;
     padding: 10rem 2rem 6rem;
     position: relative;
-    z-index: 1;
+    z-index: 1; /* Sit on top of blobs */
 }
 .hero h1 {
     font-size: clamp(3rem, 10vw, 6rem);
@@ -130,22 +133,19 @@ nav a:hover { color: var(--accent); }
     transform: translateY(-2px);
 }
 
-/* --- NATURE BANNER (Restored Parallax) --- */
+/* --- NATURE BANNER (Fixed URL) --- */
 .nature-banner {
     position: relative;
     width: 100%;
-    height: 60vh; /* Height of the window */
+    height: 60vh; 
     margin: 4rem 0;
     
-    /* Parallax Magic */
-    background-image: url('images/banner.jpg'); /* Ensure you add a banner.jpg */
+    /* Parallax Effect */
+    background-image: url('/banner.jpg'); /* Correct path for public folder */
     background-attachment: fixed;
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
-    
-    /* Border radius for the 'window' look */
-    border-radius: 0; 
 }
 .banner-overlay {
     position: absolute;
@@ -158,6 +158,8 @@ nav a:hover { color: var(--accent); }
     padding: 6rem 2rem;
     max-width: 1200px;
     margin: 0 auto;
+    position: relative;
+    z-index: 1;
 }
 .section-title {
     font-size: 2.5rem;
@@ -194,10 +196,8 @@ nav a:hover { color: var(--accent); }
 .product-card:hover .product-image {
     transform: scale(1.03);
 }
-/* FIXED SPACING */
 .product-info {
-    padding: 24px 28px; /* Increased padding to prevent text touching edges */
-    background: var(--card);
+    padding: 24px 28px; /* Fixed Spacing */
 }
 .product-info h3 {
     font-size: 1.2rem;
@@ -217,7 +217,7 @@ nav a:hover { color: var(--accent); }
     display: flex;
     align-items: center;
     cursor: pointer;
-    margin-left: 30px; /* Separation from nav links */
+    margin-left: 30px;
 }
 .cart-icon {
     font-size: 1.2rem;
@@ -230,7 +230,7 @@ nav a:hover { color: var(--accent); }
     top: -8px;
     right: -10px;
     background: var(--primary-color);
-    color: #000; /* Dark text on gold */
+    color: #000;
     font-size: 0.65rem;
     width: 18px;
     height: 18px;
@@ -241,7 +241,7 @@ nav a:hover { color: var(--accent); }
     font-weight: bold;
 }
 
-/* --- MODAL (Product Detail) --- */
+/* --- MODAL --- */
 .modal-overlay {
     position: fixed;
     top: 0; left: 0; right: 0; bottom: 0;
@@ -615,7 +615,6 @@ nav a:hover { color: var(--accent); }
     .modal-image { height: 200px; }
     .cart-drawer { width: 100%; right: -100%; }
     
-    /* Parallax doesn't work well on mobile backgrounds, usually scroll-fix is better */
     .nature-banner { background-attachment: scroll; height: 40vh; } 
     
     .hero h1 { font-size: 2.5rem; }
