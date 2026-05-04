@@ -5,7 +5,7 @@
     --fg: #e8e8e3;
     --muted: #888888;
     --accent: #b8956e;
-    --primary-color: #b8956e; /* Added for Modal/Cart compatibility */
+    --primary-color: #b8956e; /* Mapped for consistency */
     --card: #131313;
     --border: #222222;
 }
@@ -21,29 +21,45 @@ body {
     line-height: 1.6;
 }
 
-/* --- NAVIGATION --- */
-.nav-container {
+/* --- ANIMATED BLOBS (Restored) --- */
+.blob-container {
     position: fixed;
-    top: 0; left: 0; right: 0;
-    z-index: 50;
-    padding: 1.5rem 2rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    mix-blend-mode: difference;
+    top: 0; left: 0; right: 0; bottom: 0;
+    overflow: hidden;
+    z-index: -1; /* Behind everything */
+    pointer-events: none;
+}
+.blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.4;
+    animation: float 20s infinite alternate;
+}
+.blob-1 { top: 10%; left: 10%; width: 40vw; height: 40vw; background: #1a1a1a; animation-delay: 0s; }
+.blob-2 { top: 60%; left: 70%; width: 50vw; height: 50vw; background: #0f0f0f; animation-delay: -5s; }
+.blob-3 { top: 40%; left: 30%; width: 30vw; height: 30vw; background: #111; animation-delay: -10s; }
+.blob-4 { top: 80%; left: 10%; width: 20vw; height: 20vw; background: #161616; animation-delay: -15s; }
+.blob-5 { top: 10%; left: 80%; width: 25vw; height: 25vw; background: #101010; animation-delay: -3s; }
+
+@keyframes float {
+    0% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(30px, -50px) scale(1.1); }
+    66% { transform: translate(-20px, 20px) scale(0.9); }
+    100% { transform: translate(20px, 50px) scale(1.05); }
 }
 
-/* Standard Header (used in index.html) */
+/* --- HEADER --- */
 header {
     position: fixed;
     top: 0; left: 0; right: 0;
     z-index: 100;
     padding: 1.5rem 2rem;
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start; /* Align items to start */
     align-items: center;
-    background: rgba(9, 9, 9, 0.8);
-    backdrop-filter: blur(10px);
+    background: rgba(9, 9, 9, 0.85);
+    backdrop-filter: blur(12px);
     border-bottom: 1px solid rgba(255,255,255,0.05);
 }
 
@@ -53,10 +69,16 @@ header {
     letter-spacing: 2px;
     color: var(--fg);
     text-decoration: none;
+    margin-right: 40px; /* Space between logo and nav */
 }
 .logo:hover { color: var(--accent); }
 
-nav { display: flex; gap: 1.5rem; align-items: center; }
+nav {
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+    margin-left: auto; /* PUSHES NAV TO THE RIGHT */
+}
 nav a {
     font-size: 0.8rem;
     text-transform: uppercase;
@@ -69,13 +91,13 @@ nav a:hover { color: var(--accent); }
 
 /* --- HERO SECTION --- */
 .hero {
-    min-height: 70vh;
+    min-height: 80vh;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     text-align: center;
-    padding: 8rem 2rem 4rem;
+    padding: 10rem 2rem 6rem;
     position: relative;
     z-index: 1;
 }
@@ -93,7 +115,7 @@ nav a:hover { color: var(--accent); }
 }
 .btn-primary {
     display: inline-block;
-    padding: 1rem 2rem;
+    padding: 1rem 2.5rem;
     background: var(--fg);
     color: var(--bg);
     text-decoration: none;
@@ -108,42 +130,50 @@ nav a:hover { color: var(--accent); }
     transform: translateY(-2px);
 }
 
-/* --- NATURE BANNER --- */
+/* --- NATURE BANNER (Restored Parallax) --- */
 .nature-banner {
-    width: 100%;
-    height: 400px;
     position: relative;
-    background-image: url('images/banner.jpg'); /* Ensure this image exists */
-    background-size: cover;
-    background-position: center;
+    width: 100%;
+    height: 60vh; /* Height of the window */
     margin: 4rem 0;
+    
+    /* Parallax Magic */
+    background-image: url('images/banner.jpg'); /* Ensure you add a banner.jpg */
+    background-attachment: fixed;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    
+    /* Border radius for the 'window' look */
+    border-radius: 0; 
 }
 .banner-overlay {
     position: absolute;
     inset: 0;
-    background: linear-gradient(to bottom, transparent, rgba(9,9,9,0.8));
+    background: linear-gradient(to bottom, rgba(9,9,9,0.2), rgba(9,9,9,0.6));
 }
 
 /* --- PRODUCT GRID --- */
 .product-section {
-    padding: 4rem 2rem;
+    padding: 6rem 2rem;
     max-width: 1200px;
     margin: 0 auto;
 }
 .section-title {
-    font-size: 2rem;
-    font-weight: 400;
+    font-size: 2.5rem;
+    font-weight: 300;
     margin-bottom: 3rem;
     text-align: center;
+    letter-spacing: -0.02em;
 }
 .product-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 2rem;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2.5rem;
 }
 .product-card {
     background: var(--card);
-    border-radius: 8px;
+    border-radius: 12px;
     overflow: hidden;
     border: 1px solid var(--border);
     cursor: pointer;
@@ -151,30 +181,34 @@ nav a:hover { color: var(--accent); }
 }
 .product-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 15px 30px rgba(0,0,0,0.4);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
     border-color: #333;
 }
 .product-image {
     width: 100%;
-    height: 250px;
+    height: 300px;
     background-size: cover;
     background-position: center;
     transition: transform 0.5s;
 }
 .product-card:hover .product-image {
-    transform: scale(1.05);
+    transform: scale(1.03);
 }
+/* FIXED SPACING */
 .product-info {
-    padding: 1.5rem;
+    padding: 24px 28px; /* Increased padding to prevent text touching edges */
+    background: var(--card);
 }
 .product-info h3 {
-    font-size: 1.1rem;
+    font-size: 1.2rem;
     font-weight: 500;
-    margin-bottom: 0.5rem;
+    margin-bottom: 8px;
+    letter-spacing: -0.01em;
 }
 .price {
     color: var(--accent);
     font-weight: 600;
+    font-size: 1.1rem;
 }
 
 /* --- HEADER CART ICON --- */
@@ -183,10 +217,10 @@ nav a:hover { color: var(--accent); }
     display: flex;
     align-items: center;
     cursor: pointer;
-    margin-left: 20px;
+    margin-left: 30px; /* Separation from nav links */
 }
 .cart-icon {
-    font-size: 1.2rem; /* Slightly smaller to fit nav */
+    font-size: 1.2rem;
     color: var(--fg);
     transition: color 0.3s;
 }
@@ -196,7 +230,7 @@ nav a:hover { color: var(--accent); }
     top: -8px;
     right: -10px;
     background: var(--primary-color);
-    color: #000; /* Dark text on gold background */
+    color: #000; /* Dark text on gold */
     font-size: 0.65rem;
     width: 18px;
     height: 18px;
@@ -214,7 +248,7 @@ nav a:hover { color: var(--accent); }
     background: rgba(0,0,0,0.85);
     backdrop-filter: blur(8px);
     z-index: 99999;
-    display: none; /* Hidden by default */
+    display: none; 
     align-items: center;
     justify-content: center;
 }
@@ -244,7 +278,6 @@ nav a:hover { color: var(--accent); }
     background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
-    transition: transform 0.3s;
 }
 .modal-right {
     width: 50%;
@@ -413,7 +446,6 @@ nav a:hover { color: var(--accent); }
     max-width: 1000px;
     margin: 0 auto;
     display: grid;
-    /* FIX: Added missing closing parenthesis ) */
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 40px;
 }
@@ -455,7 +487,7 @@ nav a:hover { color: var(--accent); }
     background: #111;
     border: 1px solid #333;
     border-radius: 12px;
-    display: none; /* Hidden initially */
+    display: none; 
     flex-direction: column;
     z-index: 9999;
     box-shadow: 0 10px 30px rgba(0,0,0,0.5);
@@ -582,11 +614,17 @@ nav a:hover { color: var(--accent); }
     .modal-left, .modal-right { width: 100%; padding: 20px; }
     .modal-image { height: 200px; }
     .cart-drawer { width: 100%; right: -100%; }
+    
+    /* Parallax doesn't work well on mobile backgrounds, usually scroll-fix is better */
+    .nature-banner { background-attachment: scroll; height: 40vh; } 
+    
     .hero h1 { font-size: 2.5rem; }
     .product-grid { grid-template-columns: 1fr 1fr; gap: 1rem; }
     .product-section { padding: 2rem 1rem; }
     
-    /* Chat widget adjustments */
+    nav { gap: 1rem; }
+    .logo { margin-right: auto; font-size: 1rem; }
+    
     #chat-widget {
         width: calc(100% - 40px);
         height: 60vh;

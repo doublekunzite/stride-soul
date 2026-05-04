@@ -5,14 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Stride & Soul - Premium Footwear</title>
     <link rel="stylesheet" href="style.css">
-    <!-- Favicon (Root folder) -->
     <link rel="icon" type="image/png" href="/favicon.png">
-    <!-- FontAwesome for Icons (Recommended for Cart/Close icons) -->
+    <!-- FontAwesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 
-    <!-- Background Blobs -->
+    <!-- Background Blobs (Restored) -->
     <div class="blob-container">
         <div class="blob blob-1"></div>
         <div class="blob blob-2"></div>
@@ -21,26 +20,30 @@
         <div class="blob blob-5"></div>
     </div>
 
+    <!-- HEADER -->
     <header>
         <a href="index.html" class="logo">STRIDE & SOUL</a>
         <nav>
             <a href="process.html">Process</a>
             <a href="contact.html">Contact</a>
         </nav>
-        <!-- NEW: Cart Icon -->
+        <!-- Cart Icon -->
         <div class="cart-icon-container" id="cart-btn">
             <i class="fas fa-shopping-bag cart-icon"></i>
             <span class="cart-count" id="cart-count">0</span>
         </div>
     </header>
 
+    <!-- HERO SECTION -->
     <section class="hero">
-        <h1>Run Your Story.</h1>
-        <p>Premium footwear designed for the modern journey.</p>
-        <a href="#shop" class="btn-primary">Shop New Arrivals</a>
+        <div class="hero-content">
+            <h1>Run Your Story.</h1>
+            <p>Premium running shoes from top global brands.</p>
+            <a href="#shop" class="btn-primary">Shop New Arrivals</a>
+        </div>
     </section>
 
-    <!-- Nature Photo Banner (Root folder) -->
+    <!-- NATURE PHOTO BANNER (Restored Parallax) -->
     <section class="nature-banner">
         <div class="banner-overlay"></div>
     </section>
@@ -49,38 +52,49 @@
     <section class="product-section" id="shop">
         <h2>Featured Collection</h2>
         <div class="product-grid" id="product-grid">
-            <!-- Products are injected via JavaScript, but here is the fallback/static structure -->
-            <!-- Static HTML for SEO/No-JS fallback, matching the new generic shoes -->
             
+            <!-- Static HTML for SEO/Fallback - Generic Shoes -->
             <div class="product-card" onclick="openModal(1)">
                 <div class="product-image" style="background-image: url('images/1.png');"></div>
-                <h3>Urban Runner</h3>
-                <div class="price">$120.00</div>
+                <div class="product-info">
+                    <h3>Urban Runner</h3>
+                    <div class="price">$120.00</div>
+                </div>
             </div>
             <div class="product-card" onclick="openModal(2)">
                 <div class="product-image" style="background-image: url('images/2.png');"></div>
-                <h3>Classic Leather</h3>
-                <div class="price">$150.00</div>
+                <div class="product-info">
+                    <h3>Classic Leather</h3>
+                    <div class="price">$150.00</div>
+                </div>
             </div>
             <div class="product-card" onclick="openModal(3)">
                 <div class="product-image" style="background-image: url('images/3.png');"></div>
-                <h3>Trail Blazer</h3>
-                <div class="price">$135.00</div>
+                <div class="product-info">
+                    <h3>Trail Blazer</h3>
+                    <div class="price">$135.00</div>
+                </div>
             </div>
             <div class="product-card" onclick="openModal(4)">
                 <div class="product-image" style="background-image: url('images/4.png');"></div>
-                <h3>Midnight Sneak</h3>
-                <div class="price">$110.00</div>
+                <div class="product-info">
+                    <h3>Midnight Sneak</h3>
+                    <div class="price">$110.00</div>
+                </div>
             </div>
             <div class="product-card" onclick="openModal(5)">
                 <div class="product-image" style="background-image: url('images/5.png');"></div>
-                <h3>Cloud Walker</h3>
-                <div class="price">$140.00</div>
+                <div class="product-info">
+                    <h3>Cloud Walker</h3>
+                    <div class="price">$140.00</div>
+                </div>
             </div>
             <div class="product-card" onclick="openModal(6)">
                 <div class="product-image" style="background-image: url('images/6.png');"></div>
-                <h3>Retro Wave</h3>
-                <div class="price">$125.00</div>
+                <div class="product-info">
+                    <h3>Retro Wave</h3>
+                    <div class="price">$125.00</div>
+                </div>
             </div>
 
         </div>
@@ -99,9 +113,7 @@
                 
                 <div class="size-selector">
                     <label>Select Size (US):</label>
-                    <div class="size-options" id="size-options">
-                        <!-- Sizes injected via JS -->
-                    </div>
+                    <div class="size-options" id="size-options"></div>
                 </div>
 
                 <button class="add-to-cart-btn" id="add-to-cart-btn">Add to Cart</button>
@@ -116,7 +128,6 @@
             <span class="drawer-close" id="drawer-close">&times;</span>
         </div>
         <div class="drawer-items" id="drawer-items">
-            <!-- Cart items injected here via JS -->
             <p style="color: #666; text-align: center; margin-top: 50px;">Your cart is empty.</p>
         </div>
         <div class="drawer-footer">
@@ -181,7 +192,6 @@
             <button class="sample-btn" onclick="askSample('Which shoe is the lightest?')">Lightest Shoe</button>
             <button class="sample-btn" onclick="askSample('I have flat feet, what do you recommend?')">Flat feet advice</button>
             <button class="sample-btn" onclick="askSample('Compare Urban Runner vs Cloud Walker')">Compare Models</button>
-            <button class="sample-btn" onclick="askSample('I have $140, what are my options?')">Budget Filter</button>
         </div>
 
         <div id="chat-input-area">
@@ -193,7 +203,7 @@
 
     <!-- JAVASCRIPT -->
     <script>
-        // --- 1. PRODUCT DATA (Frontend) ---
+        // --- 1. PRODUCT DATA ---
         const products = [
             { id: 1, name: "Urban Runner", price: 120, image: "images/1.png", sizes: [7, 8, 9, 10, 11] },
             { id: 2, name: "Classic Leather", price: 150, image: "images/2.png", sizes: [7, 8, 9, 10] },
@@ -223,16 +233,6 @@
         const drawerItems = document.getElementById('drawer-items');
 
         // --- 3. MODAL LOGIC ---
-        // Note: We are attaching events via JS to the static HTML cards in case we re-render them later
-        document.querySelectorAll('.product-card').forEach(card => {
-            card.addEventListener('click', (e) => {
-                const id = e.currentTarget.getAttribute('onclick').match(/\d+/)[0];
-                openModal(parseInt(id));
-            });
-            // Remove the inline onclick to prevent double firing if we are strictly using JS listeners
-            // However, keeping inline onclick as a fallback is fine. Let's use the inline one for simplicity.
-        });
-
         function openModal(id) {
             currentProduct = products.find(p => p.id === id);
             if (!currentProduct) return;
@@ -241,7 +241,6 @@
             modalTitle.textContent = currentProduct.name;
             modalPrice.textContent = `$${currentProduct.price}`;
             
-            // Render Sizes
             sizeOptions.innerHTML = currentProduct.sizes.map(size => `
                 <button class="size-btn" onclick="selectSize(event, ${size})">${size}</button>
             `).join('');
@@ -326,7 +325,7 @@
 
     <!-- CHAT WIDGET SCRIPT -->
     <script>
-        const API_URL = 'https://stride-soul.vercel.app/api/chat'; // Ensure this matches your deployment
+        const API_URL = 'https://stride-soul.vercel.app/api/chat';
 
         const chatWidget = document.getElementById('chat-widget');
         const chatToggle = document.getElementById('chat-toggle');
