@@ -677,3 +677,55 @@ nav a:hover { color: #fff; }
         right: 20px;
     }
 }
+
+/* --- LAYOUT FIXES FOR INNER PAGES --- */
+
+/* Fix for content being hidden under fixed header */
+.page-header {
+    padding: 10rem 2rem 4rem; /* Top padding pushes it down */
+    text-align: center;
+    position: relative;
+    z-index: 2;
+}
+
+.page-title {
+    font-size: clamp(2.5rem, 8vw, 6rem);
+    font-weight: 300;
+    margin-bottom: 1rem;
+    color: #fff;
+}
+
+.page-subtitle {
+    color: #888;
+    font-size: 1.2rem;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* The container for the content */
+.design-section {
+    max-width: 800px; /* Keeps text readable, not too wide */
+    margin: 0 auto; /* Centers the block */
+    padding: 0 2rem 6rem; /* Side padding is critical */
+    position: relative;
+    z-index: 2;
+}
+
+/* Individual blocks of text */
+.project-block {
+    margin-bottom: 4rem;
+}
+
+.project-title {
+    font-size: 1.5rem;
+    font-weight: 500;
+    margin-bottom: 1rem;
+    color: var(--fg);
+}
+
+.project-desc {
+    color: #ccc;
+    font-size: 1rem;
+    line-height: 1.7;
+    margin-bottom: 1.5rem;
+}
