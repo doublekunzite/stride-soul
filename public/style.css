@@ -729,3 +729,25 @@ nav a:hover { color: #fff; }
     line-height: 1.7;
     margin-bottom: 1.5rem;
 }
+
+/* --- FOOTNOTE STYLE --- */
+.footnote-box {
+    margin-top: 3rem;
+    padding: 1.5rem;
+    border-left: 3px solid #333;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 4px;
+}
+
+.footnote-box p {
+    font-size: 0.85rem;
+    color: #666;
+    font-style: italic;
+    line-height: 1.6;
+    margin: 0;
+}
+
+.footnote-box strong {
+    color: #888;
+    font-style: normal;
+}
