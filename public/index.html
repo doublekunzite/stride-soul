@@ -3,10 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stride & Soul - Premium Running Shoes</title>
+    <title>Stride & Soul - Premium Footwear</title>
     <link rel="stylesheet" href="style.css">
     <!-- Favicon (Root folder) -->
     <link rel="icon" type="image/png" href="/favicon.png">
+    <!-- FontAwesome for Icons (Recommended for Cart/Close icons) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 
@@ -25,11 +27,16 @@
             <a href="process.html">Process</a>
             <a href="contact.html">Contact</a>
         </nav>
+        <!-- NEW: Cart Icon -->
+        <div class="cart-icon-container" id="cart-btn">
+            <i class="fas fa-shopping-bag cart-icon"></i>
+            <span class="cart-count" id="cart-count">0</span>
+        </div>
     </header>
 
     <section class="hero">
         <h1>Run Your Story.</h1>
-        <p>Premium running shoes from top global brands.</p>
+        <p>Premium footwear designed for the modern journey.</p>
         <a href="#shop" class="btn-primary">Shop New Arrivals</a>
     </section>
 
@@ -41,72 +48,117 @@
     <!-- Product Section -->
     <section class="product-section" id="shop">
         <h2>Featured Collection</h2>
-        <div class="product-grid">
+        <div class="product-grid" id="product-grid">
+            <!-- Products are injected via JavaScript, but here is the fallback/static structure -->
+            <!-- Static HTML for SEO/No-JS fallback, matching the new generic shoes -->
             
-            <!-- Hoka -->
-            <div class="product-card">
+            <div class="product-card" onclick="openModal(1)">
                 <div class="product-image" style="background-image: url('images/1.png');"></div>
-                <div class="brand">Hoka</div>
-                <h3>Clifton 9</h3>
-                <div class="price">$145.00</div>
+                <h3>Urban Runner</h3>
+                <div class="price">$120.00</div>
             </div>
-            <div class="product-card">
+            <div class="product-card" onclick="openModal(2)">
                 <div class="product-image" style="background-image: url('images/2.png');"></div>
-                <div class="brand">Hoka</div>
-                <h3>Mach 6</h3>
-                <div class="price">$140.00</div>
+                <h3>Classic Leather</h3>
+                <div class="price">$150.00</div>
             </div>
-
-            <!-- Li-Ning -->
-            <div class="product-card">
+            <div class="product-card" onclick="openModal(3)">
                 <div class="product-image" style="background-image: url('images/3.png');"></div>
-                <div class="brand">Li-Ning</div>
-                <h3>Challenger 5</h3>
-                <div class="price">$160.00</div>
+                <h3>Trail Blazer</h3>
+                <div class="price">$135.00</div>
             </div>
-            <div class="product-card">
+            <div class="product-card" onclick="openModal(4)">
                 <div class="product-image" style="background-image: url('images/4.png');"></div>
-                <div class="brand">Li-Ning</div>
-                <h3>Arc Ace</h3>
-                <div class="price">$130.00</div>
+                <h3>Midnight Sneak</h3>
+                <div class="price">$110.00</div>
             </div>
-
-            <!-- Asics -->
-            <div class="product-card">
+            <div class="product-card" onclick="openModal(5)">
                 <div class="product-image" style="background-image: url('images/5.png');"></div>
-                <div class="brand">Asics</div>
-                <h3>Gel-Kayano 30</h3>
-                <div class="price">$160.00</div>
+                <h3>Cloud Walker</h3>
+                <div class="price">$140.00</div>
             </div>
-            <div class="product-card">
+            <div class="product-card" onclick="openModal(6)">
                 <div class="product-image" style="background-image: url('images/6.png');"></div>
-                <div class="brand">Asics</div>
-                <h3>Novablast 4</h3>
-                <div class="price">$140.00</div>
-            </div>
-
-            <!-- Brooks -->
-            <div class="product-card">
-                <div class="product-image" style="background-image: url('images/7.png');"></div>
-                <div class="brand">Brooks</div>
-                <h3>Ghost 15</h3>
-                <div class="price">$140.00</div>
-            </div>
-            <div class="product-card">
-                <div class="product-image" style="background-image: url('images/8.png');"></div>
-                <div class="brand">Brooks</div>
-                <h3>Adrenaline GTS 23</h3>
-                <div class="price">$140.00</div>
+                <h3>Retro Wave</h3>
+                <div class="price">$125.00</div>
             </div>
 
         </div>
-
-        <!-- Stock Image Disclaimer -->
-        <p class="stock-disclaimer">
-            <strong>Note:</strong> Product images used on this site are for demonstration purposes only. They are royalty-free stock images intended to showcase layout and design.
-        </p>
-
     </section>
+
+    <!-- MODAL (Product Detail) -->
+    <div class="modal-overlay" id="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-left">
+                <div class="modal-image" id="modal-image"></div>
+            </div>
+            <div class="modal-right">
+                <span class="modal-close" id="modal-close">&times;</span>
+                <h2 id="modal-title">Product Name</h2>
+                <div class="modal-price" id="modal-price">$0.00</div>
+                
+                <div class="size-selector">
+                    <label>Select Size (US):</label>
+                    <div class="size-options" id="size-options">
+                        <!-- Sizes injected via JS -->
+                    </div>
+                </div>
+
+                <button class="add-to-cart-btn" id="add-to-cart-btn">Add to Cart</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- CART DRAWER -->
+    <div class="cart-drawer" id="cart-drawer">
+        <div class="drawer-header">
+            <h3>Your Cart</h3>
+            <span class="drawer-close" id="drawer-close">&times;</span>
+        </div>
+        <div class="drawer-items" id="drawer-items">
+            <!-- Cart items injected here via JS -->
+            <p style="color: #666; text-align: center; margin-top: 50px;">Your cart is empty.</p>
+        </div>
+        <div class="drawer-footer">
+            <button class="checkout-btn">Proceed to Checkout</button>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="main-footer">
+        <div class="footer-grid">
+            <div class="footer-col">
+                <h4>Shop</h4>
+                <a href="#">Men</a>
+                <a href="#">Women</a>
+                <a href="#">New Arrivals</a>
+                <a href="#">Sale</a>
+            </div>
+            <div class="footer-col">
+                <h4>Help</h4>
+                <a href="#">FAQ</a>
+                <a href="#">Shipping & Returns</a>
+                <a href="#">Size Guide</a>
+                <a href="#">Contact Us</a>
+            </div>
+            <div class="footer-col">
+                <h4>About</h4>
+                <a href="#">Our Story</a>
+                <a href="#">Sustainability</a>
+                <a href="#">Careers</a>
+                <a href="#">Press</a>
+            </div>
+            <div class="footer-col">
+                <h4>Newsletter</h4>
+                <p style="color: #666; font-size: 0.9rem; margin-bottom: 15px;">Subscribe to get special offers and updates.</p>
+                <input type="email" placeholder="Enter your email" style="width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #333; background: #1e1e1e; color: #fff; margin-bottom: 10px;">
+                <button style="width: 100%; padding: 10px; background: var(--primary-color); border: none; color: white; border-radius: 5px; cursor: pointer;">Subscribe</button>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            &copy; 2023 Stride & Soul. All rights reserved.
+        </div>
+    </footer>
 
     <!-- Chat Widget -->
     <div id="chat-widget">
@@ -128,7 +180,7 @@
         <div class="sample-questions" id="sample-area">
             <button class="sample-btn" onclick="askSample('Which shoe is the lightest?')">Lightest Shoe</button>
             <button class="sample-btn" onclick="askSample('I have flat feet, what do you recommend?')">Flat feet advice</button>
-            <button class="sample-btn" onclick="askSample('Compare the Hoka Clifton 9 vs Mach 6')">Compare Models</button>
+            <button class="sample-btn" onclick="askSample('Compare Urban Runner vs Cloud Walker')">Compare Models</button>
             <button class="sample-btn" onclick="askSample('I have $140, what are my options?')">Budget Filter</button>
         </div>
 
@@ -139,8 +191,142 @@
     </div>
     <button id="chat-toggle" onclick="toggleChat()">💬</button>
 
+    <!-- JAVASCRIPT -->
     <script>
-        const API_URL = 'https://stride-soul.vercel.app/api/chat';
+        // --- 1. PRODUCT DATA (Frontend) ---
+        const products = [
+            { id: 1, name: "Urban Runner", price: 120, image: "images/1.png", sizes: [7, 8, 9, 10, 11] },
+            { id: 2, name: "Classic Leather", price: 150, image: "images/2.png", sizes: [7, 8, 9, 10] },
+            { id: 3, name: "Trail Blazer", price: 135, image: "images/3.png", sizes: [8, 9, 10, 11, 12] },
+            { id: 4, name: "Midnight Sneak", price: 110, image: "images/4.png", sizes: [7, 8, 9] },
+            { id: 5, name: "Cloud Walker", price: 140, image: "images/5.png", sizes: [8, 9, 10] },
+            { id: 6, name: "Retro Wave", price: 125, image: "images/6.png", sizes: [7, 8, 9, 10, 11] }
+        ];
+
+        let cart = [];
+        let selectedSize = null;
+        let currentProduct = null;
+
+        // --- 2. DOM ELEMENTS ---
+        const modalOverlay = document.getElementById('modal-overlay');
+        const modalImage = document.getElementById('modal-image');
+        const modalTitle = document.getElementById('modal-title');
+        const modalPrice = document.getElementById('modal-price');
+        const sizeOptions = document.getElementById('size-options');
+        const addToCartBtn = document.getElementById('add-to-cart-btn');
+        const modalClose = document.getElementById('modal-close');
+        
+        const cartBtn = document.getElementById('cart-btn');
+        const cartCount = document.getElementById('cart-count');
+        const cartDrawer = document.getElementById('cart-drawer');
+        const drawerClose = document.getElementById('drawer-close');
+        const drawerItems = document.getElementById('drawer-items');
+
+        // --- 3. MODAL LOGIC ---
+        // Note: We are attaching events via JS to the static HTML cards in case we re-render them later
+        document.querySelectorAll('.product-card').forEach(card => {
+            card.addEventListener('click', (e) => {
+                const id = e.currentTarget.getAttribute('onclick').match(/\d+/)[0];
+                openModal(parseInt(id));
+            });
+            // Remove the inline onclick to prevent double firing if we are strictly using JS listeners
+            // However, keeping inline onclick as a fallback is fine. Let's use the inline one for simplicity.
+        });
+
+        function openModal(id) {
+            currentProduct = products.find(p => p.id === id);
+            if (!currentProduct) return;
+
+            modalImage.style.backgroundImage = `url('${currentProduct.image}')`;
+            modalTitle.textContent = currentProduct.name;
+            modalPrice.textContent = `$${currentProduct.price}`;
+            
+            // Render Sizes
+            sizeOptions.innerHTML = currentProduct.sizes.map(size => `
+                <button class="size-btn" onclick="selectSize(event, ${size})">${size}</button>
+            `).join('');
+
+            selectedSize = null;
+            modalOverlay.style.display = 'flex';
+        }
+
+        function closeModal() {
+            modalOverlay.style.display = 'none';
+        }
+
+        function selectSize(event, size) {
+            event.stopPropagation();
+            selectedSize = size;
+            document.querySelectorAll('.size-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+
+        // --- 4. CART LOGIC ---
+        function addToCart() {
+            if (!selectedSize) {
+                alert("Please select a size first.");
+                return;
+            }
+            if (!currentProduct) return;
+
+            const item = {
+                ...currentProduct,
+                selectedSize: selectedSize,
+                cartId: Date.now()
+            };
+
+            cart.push(item);
+            updateCartUI();
+            closeModal();
+            openDrawer();
+        }
+
+        function removeFromCart(cartId) {
+            cart = cart.filter(item => item.cartId !== cartId);
+            updateCartUI();
+        }
+
+        function updateCartUI() {
+            cartCount.textContent = cart.length;
+
+            if (cart.length === 0) {
+                drawerItems.innerHTML = `<p style="color: #666; text-align: center; margin-top: 50px;">Your cart is empty.</p>`;
+            } else {
+                drawerItems.innerHTML = cart.map(item => `
+                    <div class="cart-item">
+                        <div class="cart-item-img" style="background-image: url('${item.image}')"></div>
+                        <div class="cart-item-details">
+                            <div class="cart-item-title">${item.name} (Size: ${item.selectedSize})</div>
+                            <div class="cart-item-price">$${item.price}</div>
+                            <button class="cart-item-remove" onclick="removeFromCart(${item.cartId})">Remove</button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function openDrawer() {
+            cartDrawer.classList.add('open');
+        }
+
+        function closeDrawer() {
+            cartDrawer.classList.remove('open');
+        }
+
+        // --- 5. EVENT LISTENERS ---
+        modalClose.addEventListener('click', closeModal);
+        modalOverlay.addEventListener('click', (e) => {
+            if (e.target === modalOverlay) closeModal();
+        });
+        addToCartBtn.addEventListener('click', addToCart);
+        cartBtn.addEventListener('click', openDrawer);
+        drawerClose.addEventListener('click', closeDrawer);
+
+    </script>
+
+    <!-- CHAT WIDGET SCRIPT -->
+    <script>
+        const API_URL = 'https://stride-soul.vercel.app/api/chat'; // Ensure this matches your deployment
 
         const chatWidget = document.getElementById('chat-widget');
         const chatToggle = document.getElementById('chat-toggle');

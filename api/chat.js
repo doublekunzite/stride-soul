@@ -2,30 +2,25 @@
 
 // --- DATA SOURCE ---
 
-// 1. OUR INVENTORY (What we SELL - has Price & Weight)
+// 1. OUR INVENTORY (What we SELL - Generic Stride & Soul Brand)
 const inventory = [
-  { id: 1, name: "Hoka Clifton 9", brand: "Hoka", price: 145, weight_grams: 248, type: "Neutral", cushion: "High", description: "A highly cushioned daily trainer that delivers a soft, balanced ride for easy miles and long runs." },
-  { id: 2, name: "Hoka Mach 6", brand: "Hoka", price: 140, weight_grams: 232, type: "Neutral", cushion: "Responsive", description: "A responsive, low-profile neutral trainer built for tempo runs and faster daily efforts." },
-  { id: 3, name: "Li-Ning Challenger 5", brand: "Li-Ning", price: 160, weight_grams: 210, type: "Racing", cushion: "High", description: "An elite carbon-plated racing shoe designed for speed with Boom foam technology." },
-  { id: 4, name: "Li-Ning Arc Ace", brand: "Li-Ning", price: 130, weight_grams: 280, type: "Stability", cushion: "Medium", description: "A stability-oriented shoe built on Li-Ning's Arc cushion platform." },
-  { id: 5, name: "Asics Gel-Kayano 30", brand: "Asics", price: 160, weight_grams: 303, type: "Stability", cushion: "High", description: "The flagship stability trainer renowned for its plush, supportive ride." },
-  { id: 6, name: "Asics Novablast 4", brand: "Asics", price: 140, weight_grams: 260, type: "Neutral", cushion: "High", description: "A bouncy, energetic neutral daily trainer with a trampoline-inspired midsole." },
-  { id: 7, name: "Brooks Ghost 15", brand: "Brooks", price: 140, weight_grams: 260, type: "Neutral", cushion: "Medium", description: "A dependable, no-fuss neutral trainer and an ideal entry point for new runners." },
-  { id: 8, name: "Brooks Adrenaline GTS 23", brand: "Brooks", price: 140, weight_grams: 286, type: "Stability", cushion: "Medium", description: "A classic stability shoe that pairs GuideRails support with a balanced ride." }
+  { id: 1, name: "Urban Runner", brand: "Stride & Soul", price: 120, weight_grams: 280, type: "Neutral", cushion: "Medium", description: "A versatile daily trainer suitable for road running and casual wear." },
+  { id: 2, name: "Classic Leather", brand: "Stride & Soul", price: 150, weight_grams: 320, type: "Lifestyle", cushion: "Medium", description: "A retro-inspired leather sneaker built for style and all-day comfort." },
+  { id: 3, name: "Trail Blazer", brand: "Stride & Soul", price: 135, weight_grams: 300, type: "Trail", cushion: "High", description: "Rugged outsole and deep lugs designed for off-road adventures." },
+  { id: 4, name: "Midnight Sneak", brand: "Stride & Soul", price: 110, weight_grams: 210, type: "Racing", cushion: "Responsive", description: "A lightweight, sleek sneaker for speed workouts and fast days." },
+  { id: 5, name: "Cloud Walker", brand: "Stride & Soul", price: 140, weight_grams: 260, type: "Neutral", cushion: "High", description: "Plush cushioning makes this ideal for recovery days and long walks." },
+  { id: 6, name: "Retro Wave", brand: "Stride & Soul", price: 125, weight_grams: 295, type: "Stability", cushion: "Medium", description: "A supportive stability shoe with a classic 90s aesthetic." }
 ];
 
-// 2. MARKET KNOWLEDGE (What we KNOW ABOUT - No price/weight)
+// 2. MARKET KNOWLEDGE (What we KNOW ABOUT - Real World Brands)
+// Used for comparison logic to show technical competence.
 const marketKnowledge = [
-  { name: "Adidas Adizero Evo SL", type: "Performance", description: "A lightweight, plate-free performance trainer with a springy Lightstrike Pro midsole." },
-  { name: "Brooks Ghost 17", type: "Neutral", description: "Award-winning neutral trainer with DNA Loft v3 cushioning, great for beginners." },
-  { name: "Asics Novablast 5", type: "Neutral", description: "Versatile daily trainer with a bouncy midsole, good for building a rotation." },
-  { name: "Nike Vomero Plus", type: "Neutral", description: "Max-cushioned trainer with ZoomX midsole for energetic comfort." },
-  { name: "New Balance Ellipse", type: "Neutral", description: "A 'Goldilocks' trainer blending soft cushioning with performance feel." },
-  { name: "Saucony Ride 19", type: "Neutral", description: "Well-balanced trainer with an 8mm drop for smooth transitions." },
-  { name: "Hoka Bondi 9", type: "Neutral", description: "Max-cushioned road shoe, great for recovery days." },
-  { name: "Brooks Glycerin 23", type: "Neutral", description: "Popular cushioned shoe ideal for long walks and recovery sessions." },
-  { name: "Asics Gel-Kayano 32", type: "Stability", description: "Latest version of the gold-standard stability trainer." },
-  { name: "Nike Pegasus 41", type: "Neutral", description: "Dependable neutral workhorse for everyday training." }
+  { name: "Nike Pegasus 41", type: "Neutral", description: "Dependable neutral workhorse for everyday training." },
+  { name: "Hoka Clifton 9", type: "Neutral", description: "Highly cushioned daily trainer with a meta-rocker design." },
+  { name: "Brooks Ghost 15", type: "Neutral", description: "Award-winning neutral trainer with soft cushioning." },
+  { name: "Asics Novablast 4", type: "Neutral", description: "Bouncy, energetic daily trainer." },
+  { name: "New Balance 1080v13", type: "Neutral", description: "Fresh Foam X midsole delivers supreme comfort." },
+  { name: "Adidas Ultraboost", type: "Neutral", description: "Responsive cushioning with a sock-like fit." }
 ];
 
 // --- HELPER: Call DeepSeek ---
@@ -53,9 +48,8 @@ function detectIntent(userMessage) {
   const msg = userMessage.toLowerCase();
 
   // DETECTOR: Is the user asking about a competitor?
-  // We check if any market shoe name is in the message
   const isCompetitorMention = marketKnowledge.some(s => 
-    msg.includes(s.name.toLowerCase()) || msg.includes(s.name.toLowerCase().split(" ")[1]) // matches "Pegasus" or "Nike Pegasus"
+    msg.includes(s.name.toLowerCase()) || msg.includes(s.name.toLowerCase().split(" ")[1])
   );
 
   // DETECTOR: Is the user asking for a comparison or alternative?
@@ -68,9 +62,8 @@ function detectIntent(userMessage) {
   // Standard Inventory Intents
   if (msg.includes("lightest") || msg.includes("heaviest") || msg.includes("weight")) return "SPECS";
   if (msg.includes("$") || msg.includes("price") || msg.includes("budget")) return "BUDGET";
-  if (msg.includes("stability") || msg.includes("flat feet")) return "STABILITY";
+  if (msg.includes("stability") || msg.includes("flat feet") || msg.includes("support")) return "STABILITY";
   
-  // Default
   return "INVENTORY";
 }
 
@@ -80,18 +73,16 @@ function detectIntent(userMessage) {
 async function handleCompetitorQuestion(userMessage) {
   const msg = userMessage.toLowerCase();
   
-  // 1. Find the specific competitor shoe mentioned
   const foundShoe = marketKnowledge.find(s => 
     msg.includes(s.name.toLowerCase()) || msg.includes(s.name.toLowerCase().split(" ")[1])
   );
 
-  // 2. Construct the specific "Competitor Prompt"
   let context = "";
   
   if (foundShoe) {
     context = `You asked about the ${foundShoe.name}. 
     KNOWLEDGE: ${foundShoe.description}.
-    STATUS: We do NOT sell this shoe.
+    STATUS: We do NOT sell this brand.
     OUR INVENTORY: ${inventory.map(s => s.name).join(", ")}.`;
   } else {
     context = `User wants a recommendation similar to a popular model.
@@ -100,15 +91,13 @@ async function handleCompetitorQuestion(userMessage) {
 
   const systemPrompt = {
     role: 'system',
-    content: `You are a helpful, casual running shoe expert.
+    content: `You are a helpful, casual running shoe expert for the store 'Stride & Soul'.
 
     INSTRUCTIONS:
-    Answer the user's question using natural, conversational language. 
-    Do NOT use labels like "ACKNOWLEDGE" or "PIVOT". 
-    Instead, follow this flow silently:
+    Answer the user's question using natural language. 
     1. Briefly describe the shoe they asked about (positive tone).
-    2. Mention naturally that it's not in stock right now.
-    3. Recommend the closest match from OUR INVENTORY and explain why it's a good alternative.
+    2. Mention that it is not in our specific inventory right now.
+    3. Recommend the closest match from OUR INVENTORY and explain why.
     
     DATA:
     ${context}`
@@ -117,16 +106,12 @@ async function handleCompetitorQuestion(userMessage) {
   return await callDeepSeek([systemPrompt, { role: 'user', content: userMessage }]);
 }
 
-// HANDLER 2: Inventory Logic (The standard one)
+// HANDLER 2: Inventory Logic
 async function handleInventoryQuestion(intent, userMessage) {
-  const msg = userMessage.toLowerCase();
   let contextData = "";
 
-  // Helper formatting
   const formatFull = (s) => `Model: ${s.name}\nBrand: ${s.brand}\nPrice: $${s.price}\nWeight: ${s.weight_grams}g\nType: ${s.type}\nDetails: ${s.description}`;
-  const formatDesc = (s) => `Model: ${s.name}\nType: ${s.type}\nDetails: ${s.description}`;
 
-  // Context Retrieval
   if (intent === "SPECS") {
     const sorted = [...inventory].sort((a, b) => a.weight_grams - b.weight_grams);
     contextData = "User wants SPECS. Lightest:\n" + sorted.slice(0, 3).map(formatFull).join("\n\n");
@@ -135,9 +120,8 @@ async function handleInventoryQuestion(intent, userMessage) {
     contextData = "User cares about PRICE. Cheapest first:\n" + sorted.map(formatFull).join("\n\n");
   } else if (intent === "STABILITY") {
     const results = inventory.filter(s => s.type === "Stability");
-    contextData = "User needs STABILITY:\n" + results.map(formatDesc).join("\n\n");
+    contextData = "User needs STABILITY:\n" + results.map(formatFull).join("\n\n");
   } else {
-    // Default
     contextData = "Our Inventory:\n" + inventory.map(s => `- ${s.name} ($${s.price})`).join("\n");
   }
 
@@ -167,17 +151,13 @@ export default async function handler(req, res) {
     const lastMessage = messages[messages.length - 1];
     const userText = lastMessage.content;
 
-    // 1. DETECT INTENT
     const intent = detectIntent(userText);
     console.log("Detected Intent:", intent);
 
-    // 2. ROUTE TO CORRECT HANDLER
     let reply;
     if (intent === "COMPETITOR_QUESTION") {
-      console.log("Routing to Competitor Handler...");
       reply = await handleCompetitorQuestion(userText);
     } else {
-      console.log("Routing to Inventory Handler...");
       reply = await handleInventoryQuestion(intent, userText);
     }
 
