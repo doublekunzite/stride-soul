@@ -172,10 +172,11 @@ nav a:hover { color: #fff; }
     z-index: 2;
 }
 .section-title {
-    text-align: center;
-    margin-bottom: 40px;
-    font-size: 2rem;
-    color: #fff;
+    font-size: 2.5rem;
+    font-weight: 300;
+    margin-bottom: 3rem;
+    /* Removed text-align: center; so it can align left naturally */
+    letter-spacing: -0.02em;
 }
 .product-grid {
     display: grid;
