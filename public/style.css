@@ -769,3 +769,11 @@ nav a:hover { color: #fff; }
 .stock-disclaimer strong {
     color: #aaa; /* Slightly brighter for the label */
 }
+
+/* Cart Total Styling */
+.drawer-total {
+    border-top: 1px solid #333;
+    padding-top: 15px;
+    margin-top: 10px;
+    font-weight: bold;
+}

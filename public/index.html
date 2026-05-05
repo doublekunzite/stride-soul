@@ -135,8 +135,12 @@
         <div class="drawer-items" id="drawer-items">
             <p style="color: #666; text-align: center; margin-top: 50px;">Your cart is empty.</p>
         </div>
-        <div class="drawer-footer">
-            <button class="checkout-btn">Proceed to Checkout</button>
+                <div class="drawer-footer">
+            <div class="drawer-total" style="display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 1.1rem; color: #fff;">
+                <span>Subtotal</span>
+                <span id="cart-total">$0.00</span>
+            </div>
+            <button class="checkout-btn" id="checkout-btn">Proceed to Checkout</button>
         </div>
     </div>
 
@@ -208,9 +212,8 @@
     <button id="chat-toggle" onclick="toggleChat()">💬</button>
 
     <!-- JAVASCRIPT -->
-    <script>
+        <script>
         // --- 1. PRODUCT DATA ---
-        // UPDATED: Image extensions changed to .jpg and Name updated for ID 2
         const products = [
             { id: 1, name: "Urban Runner", price: 120, image: "images/1.jpg", sizes: [7, 8, 9, 10, 11] },
             { id: 2, name: "Classic Vegan Leather", price: 150, image: "images/2.jpg", sizes: [7, 8, 9, 10] },
@@ -238,6 +241,8 @@
         const cartDrawer = document.getElementById('cart-drawer');
         const drawerClose = document.getElementById('drawer-close');
         const drawerItems = document.getElementById('drawer-items');
+        const cartTotal = document.getElementById('cart-total'); // New
+        const checkoutBtn = document.getElementById('checkout-btn'); // New
 
         // --- 3. MODAL LOGIC ---
         function openModal(id) {
@@ -267,7 +272,7 @@
             event.target.classList.add('active');
         }
 
-        // --- 4. CART LOGIC ---
+        // --- 4. CART LOGIC (Updated for Quantity) ---
         function addToCart() {
             if (!selectedSize) {
                 alert("Please select a size first.");
@@ -275,26 +280,46 @@
             }
             if (!currentProduct) return;
 
-            const item = {
-                ...currentProduct,
-                selectedSize: selectedSize,
-                cartId: Date.now()
-            };
+            // Create a unique key for this specific product + size combination
+            const itemKey = `${currentProduct.id}-${selectedSize}`;
 
-            cart.push(item);
+            // Check if item already exists in cart
+            const existingItem = cart.find(item => item.key === itemKey);
+
+            if (existingItem) {
+                // Increment quantity if it exists
+                existingItem.quantity += 1;
+            } else {
+                // Add new item if it doesn't
+                const item = {
+                    ...currentProduct,
+                    selectedSize: selectedSize,
+                    key: itemKey, // Store key for future lookups
+                    quantity: 1
+                };
+                cart.push(item);
+            }
+
             updateCartUI();
             closeModal();
             openDrawer();
         }
 
-        function removeFromCart(cartId) {
-            cart = cart.filter(item => item.cartId !== cartId);
+        function removeFromCart(itemKey) {
+            cart = cart.filter(item => item.key !== itemKey);
             updateCartUI();
         }
 
         function updateCartUI() {
-            cartCount.textContent = cart.length;
+            // Update Count (sum of quantities)
+            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+            cartCount.textContent = totalItems;
 
+            // Calculate Total Price
+            const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            cartTotal.textContent = `$${totalPrice.toFixed(2)}`;
+
+            // Render Items
             if (cart.length === 0) {
                 drawerItems.innerHTML = `<p style="color: #666; text-align: center; margin-top: 50px;">Your cart is empty.</p>`;
             } else {
@@ -303,8 +328,8 @@
                         <div class="cart-item-img" style="background-image: url('${item.image}')"></div>
                         <div class="cart-item-details">
                             <div class="cart-item-title">${item.name} (Size: ${item.selectedSize})</div>
-                            <div class="cart-item-price">$${item.price}</div>
-                            <button class="cart-item-remove" onclick="removeFromCart(${item.cartId})">Remove</button>
+                            <div class="cart-item-price">$${item.price} x ${item.quantity}</div>
+                            <button class="cart-item-remove" onclick="removeFromCart('${item.key}')">Remove</button>
                         </div>
                     </div>
                 `).join('');
@@ -319,7 +344,23 @@
             cartDrawer.classList.remove('open');
         }
 
-        // --- 5. EVENT LISTENERS ---
+        // --- 5. CHECKOUT LOGIC (Mock) ---
+        function handleCheckout() {
+            if (cart.length === 0) {
+                alert("Your cart is empty.");
+                return;
+            }
+
+            // Show success message
+            alert("✅ Order Placed! (Demo)\n\nThank you for testing the Stride & Soul checkout flow.");
+
+            // Clear cart and reset UI
+            cart = [];
+            updateCartUI();
+            closeDrawer();
+        }
+
+        // --- 6. EVENT LISTENERS ---
         modalClose.addEventListener('click', closeModal);
         modalOverlay.addEventListener('click', (e) => {
             if (e.target === modalOverlay) closeModal();
@@ -327,6 +368,7 @@
         addToCartBtn.addEventListener('click', addToCart);
         cartBtn.addEventListener('click', openDrawer);
         drawerClose.addEventListener('click', closeDrawer);
+        checkoutBtn.addEventListener('click', handleCheckout); // New
 
     </script>
 
