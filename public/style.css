@@ -777,3 +777,27 @@ nav a:hover { color: #fff; }
     margin-top: 10px;
     font-weight: bold;
 }
+
+/* --- TOAST NOTIFICATION --- */
+.toast {
+    position: fixed;
+    bottom: 30px;
+    right: -400px; /* Hidden off-screen */
+    background: #1e1e1e;
+    color: #fff;
+    padding: 16px 24px;
+    border-radius: 8px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    z-index: 999999;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border: 1px solid #333;
+    transition: right 0.5s cubic-bezier(0.18, 1, 0.3, 1);
+    font-size: 0.95rem;
+}
+
+/* Class to trigger the slide-in animation */
+.toast.show {
+    right: 30px;
+}

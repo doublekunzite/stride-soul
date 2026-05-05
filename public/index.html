@@ -120,6 +120,17 @@
                     <label>Select Size (US):</label>
                     <div class="size-options" id="size-options"></div>
                 </div>
+				
+				<div class="quantity-selector" style="margin-bottom: 20px;">
+                    <label>Quantity:</label>
+                    <select id="quantity-select" class="quantity-dropdown">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
+                </div>
 
                 <button class="add-to-cart-btn" id="add-to-cart-btn">Add to Cart</button>
             </div>
@@ -147,13 +158,7 @@
     <!-- FOOTER -->
     <footer class="main-footer">
         <div class="footer-grid">
-            <div class="footer-col">
-                <h4>Shop</h4>
-                <a href="index.html#shop">Men</a>
-                <a href="index.html#shop">Women</a>
-                <a href="index.html#shop">New Arrivals</a>
-                <a href="index.html#shop">Sale</a>
-            </div>
+            
             <div class="footer-col">
                 <h4>Help</h4>
                 <a href="#">FAQ</a>
@@ -168,11 +173,19 @@
                 <a href="careers.html">Careers</a>
                 <a href="press.html">Press</a>
             </div>
-            <div class="footer-col">
+                        <div class="footer-col">
                 <h4>Newsletter</h4>
                 <p style="color: #666; font-size: 0.9rem; margin-bottom: 15px;">Subscribe to get special offers and updates.</p>
-                <input type="email" placeholder="Enter your email" style="width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #333; background: #1e1e1e; color: #fff; margin-bottom: 10px;">
-                <button style="width: 100%; padding: 10px; background: var(--primary-color); border: none; color: white; border-radius: 5px; cursor: pointer;">Subscribe</button>
+                
+                <form id="newsletter-form" onsubmit="event.preventDefault(); handleSubscribe();">
+                    <input type="email" id="newsletter-email" value="test@gmail.com" placeholder="Enter your email" style="width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #333; background: #1e1e1e; color: #fff; margin-bottom: 5px;">
+                    
+                    <!-- Error Message -->
+                    <small id="newsletter-error" style="color: #ff6b6b; display: none; margin-bottom: 5px; display: block; font-size: 0.8rem;">Please enter a valid email.</small>
+                    
+                    <!-- Subscribe Button -->
+                    <button id="newsletter-btn" type="submit" style="width: 100%; padding: 10px; background: var(--primary-color); border: none; color: white; border-radius: 5px; cursor: pointer; transition: all 0.3s; font-weight: bold;">Subscribe</button>
+                </form>
             </div>
         </div>
         <div class="footer-bottom">
@@ -452,6 +465,54 @@
                 console.error(error);
             }
         }
+		
+		        // --- NEWSLETTER LOGIC ---
+        function handleSubscribe() {
+            const emailInput = document.getElementById('newsletter-email');
+            const errorMsg = document.getElementById('newsletter-error');
+            const btn = document.getElementById('newsletter-btn');
+            const email = emailInput.value;
+
+            // 1. Validation (Simple check for @ and . and length)
+            const isValid = email.includes('@') && email.includes('.') && email.length > 5;
+
+            if (!isValid) {
+                // Show error
+                errorMsg.style.display = 'block';
+                emailInput.style.borderColor = '#ff6b6b';
+                return;
+            }
+
+            // 2. Success State
+            errorMsg.style.display = 'none';
+            emailInput.style.borderColor = '#333'; // Reset border
+
+            // 3. Update Button UI
+            btn.style.background = '#10B981'; // Green
+            btn.textContent = 'Subscribed!';
+            btn.disabled = true;
+            btn.style.cursor = 'default';
+
+            // 4. Show Toast
+            showToast();
+        }
+
+        function showToast() {
+            const toast = document.getElementById('toast');
+            toast.classList.add('show');
+
+            // Hide toast after 3 seconds
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
     </script>
+	
+	   <!-- Toast Notification Element -->
+    <div id="toast" class="toast">
+        <i class="fas fa-check-circle" style="color: #10B981;"></i>
+        <span>Successfully Subscribed!</span>
+    </div>
+	
 </body>
 </html>
