@@ -49,16 +49,10 @@
 </div>
     </section>
 
-    <!-- FOOTER -->
+   <!-- FOOTER -->
     <footer class="main-footer">
         <div class="footer-grid">
-            <div class="footer-col">
-                <h4>Shop</h4>
-                <a href="index.html#shop">Men</a>
-                <a href="index.html#shop">Women</a>
-                <a href="index.html#shop">New Arrivals</a>
-                <a href="index.html#shop">Sale</a>
-            </div>
+            
             <div class="footer-col">
                 <h4>Help</h4>
                 <a href="#">FAQ</a>
@@ -76,8 +70,15 @@
             <div class="footer-col">
                 <h4>Newsletter</h4>
                 <p style="color: #666; font-size: 0.9rem; margin-bottom: 15px;">Subscribe to get special offers and updates.</p>
-                <input type="email" placeholder="Enter your email" style="width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #333; background: #1e1e1e; color: #fff; margin-bottom: 10px;">
-                <button style="width: 100%; padding: 10px; background: var(--primary-color); border: none; color: white; border-radius: 5px; cursor: pointer;">Subscribe</button>
+                
+                <form id="newsletter-form" onsubmit="event.preventDefault(); handleSubscribe();">
+                    <input type="email" id="newsletter-email" value="test@gmail.com" placeholder="Enter your email" style="width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #333; background: #1e1e1e; color: #fff; margin-bottom: 10px;">
+                    
+                    <!-- FIXED: Removed 'display: block' from inline style so it stays hidden -->
+                    <small id="newsletter-error" style="color: #ff6b6b; display: none; font-size: 0.8rem; margin-bottom: 10px;">Please enter a valid email.</small>
+                    
+                    <button id="newsletter-btn" type="submit" style="width: 100%; padding: 10px; background: var(--primary-color); border: none; color: white; border-radius: 5px; cursor: pointer; transition: all 0.3s; font-weight: bold;">Subscribe</button>
+                </form>
             </div>
         </div>
         <div class="footer-bottom">
