@@ -752,3 +752,20 @@ nav a:hover { color: #fff; }
     color: #888;
     font-style: normal;
 }
+
+/* --- DISCLAIMER STYLING --- */
+.stock-disclaimer {
+    text-align: center;
+    font-size: 0.85rem;
+    color: #888; /* Accessible contrast on dark background */
+    margin-top: 4rem;
+    padding: 0 2rem;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.5;
+}
+
+.stock-disclaimer strong {
+    color: #aaa; /* Slightly brighter for the label */
+}
