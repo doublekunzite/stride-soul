@@ -81,5 +81,23 @@
             &copy; 2023 Stride & Soul. All rights reserved.
         </div>
     </footer>
+	
+	<script>
+    function mockDownload() {
+        // Show the toast (assuming the toast HTML and CSS from index.html are added here)
+        const toast = document.getElementById('toast');
+        if (toast) {
+            toast.querySelector('span').textContent = "Download Started (Demo)";
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        } else {
+            alert("Download started (Demo)");
+        }
+    }
+</script>
+
+	<button onclick="mockDownload()" class="btn-primary" style="margin-top: 20px; padding: 12px 30px; font-size: 1rem; border: none; cursor: pointer;">
+    Download Media Kit
+</button>
 </body>
 </html>
