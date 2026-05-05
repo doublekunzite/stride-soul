@@ -89,8 +89,8 @@
                     Visit Canva &rarr;
                 </a>
             </div>
-			
-			 <div class="dev-card">
+
+            <div class="dev-card">
                 <div class="dev-card-header">
                     <span class="dev-card-title">Notepad++</span>
                     <span class="dev-card-badge">Code Editing</span>
@@ -101,8 +101,9 @@
                 <a href="https://notepad-plus-plus.org/" target="_blank" style="color: var(--primary-color); font-size: 0.9rem; text-decoration: none; font-weight: 500;">
                     Visit Notepad++ &rarr;
                 </a>
-				
-				<div class="dev-card">
+            </div>
+
+            <div class="dev-card">
                 <div class="dev-card-header">
                     <span class="dev-card-title">DeepSeek V4 Flash API</span>
                     <span class="dev-card-badge">Site Backend</span>
@@ -113,13 +114,12 @@
                 <a href="https://chat.deepseek.com/" target="_blank" style="color: var(--primary-color); font-size: 0.9rem; text-decoration: none; font-weight: 500;">
                     Visit DeepSeek &rarr;
                 </a>
-				
             </div>
 
         </div>
 
-        <!-- SECTION 2: AI & CHATBOT -->
-        <h2 class="section-title">AI Integration & Chatbot Features</h2>
+        <!-- SECTION 2: AI & BACKEND ARCHITECTURE -->
+        <h2 class="section-title">AI & Backend Architecture</h2>
         <div class="dev-grid">
             
             <div class="dev-card">
@@ -142,31 +142,29 @@
                 <p class="dev-solution"><strong>Solution:</strong> Built a "Logic Tree" in the backend. If a competitor is mentioned, the system triggers a specific protocol: 1. Acknowledge the competitor shoe using market knowledge. 2. Clarify it's not in stock. 3. Pivot to a recommendation from our inventory.</p>
             </div>
 
-            <div class="dev-card">
-                <div class="dev-card-header">
-                    <span class="dev-card-title">Persona Engineering</span>
-                    <span class="dev-card-badge">Prompting</span>
-                </div>
-                <p class="dev-challenge">Challenge: The AI was using robotic labels like "PIVOT:" in its responses, breaking the user immersion.</p>
-                <div class="dev-prompt">"Adjust the prompting so that it doesn't write 'acknowledge' etc and speaks in a natural, casual tone."</div>
-                <p class="dev-solution"><strong>Solution:</strong> Refined the System Prompt to enforce a "Natural Logic." The AI is instructed to follow the logic steps *silently* and output only conversational text, resulting in a helpful salesperson tone rather than a robotic flowchart.</p>
-            </div>
-
-            <div class="dev-card">
-                <div class="dev-card-header">
-                    <span class="dev-card-title">Serverless API Configuration</span>
-                    <span class="dev-card-badge">Backend</span>
-                </div>
-                <p class="dev-challenge">Challenge: The chatbot returned a 404 error on Vercel deployment, despite working locally.</p>
-                <div class="dev-prompt">"I made all the changes you said... but the chatbot isn't working."</div>
-                <p class="dev-solution"><strong>Solution:</strong> Identified that Vercel wasn't detecting the backend function due to incorrect Root Directory settings. Updated project configuration and added <code>package.json</code> with <code>type: module</code> to support modern ES6 syntax.</p>
-            </div>
-
         </div>
 
-        <!-- SECTION 3: DESIGN & TECHNICAL -->
-        <h2 class="section-title">Design & Technical Engineering</h2>
+        <!-- SECTION 3: FRONTEND ENGINEERING & UX -->
+        <h2 class="section-title">Frontend Engineering & UX</h2>
         <div class="dev-grid">
+
+            <div class="dev-card">
+                <div class="dev-card-header">
+                    <span class="dev-card-title">Dynamic State Management</span>
+                    <span class="dev-card-badge">Frontend Logic</span>
+                </div>
+                <p class="dev-challenge">Challenge: Users needed to add multiple quantities of the same shoe, but the cart was creating duplicate entries, making the total calculation incorrect.</p>
+                <p class="dev-solution"><strong>Solution:</strong> Refactored the cart logic to use unique keys (Product ID + Size). The system now checks for existing items to increment quantity rather than pushing duplicates, ensuring accurate subtotals and a cleaner UI.</p>
+            </div>
+
+            <div class="dev-card">
+                <div class="dev-card-header">
+                    <span class="dev-card-title">Feedback Loop UI</span>
+                    <span class="dev-card-badge">UX</span>
+                </div>
+                <p class="dev-challenge">Challenge: Forms often fail silently or look unprofessional without clear user feedback.</p>
+                <p class="dev-solution"><strong>Solution:</strong> Implemented a robust validation flow for the newsletter. If the email is invalid, the UI reacts with a "shake" animation and error styling. On success, a "Toast" notification slides in, confirming the action without intrusive alerts.</p>
+            </div>
 
             <div class="dev-card">
                 <div class="dev-card-header">
@@ -175,64 +173,12 @@
                 </div>
                 <p class="dev-challenge">Challenge: The chat window looked "rudimentary" and flat against the dark background.</p>
                 <div class="dev-prompt">"Can we polish this up... glassy appearance, and something that gives it a bit of 3d texture so it pops?"</div>
-                <p class="dev-solution"><strong>Solution:</strong> Applied CSS <code>backdrop-filter: blur()</code> for a frosted glass effect, layered shadows for 3D depth, and designed a "Tech Stack" badge to professionally display the model version (DeepSeek V4 Flash).</p>
-            </div>
-
-            <div class="dev-card">
-                <div class="dev-card-header">
-                    <span class="dev-card-title">Background Visuals Pivot</span>
-                    <span class="dev-card-badge">CSS</span>
-                </div>
-                <p class="dev-challenge">Challenge: Complex SVG shapes were inconsistent and difficult to style dynamically.</p>
-                <div class="dev-prompt">"The blobs are still not shoe shaped... let's change the blobs to just actual blobs."</div>
-                <p class="dev-solution"><strong>Solution:</strong> Pivoted from rigid SVG paths to CSS-styled <code>div</code> elements. Used <code>border-radius</code> with percentage values and <code>@keyframes</code> to create a "Lava Lamp" morphing effect that is smoother and more performant.</p>
-            </div>
-
-            <div class="dev-card">
-                <div class="dev-card-header">
-                    <span class="dev-card-title">Module Import Debugging</span>
-                    <span class="dev-card-badge">Ops</span>
-                </div>
-                <p class="dev-challenge">Challenge: Vercel serverless functions crashed silently when importing local JSON files.</p>
-                <div class="dev-prompt">"I no longer get the server error, but... the bot hangs indefinitely."</div>
-                <p class="dev-solution"><strong>Solution:</strong> Identified that <code>import data from '../data.json'</code> fails in the specific Vercel runtime environment. Hardcoded the data object directly into the function file to guarantee availability.</p>
+                <p class="dev-solution"><strong>Solution:</strong> Applied CSS <code>backdrop-filter: blur()</code> for a frosted glass effect, layered shadows for 3D depth, and designed a "Tech Stack" badge to professionally display the model version.</p>
             </div>
 
         </div>
 
-        <!-- SECTION 4: SAMPLE PROMPTS -->
-        <h2 class="section-title">Sample Prompts</h2>
-        <div class="dev-grid">
-
-            <div class="dev-card">
-                <div class="dev-card-header">
-                    <span class="dev-card-title">Diagnostic Analysis</span>
-                    <span class="dev-card-badge">Workflow</span>
-                </div>
-                <div class="dev-prompt">"The bot is both confused about the inventory and IDing incorrectly. don't change the code further yet; what do you think could be happening here and what are some possible solutions?"</div>
-                <p class="dev-solution"><strong>Analysis:</strong> Instead of just reporting a bug, I asked for a root cause analysis. By instructing the AI not to change code yet, I forced it to explain the problem first, which helped me understand the distinction between "Knowledge" and "Inventory" in the RAG system.</p>
-            </div>
-
-            <div class="dev-card">
-                <div class="dev-card-header">
-                    <span class="dev-card-title">Behavioral Specification</span>
-                    <span class="dev-card-badge">Prompting</span>
-                </div>
-                <div class="dev-prompt">"It can mention the weights if asked, but it should behave more naturally... not even mention the price, just the model, if asked about flat feet for example. also... let's again make it more like an actual sales person."</div>
-                <p class="dev-solution"><strong>Analysis:</strong> I used conditional logic in my prompt ("if asked... then...") to guide the AI's behavior. This goes beyond simple feature requests by defining the <em>context</em> in which specific data should be used, effectively "programming" the persona's social skills.</p>
-            </div>
-
-            <div class="dev-card">
-                <div class="dev-card-header">
-                    <span class="dev-card-title">Logic Isolation</span>
-                    <span class="dev-card-badge">Architecture</span>
-                </div>
-                <div class="dev-prompt">"Can we restrict that new logic [for questions about competing brands] to this specific question type... like a logic tree, if [question about outside shoe] then [logic]. Then we can avoid contaminating the other types of questions."</div>
-                <p class="dev-solution"><strong>Analysis:</strong> I recognized that a global prompt change would hurt existing functionality. I proposed a conditional logic flow (Logic Tree) to isolate the risk. This is a senior-level architectural decision that prevents "feature creep" from breaking core features.</p>
-            </div>
-
-        </div>
-
+        <!-- SECTION 4: WORKFLOW STRATEGIES -->
         <h2 style="font-size: 1.8rem; margin-bottom: 25px; color: #fff;">Workflow Strategies</h2>
         <div class="timeline-container">
             <div class="timeline-line"></div>
@@ -241,23 +187,15 @@
                 <div class="timeline-dot"></div>
                 <div class="timeline-content">
                     <h3 class="timeline-title">Prompt Engineering</h3>
-                    <p class="timeline-desc">Rather than just asking the AI to implement a solution, I often tell it to hold off making changes and first give me options. I use detailed, descriptive prompts to minimize guessing, but I also know when to give the AI leeway to be "creative" during brainstorming phases.</p>
+                    <p class="timeline-desc">I use a "Diagnostic First" approach. Instead of asking the AI to implement a solution immediately, I ask it to hold off and provide a root cause analysis. This forces the AI to explain the problem, ensuring I understand the logic before code is generated.</p>
                 </div>
             </div>
 
             <div class="timeline-node">
                 <div class="timeline-dot"></div>
                 <div class="timeline-content">
-                    <h3 class="timeline-title">Structured Data Engineering</h3>
-                    <p class="timeline-desc">Instead of relying on the chatbot to "know" facts, I used a "Grounding" strategy. By maintaining a clean JSON schema (a backend data file for the chatbot), we ensure the AI's answers are always factually correct regarding price and specs.</p>
-                </div>
-            </div>
-
-            <div class="timeline-node">
-                <div class="timeline-dot"></div>
-                <div class="timeline-content">
-                    <h3 class="timeline-title">Creative Problem Solving</h3>
-                    <p class="timeline-desc">I actively guide the AI through its blind spots. For example, knowing LLMs struggle with hallucination when providing URLs, I'll have the AI put a placeholder in the code and retrieve the correct URL myself, effectively manual-fixing the "last mile" of the code.</p>
+                    <h3 class="timeline-title">Structured Data Grounding</h3>
+                    <p class="timeline-desc">To prevent AI hallucination, I rely on "Grounding." By maintaining a clean JSON schema (a backend data file) separate from the AI's training data, we ensure the chatbot's answers are always factually correct regarding price and specs.</p>
                 </div>
             </div>
         </div>
