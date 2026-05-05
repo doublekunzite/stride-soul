@@ -2,26 +2,32 @@
 
 // --- DATA SOURCE ---
 
-// 1. OUR INVENTORY (What we SELL - Generic Stride & Soul Brand)
+// 1. OUR INVENTORY (Updated Name)
 const inventory = [
   { id: 1, name: "Urban Runner", brand: "Stride & Soul", price: 120, weight_grams: 280, type: "Neutral", cushion: "Medium", description: "A versatile daily trainer suitable for road running and casual wear." },
-  { id: 2, name: "Classic Leather", brand: "Stride & Soul", price: 150, weight_grams: 320, type: "Lifestyle", cushion: "Medium", description: "A retro-inspired leather sneaker built for style and all-day comfort." },
+  { id: 2, name: "Classic Vegan Leather", brand: "Stride & Soul", price: 150, weight_grams: 320, type: "Lifestyle", cushion: "Medium", description: "A retro-inspired sneaker crafted with premium vegan leather alternatives for style and animal-friendly comfort." },
   { id: 3, name: "Trail Blazer", brand: "Stride & Soul", price: 135, weight_grams: 300, type: "Trail", cushion: "High", description: "Rugged outsole and deep lugs designed for off-road adventures." },
   { id: 4, name: "Midnight Sneak", brand: "Stride & Soul", price: 110, weight_grams: 210, type: "Racing", cushion: "Responsive", description: "A lightweight, sleek sneaker for speed workouts and fast days." },
   { id: 5, name: "Cloud Walker", brand: "Stride & Soul", price: 140, weight_grams: 260, type: "Neutral", cushion: "High", description: "Plush cushioning makes this ideal for recovery days and long walks." },
   { id: 6, name: "Retro Wave", brand: "Stride & Soul", price: 125, weight_grams: 295, type: "Stability", cushion: "Medium", description: "A supportive stability shoe with a classic 90s aesthetic." }
 ];
 
-// 2. MARKET KNOWLEDGE (What we KNOW ABOUT - Real World Brands)
-// Used for comparison logic to show technical competence.
+// 2. MARKET KNOWLEDGE (Real World Brands)
 const marketKnowledge = [
   { name: "Nike Pegasus 41", type: "Neutral", description: "Dependable neutral workhorse for everyday training." },
   { name: "Hoka Clifton 9", type: "Neutral", description: "Highly cushioned daily trainer with a meta-rocker design." },
-  { name: "Brooks Ghost 15", type: "Neutral", description: "Award-winning neutral trainer with soft cushioning." },
-  { name: "Asics Novablast 4", type: "Neutral", description: "Bouncy, energetic daily trainer." },
-  { name: "New Balance 1080v13", type: "Neutral", description: "Fresh Foam X midsole delivers supreme comfort." },
-  { name: "Adidas Ultraboost", type: "Neutral", description: "Responsive cushioning with a sock-like fit." }
+  { name: "Brooks Ghost 15", type: "Neutral", description: "Award-winning neutral trainer with soft cushioning." }
 ];
+
+// 3. SUSTAINABILITY KNOWLEDGE (New)
+const sustainabilityKnowledge = `
+  - Materials: We are transitioning 80% of our line to use recycled polyester and bio-based foams.
+  - Laces: Made from post-consumer plastic.
+  - Insoles: Utilize algae bloom foam.
+  - Shipping: 100% Carbon Neutral.
+  - Packaging: 100% recyclable and plastic-free.
+  - Products: The 'Classic Vegan Leather' uses high-quality vegan leather alternatives.
+`;
 
 // --- HELPER: Call DeepSeek ---
 async function callDeepSeek(messages) {
@@ -47,12 +53,15 @@ async function callDeepSeek(messages) {
 function detectIntent(userMessage) {
   const msg = userMessage.toLowerCase();
 
-  // DETECTOR: Is the user asking about a competitor?
+  // NEW: Sustainability Detection
+  if (msg.includes("sustainable") || msg.includes("sustainability") || msg.includes("eco") || msg.includes("environment") || msg.includes("green")) {
+    return "SUSTAINABILITY";
+  }
+
+  // Competitor Detection
   const isCompetitorMention = marketKnowledge.some(s => 
     msg.includes(s.name.toLowerCase()) || msg.includes(s.name.toLowerCase().split(" ")[1])
   );
-
-  // DETECTOR: Is the user asking for a comparison or alternative?
   const isComparison = msg.includes("similar") || msg.includes("alternative") || msg.includes("like the") || msg.includes("equivalent");
 
   if (isCompetitorMention || isComparison) {
@@ -63,22 +72,37 @@ function detectIntent(userMessage) {
   if (msg.includes("lightest") || msg.includes("heaviest") || msg.includes("weight")) return "SPECS";
   if (msg.includes("$") || msg.includes("price") || msg.includes("budget")) return "BUDGET";
   if (msg.includes("stability") || msg.includes("flat feet") || msg.includes("support")) return "STABILITY";
+  if (msg.includes("vegan") || msg.includes("leather")) return "INVENTORY"; // Catches specific product questions
   
   return "INVENTORY";
 }
 
-// --- LOGIC TREE: Response Generation ---
+// --- HANDLER 1: Sustainability (New) ---
+async function handleSustainabilityQuestion(userMessage) {
+  const systemPrompt = {
+    role: 'system',
+    content: `You are a representative for 'Stride & Soul'.
+    Answer the user's question about sustainability using the data below.
+    Be encouraging and highlight our commitment to the planet.
+    
+    DATA:
+    ${sustainabilityKnowledge}
+    
+    INVENTORY CONTEXT:
+    ${inventory.map(s => `- ${s.name}`).join(", ")}
+    `
+  };
+  return await callDeepSeek([systemPrompt, { role: 'user', content: userMessage }]);
+}
 
-// HANDLER 1: Competitor Logic
+// --- HANDLER 2: Competitor Logic ---
 async function handleCompetitorQuestion(userMessage) {
   const msg = userMessage.toLowerCase();
-  
   const foundShoe = marketKnowledge.find(s => 
     msg.includes(s.name.toLowerCase()) || msg.includes(s.name.toLowerCase().split(" ")[1])
   );
 
   let context = "";
-  
   if (foundShoe) {
     context = `You asked about the ${foundShoe.name}. 
     KNOWLEDGE: ${foundShoe.description}.
@@ -91,25 +115,20 @@ async function handleCompetitorQuestion(userMessage) {
 
   const systemPrompt = {
     role: 'system',
-    content: `You are a helpful, casual running shoe expert for the store 'Stride & Soul'.
-
+    content: `You are a helpful, casual running shoe expert.
     INSTRUCTIONS:
-    Answer the user's question using natural language. 
-    1. Briefly describe the shoe they asked about (positive tone).
-    2. Mention that it is not in our specific inventory right now.
-    3. Recommend the closest match from OUR INVENTORY and explain why.
-    
-    DATA:
-    ${context}`
+    Answer naturally.
+    1. Describe the shoe they asked about (positive tone).
+    2. Mention it's not in stock.
+    3. Recommend the closest match from OUR INVENTORY.
+    DATA: ${context}`
   };
-
   return await callDeepSeek([systemPrompt, { role: 'user', content: userMessage }]);
 }
 
-// HANDLER 2: Inventory Logic
+// --- HANDLER 3: Inventory Logic ---
 async function handleInventoryQuestion(intent, userMessage) {
   let contextData = "";
-
   const formatFull = (s) => `Model: ${s.name}\nBrand: ${s.brand}\nPrice: $${s.price}\nWeight: ${s.weight_grams}g\nType: ${s.type}\nDetails: ${s.description}`;
 
   if (intent === "SPECS") {
@@ -132,11 +151,8 @@ async function handleInventoryQuestion(intent, userMessage) {
     1. Use ONLY the data below.
     2. Be concise.
     3. Do NOT mention price/weight unless specifically asked (Intent: ${intent}).
-    
-    DATA:
-    ${contextData}`
+    DATA: ${contextData}`
   };
-
   return await callDeepSeek([systemPrompt, { role: 'user', content: userMessage }]);
 }
 
@@ -155,7 +171,9 @@ export default async function handler(req, res) {
     console.log("Detected Intent:", intent);
 
     let reply;
-    if (intent === "COMPETITOR_QUESTION") {
+    if (intent === "SUSTAINABILITY") {
+      reply = await handleSustainabilityQuestion(userText);
+    } else if (intent === "COMPETITOR_QUESTION") {
       reply = await handleCompetitorQuestion(userText);
     } else {
       reply = await handleInventoryQuestion(intent, userText);

@@ -64,7 +64,7 @@
             <div class="product-card" onclick="openModal(2)">
                 <div class="product-image" style="background-image: url('images/2.png');"></div>
                 <div class="product-info">
-                    <h3>Classic Leather</h3>
+                    <h3>Classic Vegan Leather</h3>
                     <div class="price">$150.00</div>
                 </div>
             </div>
@@ -192,6 +192,7 @@
             <button class="sample-btn" onclick="askSample('Which shoe is the lightest?')">Lightest Shoe</button>
             <button class="sample-btn" onclick="askSample('I have flat feet, what do you recommend?')">Flat feet advice</button>
             <button class="sample-btn" onclick="askSample('Compare Urban Runner vs Cloud Walker')">Compare Models</button>
+			<button class="sample-btn" onclick="askSample('Tell me about your sustainability practices.')">Sustainability</button>
         </div>
 
         <div id="chat-input-area">
@@ -206,7 +207,7 @@
         // --- 1. PRODUCT DATA ---
         const products = [
             { id: 1, name: "Urban Runner", price: 120, image: "images/1.png", sizes: [7, 8, 9, 10, 11] },
-            { id: 2, name: "Classic Leather", price: 150, image: "images/2.png", sizes: [7, 8, 9, 10] },
+            { id: 2, name: "Classic Vegan Leather", price: 150, image: "images/2.png", sizes: [7, 8, 9, 10] },
             { id: 3, name: "Trail Blazer", price: 135, image: "images/3.png", sizes: [8, 9, 10, 11, 12] },
             { id: 4, name: "Midnight Sneak", price: 110, image: "images/4.png", sizes: [7, 8, 9] },
             { id: 5, name: "Cloud Walker", price: 140, image: "images/5.png", sizes: [8, 9, 10] },
