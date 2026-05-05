@@ -807,3 +807,43 @@ nav a:hover { color: #fff; }
     25% { transform: translateX(5px); }
     75% { transform: translateX(-5px); }
 }
+
+/* --- QUANTITY DROPDOWN STYLING --- */
+.quantity-selector {
+    margin-top: 30px; /* Increased space from size buttons */
+    margin-bottom: 20px;
+}
+
+.quantity-selector label {
+    font-size: 0.9rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    display: block;
+    margin-bottom: 10px;
+}
+
+.quantity-dropdown {
+    width: 100%;
+    padding: 12px;
+    /* Dark background to match modal, not white */
+    background: #1e1e1e; 
+    border: 1px solid #444;
+    /* Light gray text, not stark white */
+    color: #ccc; 
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+    appearance: none; /* Remove default OS styling */
+    
+    /* Custom White Arrow (kept for affordance) */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    background-size: 1em;
+}
+
+.quantity-dropdown:focus {
+    outline: none;
+    border-color: var(--primary-color);
+}
