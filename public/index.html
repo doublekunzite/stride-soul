@@ -53,7 +53,6 @@
         <div class="product-grid">
             <h2 class="section-title" style="grid-column: 1 / -1; text-align: left; margin-bottom: 20px;">Featured Collection</h2>
             
-            <!-- UPDATED IMAGES TO .jpg -->
             <div class="product-card" onclick="openModal(1)">
                 <div class="product-image" style="background-image: url('images/1.jpg');"></div>
                 <div class="product-info">
@@ -98,11 +97,10 @@
             </div>
 
         </div>
-		  <!-- Stock Image Disclaimer -->
+        <!-- Stock Image Disclaimer -->
         <p class="stock-disclaimer">
             <strong>Note:</strong> Product images used on this site are for demonstration purposes only. They are royalty-free stock images intended to showcase layout and design.
         </p>
-		
     </section>
 
     <!-- MODAL (Product Detail) -->
@@ -120,8 +118,8 @@
                     <label>Select Size (US):</label>
                     <div class="size-options" id="size-options"></div>
                 </div>
-				
-				<div class="quantity-selector" style="margin-bottom: 20px;">
+                
+                <div class="quantity-selector" style="margin-bottom: 20px;">
                     <label>Quantity:</label>
                     <select id="quantity-select" class="quantity-dropdown">
                         <option value="1">1</option>
@@ -146,7 +144,7 @@
         <div class="drawer-items" id="drawer-items">
             <p style="color: #666; text-align: center; margin-top: 50px;">Your cart is empty.</p>
         </div>
-                <div class="drawer-footer">
+        <div class="drawer-footer">
             <div class="drawer-total" style="display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 1.1rem; color: #fff;">
                 <span>Subtotal</span>
                 <span id="cart-total">$0.00</span>
@@ -180,10 +178,9 @@
                 <form id="newsletter-form" onsubmit="event.preventDefault(); handleSubscribe();">
                     <input type="email" id="newsletter-email" value="test@gmail.com" placeholder="Enter your email" style="width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #333; background: #1e1e1e; color: #fff; margin-bottom: 10px;">
                     
-                    <!-- Error Message (Hidden by default) -->
-                    <small id="newsletter-error" style="color: #ff6b6b; display: none; margin-bottom: 10px; display: block; font-size: 0.8rem;">Please enter a valid email.</small>
+                    <!-- FIXED: Removed 'display: block' from inline style so it stays hidden -->
+                    <small id="newsletter-error" style="color: #ff6b6b; display: none; font-size: 0.8rem; margin-bottom: 10px;">Please enter a valid email.</small>
                     
-                    <!-- Subscribe Button -->
                     <button id="newsletter-btn" type="submit" style="width: 100%; padding: 10px; background: var(--primary-color); border: none; color: white; border-radius: 5px; cursor: pointer; transition: all 0.3s; font-weight: bold;">Subscribe</button>
                 </form>
             </div>
@@ -224,8 +221,14 @@
     </div>
     <button id="chat-toggle" onclick="toggleChat()">💬</button>
 
-    <!-- JAVASCRIPT -->
-        <script>
+    <!-- Toast Notification Element -->
+    <div id="toast" class="toast">
+        <i class="fas fa-check-circle" style="color: #10B981;"></i>
+        <span>Successfully Subscribed!</span>
+    </div>
+
+    <!-- MAIN JAVASCRIPT -->
+    <script>
         // --- 1. PRODUCT DATA ---
         const products = [
             { id: 1, name: "Urban Runner", price: 120, image: "images/1.jpg", sizes: [7, 8, 9, 10, 11] },
@@ -254,8 +257,8 @@
         const cartDrawer = document.getElementById('cart-drawer');
         const drawerClose = document.getElementById('drawer-close');
         const drawerItems = document.getElementById('drawer-items');
-        const cartTotal = document.getElementById('cart-total'); // New
-        const checkoutBtn = document.getElementById('checkout-btn'); // New
+        const cartTotal = document.getElementById('cart-total');
+        const checkoutBtn = document.getElementById('checkout-btn');
 
         // --- 3. MODAL LOGIC ---
         function openModal(id) {
@@ -270,7 +273,10 @@
                 <button class="size-btn" onclick="selectSize(event, ${size})">${size}</button>
             `).join('');
 
+            // Reset states
             selectedSize = null;
+            document.getElementById('quantity-select').value = '1'; // Reset quantity to 1
+            
             modalOverlay.style.display = 'flex';
         }
 
@@ -285,7 +291,7 @@
             event.target.classList.add('active');
         }
 
-        // --- 4. CART LOGIC (Updated for Quantity) ---
+        // --- 4. CART LOGIC (Updated for Quantity Input) ---
         function addToCart() {
             if (!selectedSize) {
                 alert("Please select a size first.");
@@ -293,22 +299,26 @@
             }
             if (!currentProduct) return;
 
-            // Create a unique key for this specific product + size combination
+            // 1. Get quantity from dropdown
+            const quantitySelect = document.getElementById('quantity-select');
+            const quantity = parseInt(quantitySelect.value);
+
+            // 2. Create unique key
             const itemKey = `${currentProduct.id}-${selectedSize}`;
 
-            // Check if item already exists in cart
+            // 3. Check if item exists
             const existingItem = cart.find(item => item.key === itemKey);
 
             if (existingItem) {
-                // Increment quantity if it exists
-                existingItem.quantity += 1;
+                // Add the selected quantity to existing count
+                existingItem.quantity += quantity;
             } else {
-                // Add new item if it doesn't
+                // Create new item with selected quantity
                 const item = {
                     ...currentProduct,
                     selectedSize: selectedSize,
-                    key: itemKey, // Store key for future lookups
-                    quantity: 1
+                    key: itemKey,
+                    quantity: quantity
                 };
                 cart.push(item);
             }
@@ -364,10 +374,8 @@
                 return;
             }
 
-            // Show success message
             alert("✅ Order Placed! (Demo)\n\nThank you for testing the Stride & Soul checkout flow.");
 
-            // Clear cart and reset UI
             cart = [];
             updateCartUI();
             closeDrawer();
@@ -381,47 +389,41 @@
         addToCartBtn.addEventListener('click', addToCart);
         cartBtn.addEventListener('click', openDrawer);
         drawerClose.addEventListener('click', closeDrawer);
-        checkoutBtn.addEventListener('click', handleCheckout); // New
+        checkoutBtn.addEventListener('click', handleCheckout);
 
-        // --- NEWSLETTER LOGIC ---
+        // --- 7. NEWSLETTER LOGIC ---
         function handleSubscribe() {
             const emailInput = document.getElementById('newsletter-email');
             const errorMsg = document.getElementById('newsletter-error');
             const btn = document.getElementById('newsletter-btn');
             const email = emailInput.value;
 
-            // 1. Validation (Simple check for @ and . and length)
+            // Validation
             const isValid = email.includes('@') && email.includes('.') && email.length > 5;
 
             if (!isValid) {
-                // Show error and red border
-                errorMsg.style.display = 'block';
-                emailInput.style.borderColor = '#ff6b6b'; // Red border
-                // Shake animation (optional nice touch)
+                errorMsg.style.display = 'block'; // Show error
+                emailInput.style.borderColor = '#ff6b6b';
                 emailInput.style.animation = 'shake 0.5s';
                 setTimeout(() => emailInput.style.animation = '', 500);
                 return;
             }
 
-            // 2. Success State
-            errorMsg.style.display = 'none'; // Hide error
-            emailInput.style.borderColor = '#333'; // Reset border
-
-            // 3. Update Button UI
-            btn.style.background = '#10B981'; // Green
+            // Success
+            errorMsg.style.display = 'none';
+            emailInput.style.borderColor = '#333';
+            
+            btn.style.background = '#10B981';
             btn.textContent = 'Subscribed!';
             btn.disabled = true;
             btn.style.cursor = 'default';
 
-            // 4. Show Toast
             showToast();
         }
 
         function showToast() {
             const toast = document.getElementById('toast');
             toast.classList.add('show');
-
-            // Hide toast after 3 seconds
             setTimeout(() => {
                 toast.classList.remove('show');
             }, 3000);
@@ -509,15 +511,6 @@
                 console.error(error);
             }
         }
-		
-		        
     </script>
-	
-	   <!-- Toast Notification Element -->
-    <div id="toast" class="toast">
-        <i class="fas fa-check-circle" style="color: #10B981;"></i>
-        <span>Successfully Subscribed!</span>
-    </div>
-	
 </body>
 </html>
