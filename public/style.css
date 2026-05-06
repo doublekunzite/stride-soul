@@ -463,7 +463,8 @@ nav a:hover { color: #fff; }
     max-width: 1000px;
     margin: 0 auto;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    /* UPDATED: Allow 3 columns, but let the last one (Newsletter) be smaller if needed */
+    grid-template-columns: repeat(3, 1fr); 
     gap: 40px;
 }
 .footer-col h4 {
@@ -902,3 +903,4 @@ details[open] .faq-question::before {
 .size-table tr:hover {
     background: rgba(255, 255, 255, 0.03);
 }
+
