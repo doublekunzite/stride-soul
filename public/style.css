@@ -847,3 +847,58 @@ nav a:hover { color: #fff; }
     outline: none;
     border-color: var(--primary-color);
 }
+
+/* --- FAQ ACCORDION --- */
+.faq-item {
+    background: #1e1e1e;
+    border: 1px solid #333;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 15px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+.faq-item:hover {
+    background: #252525;
+}
+.faq-question {
+    color: #fff;
+    font-weight: 500;
+    font-size: 1.1rem;
+    list-style: none; /* Removes default arrow */
+    outline: none;
+}
+.faq-question::-webkit-details-marker {
+    display: none; /* Removes default arrow */
+}
+.faq-question::before {
+    content: '+ ';
+    color: var(--primary-color);
+    font-weight: bold;
+    margin-right: 5px;
+}
+details[open] .faq-question::before {
+    content: '− ';
+}
+
+/* --- SIZE GUIDE TABLE --- */
+.size-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+}
+.size-table th, 
+.size-table td {
+    border: 1px solid #333;
+    padding: 12px 15px;
+    text-align: center;
+}
+.size-table th {
+    background: #1e1e1e;
+    color: var(--primary-color);
+    font-weight: 600;
+    text-transform: uppercase;
+}
+.size-table tr:hover {
+    background: rgba(255, 255, 255, 0.03);
+}
