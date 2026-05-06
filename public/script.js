@@ -24,8 +24,8 @@ function injectFooter() {
                 <h4>Newsletter</h4>
                 <p style="color: #666; font-size: 0.9rem; margin-bottom: 15px;">Subscribe to get special offers and updates.</p>
                 
-                <!-- Form handles the Enter key submit -->
-                <form onsubmit="handleNewsletterSubmit(event)" style="display: contents;">
+                <!-- Note: We use a simple ID-based structure here -->
+                <form id="newsletter-form" style="display: contents;">
                     <input 
                         type="email" 
                         id="newsletter-email"
@@ -52,8 +52,41 @@ function injectFooter() {
     const container = document.getElementById('footer-container');
     if (container) {
         container.innerHTML = footerHTML;
+        
+        // --- ATTACH EVENTS IMMEDIATELY AFTER INJECTION ---
+        // This ensures it works on every page where the footer appears
+        const form = document.getElementById('newsletter-form');
+        if (form) {
+            form.addEventListener('submit', function(event) {
+                event.preventDefault(); // Prevent page refresh
+
+                const input = document.getElementById('newsletter-email');
+                const button = document.getElementById('newsletter-btn');
+                const email = input.value;
+
+                // 1. Validate Email
+                if (!email.includes('@') || !email.includes('.')) {
+                    input.classList.add('shake-error');
+                    showToast('Please enter a valid email address');
+                    setTimeout(() => input.classList.remove('shake-error'), 400);
+                    return;
+                }
+
+                // 2. Success State
+                button.innerHTML = "Subscribed!";
+                button.classList.add('btn-subscribed');
+                button.disabled = true;
+                input.disabled = true;
+                showToast('Thanks for subscribing!');
+            });
+        }
     }
 }
+
+// Make sure you still have the showToast function somewhere in this file:
+/*
+function showToast(message) { ... } 
+*/
 
 // Add this right after injectFooter function in script.js
 
@@ -315,40 +348,7 @@ function initChatWidget() {
     }
 }
 
-// --- NEWSLETTER LOGIC ---
-function handleNewsletterSubmit(event) {
-    // Prevent form from actually submitting/refreshing page
-    event.preventDefault(); 
 
-    const input = document.getElementById('newsletter-email');
-    const button = document.getElementById('newsletter-btn');
-    const email = input.value;
-
-    // 1. Validate Email (Must have @ and .)
-    if (!email.includes('@') || !email.includes('.')) {
-        // Add shake class
-        input.classList.add('shake-error');
-        
-        // Show toast error
-        showToast('Please enter a valid email address');
-
-        // Remove shake class after animation ends
-        setTimeout(() => {
-            input.classList.remove('shake-error');
-        }, 400);
-
-        return; // Stop execution
-    }
-
-    // 2. Success State
-    button.innerHTML = "Subscribed!";
-    button.classList.add('btn-subscribed');
-    button.disabled = true; // Prevent clicking again
-    input.disabled = true; // Prevent typing again
-
-    // Show success toast
-    showToast('Thanks for subscribing!');
-}
 
 // Make global for HTML
 window.handleNewsletterSubmit = handleNewsletterSubmit;
