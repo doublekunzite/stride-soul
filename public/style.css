@@ -904,3 +904,24 @@ details[open] .faq-question::before {
     background: rgba(255, 255, 255, 0.03);
 }
 
+/* --- NEWSLETTER ANIMATIONS --- */
+
+/* Shake Animation */
+@keyframes shake {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(10px); }
+  50% { transform: translateX(-10px); }
+  75% { transform: translateX(10px); }
+  100% { transform: translateX(0); }
+}
+
+.shake-error {
+    animation: shake 0.4s linear;
+    border-color: #ff6b6b !important;
+}
+
+/* Success Button State */
+.btn-subscribed {
+    background: #10B981 !important; /* Green */
+    cursor: default !important;
+}

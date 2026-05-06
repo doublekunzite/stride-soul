@@ -1,6 +1,6 @@
 // script.js
 
-// --- 1. FOOTER INJECTION (Runs on every page) ---
+// --- 1. FOOTER INJECTION ---
 function injectFooter() {
     const footerHTML = `
     <footer class="main-footer">
@@ -23,9 +23,24 @@ function injectFooter() {
             <div class="footer-col">
                 <h4>Newsletter</h4>
                 <p style="color: #666; font-size: 0.9rem; margin-bottom: 15px;">Subscribe to get special offers and updates.</p>
-                <input type="email" placeholder="Enter your email" style="width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #333; background: #1e1e1e; color: #fff; margin-bottom: 10px;">
-                <!-- UPDATED BUTTON: Uses showToast instead of default form submit -->
-                <button onclick="showToast('Thanks for subscribing!')" style="width: 100%; padding: 10px; background: var(--primary-color); border: none; color: white; border-radius: 5px; cursor: pointer;">Subscribe</button>
+                
+                <!-- Form handles the Enter key submit -->
+                <form onsubmit="handleNewsletterSubmit(event)" style="display: contents;">
+                    <input 
+                        type="email" 
+                        id="newsletter-email"
+                        value="test@gmail.com"
+                        onclick="this.select();" 
+                        placeholder="Enter your email" 
+                        style="width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #333; background: #1e1e1e; color: #fff; margin-bottom: 10px;"
+                    >
+                    <button 
+                        type="submit"
+                        id="newsletter-btn"
+                        style="width: 100%; padding: 10px; background: var(--primary-color); border: none; color: white; border-radius: 5px; cursor: pointer; transition: all 0.3s;">
+                        Subscribe
+                    </button>
+                </form>
             </div>
         </div>
         <div class="footer-bottom">
@@ -299,3 +314,41 @@ function initChatWidget() {
         messagesDiv.scrollTop = messagesDiv.scrollHeight; 
     }
 }
+
+// --- NEWSLETTER LOGIC ---
+function handleNewsletterSubmit(event) {
+    // Prevent form from actually submitting/refreshing page
+    event.preventDefault(); 
+
+    const input = document.getElementById('newsletter-email');
+    const button = document.getElementById('newsletter-btn');
+    const email = input.value;
+
+    // 1. Validate Email (Must have @ and .)
+    if (!email.includes('@') || !email.includes('.')) {
+        // Add shake class
+        input.classList.add('shake-error');
+        
+        // Show toast error
+        showToast('Please enter a valid email address');
+
+        // Remove shake class after animation ends
+        setTimeout(() => {
+            input.classList.remove('shake-error');
+        }, 400);
+
+        return; // Stop execution
+    }
+
+    // 2. Success State
+    button.innerHTML = "Subscribed!";
+    button.classList.add('btn-subscribed');
+    button.disabled = true; // Prevent clicking again
+    input.disabled = true; // Prevent typing again
+
+    // Show success toast
+    showToast('Thanks for subscribing!');
+}
+
+// Make global for HTML
+window.handleNewsletterSubmit = handleNewsletterSubmit;
