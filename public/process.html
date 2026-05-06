@@ -123,7 +123,7 @@
          <div style="margin-bottom: 30px; padding: 20px; background: rgba(255,255,255,0.03); border-radius: 8px; border-left: 3px solid var(--primary-color);">
             <p class="project-desc" style="margin-bottom: 15px;">The backend system utilizes a custom logic tree architecture to ensure accurate, helpful responses:</p>
             <ul style="list-style-type: none; padding: 0; color: #ccc; font-size: 0.95rem; line-height: 1.8;">
-				<li style="margin-bottom: 8px;">✦ <strong style="color: #fff;">Knowledge Specialization:</strong> The bot has been provided with a data file with info on each item in the store's inventory as well as the most popular competitor models.</li>
+				<li style="margin-bottom: 8px;">✦ <strong style="color: #fff;">Knowledge Specialization:</strong> The bot has a data file with info on the store's inventory and popular competing models.</li>
                 <li style="margin-bottom: 8px;">✦ <strong style="color: #fff;">Intent Detection:</strong> Classifies queries into categories (Specs, Budget, Stability, Sustainability) to filter irrelevant data.</li>
                 <li>✦ <strong style="color: #fff;">Persona Engineering:</strong> Maintains a casual "salesperson" tone while following strict architectural rules.</li>
             </ul>
@@ -146,7 +146,7 @@
                     <span class="dev-card-title">Competitor Knowledge Logic</span>
                     <span class="dev-card-badge">Data</span>
                 </div>
-                <p class="dev-challenge">Challenge: The bot was hallucinating inventory when asked about competitor shoes (e.g., Nike Pegasus), but we wanted it to be knowledgeable yet sales-focused.</p>
+                <p class="dev-challenge">Challenge: The bot was hallucinating inventory when asked about competitor shoes (e.g., Nike Pegasus), but I wanted it to be knowledgeable yet sales-focused.</p>
                 <div class="dev-prompt">"Is this going to be an ongoing issue... or are there possible workarounds here?"</div>
                 <p class="dev-solution"><strong>Solution:</strong> Built a "Logic Tree" in the backend. If a competitor is mentioned, the system triggers a specific protocol: 1. Acknowledge the competitor shoe using market knowledge. 2. Clarify it's not in stock. 3. Pivot to a recommendation of something similar from our inventory.</p>
             </div>
