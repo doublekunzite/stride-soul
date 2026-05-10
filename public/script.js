@@ -22,9 +22,9 @@ function injectFooter() {
             </div>
             <div class="footer-col">
                 <h4>Newsletter</h4>
-                <p style="color: #666; font-size: 0.9rem; margin-bottom: 15px;">Subscribe to get special offers and updates.</p>
+                <!-- Updated color to #888 for accessibility -->
+                <p style="color: #888; font-size: 0.9rem; margin-bottom: 15px;">Subscribe to get special offers and updates.</p>
                 
-                <!-- Note: We use a simple ID-based structure here -->
                 <form id="newsletter-form" style="display: contents;">
                     <input 
                         type="email" 
@@ -54,17 +54,15 @@ function injectFooter() {
         container.innerHTML = footerHTML;
         
         // --- ATTACH EVENTS IMMEDIATELY AFTER INJECTION ---
-        // This ensures it works on every page where the footer appears
         const form = document.getElementById('newsletter-form');
         if (form) {
             form.addEventListener('submit', function(event) {
-                event.preventDefault(); // Prevent page refresh
+                event.preventDefault(); 
 
                 const input = document.getElementById('newsletter-email');
                 const button = document.getElementById('newsletter-btn');
                 const email = input.value;
 
-                // 1. Validate Email
                 if (!email.includes('@') || !email.includes('.')) {
                     input.classList.add('shake-error');
                     showToast('Please enter a valid email address');
@@ -72,7 +70,6 @@ function injectFooter() {
                     return;
                 }
 
-                // 2. Success State
                 button.innerHTML = "Subscribed!";
                 button.classList.add('btn-subscribed');
                 button.disabled = true;

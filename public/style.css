@@ -928,47 +928,55 @@ details[open] .faq-question::before {
 
 /* --- ACCESSIBILITY & CONTRAST FIXES --- */
 
-/* 1. Hero Subtitle: Brighter text + Neon Pop effect */
+/* 1. Hero Subtitle: Glow without box */
 .hero p {
-    color: #ccc; /* Brighter than #888 for better contrast */
-    text-shadow: 0 0 10px rgba(255, 255, 255, 0.3), 0 2px 4px rgba(0,0,0,0.8);
+    color: #e0e0e0; /* Brightest grey for maximum contrast */
+    text-shadow: 0 0 15px rgba(255, 255, 255, 0.4), 0 2px 4px rgba(0,0,0,0.9);
     font-weight: 400;
-    background: rgba(0, 0, 0, 0.2); /* Subtle bg to lift off dark blobs */
-    padding: 5px 10px;
-    border-radius: 4px;
+    background: transparent; /* Removed the box */
+    padding: 0; /* Removed padding */
 }
 
-/* 2. General Text Contrast: Ensure body text is readable */
+/* 2. Page Subtitles (About, FAQ, etc.) - Global Override */
+.page-subtitle {
+    color: #bbb !important; /* Brighter than default #888 */
+}
+
+/* 3. Footer Text Contrast */
+/* Force footer text to be brighter for readability */
+.main-footer p,
+.main-footer a {
+    color: #888 !important; /* Up from #666/#555 */
+}
+
+.main-footer a:hover {
+    color: #fff !important;
+}
+
+.main-footer h4 {
+    color: #fff !important; /* Ensure headers are pure white */
+}
+
+/* 4. General Body Text */
 .project-desc, .timeline-desc, .dev-solution {
-    color: #ccc; /* Bumped from #aaa or #888 */
+    color: #ccc; /* Standard accessible grey for content */
 }
 
-/* 3. Fix Footer Cutoff on Android */
-.main-footer {
-    overflow-x: hidden; /* Stops any element from pushing out the side */
-}
-
-/* 4. Mobile Footer Grid Fix */
+/* 5. Mobile Fixes */
 @media (max-width: 768px) {
-    /* Force footer grid to stack properly */
-    .footer-grid {
-        grid-template-columns: 1fr; /* Single column stack */
-        text-align: center;
-        gap: 30px; /* Comfortable spacing */
-        padding: 0 10px; /* Add side padding inside */
-    }
-    
-    /* Ensure inputs don't overflow */
-    .footer-col input, 
-    .footer-col button {
-        box-sizing: border-box; /* Forces padding inside width calculation */
-        max-width: 100%; /* Never wider than screen */
-    }
-
-    /* Adjust Hero text for smaller screens */
     .hero p {
         font-size: 1rem;
         margin-bottom: 1.5rem;
-        text-shadow: 0 0 15px rgba(255, 255, 255, 0.4); /* Stronger glow on mobile */
+        /* Stronger glow on mobile to combat blob background */
+        text-shadow: 0 0 20px rgba(255, 255, 255, 0.6), 0 0 10px rgba(255,255,255,0.4);
+    }
+    
+    /* Ensure footer doesn't cut off */
+    .main-footer {
+        overflow-x: hidden;
+    }
+    .footer-grid {
+        grid-template-columns: 1fr;
+        padding: 0 15px;
     }
 }
