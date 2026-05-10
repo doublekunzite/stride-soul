@@ -718,11 +718,13 @@ nav a:hover { color: #fff; }
     margin-bottom: 4rem;
 }
 
+/* --- Updated Rule --- */
 .project-title {
-    font-size: 1.5rem;
+    font-size: 1.5rem; /* Keeps the visual size you like */
     font-weight: 500;
     margin-bottom: 1rem;
     color: var(--fg);
+    /* We will use h2 tags for these, so this style applies to them */
 }
 
 .project-desc {
@@ -1023,4 +1025,22 @@ details[open] .faq-question::before {
     color: #e0e0e0;
     text-shadow: 0 0 15px rgba(255, 255, 255, 0.4), 0 2px 4px rgba(0,0,0,0.9);
     background: transparent;
+}
+
+/* --- VISUAL & CONTRAST UPDATES --- */
+
+/* 1. Make Header Nav Links Bigger */
+header nav a {
+    font-size: 1rem; /* Increased from 0.8rem or 0.9rem */
+    font-weight: 500;
+}
+
+/* 2. Make Copyright Text Brighter */
+.footer-bottom {
+    color: #777; /* Up from #444 or similar faint grey */
+}
+
+/* 3. Fix "Very small text" alert for Tech Badge */
+.tech-badge {
+    font-size: 0.75rem; /* Slightly larger than previous */
 }
