@@ -925,3 +925,50 @@ details[open] .faq-question::before {
     background: #10B981 !important; /* Green */
     cursor: default !important;
 }
+
+/* --- ACCESSIBILITY & CONTRAST FIXES --- */
+
+/* 1. Hero Subtitle: Brighter text + Neon Pop effect */
+.hero p {
+    color: #ccc; /* Brighter than #888 for better contrast */
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.3), 0 2px 4px rgba(0,0,0,0.8);
+    font-weight: 400;
+    background: rgba(0, 0, 0, 0.2); /* Subtle bg to lift off dark blobs */
+    padding: 5px 10px;
+    border-radius: 4px;
+}
+
+/* 2. General Text Contrast: Ensure body text is readable */
+.project-desc, .timeline-desc, .dev-solution {
+    color: #ccc; /* Bumped from #aaa or #888 */
+}
+
+/* 3. Fix Footer Cutoff on Android */
+.main-footer {
+    overflow-x: hidden; /* Stops any element from pushing out the side */
+}
+
+/* 4. Mobile Footer Grid Fix */
+@media (max-width: 768px) {
+    /* Force footer grid to stack properly */
+    .footer-grid {
+        grid-template-columns: 1fr; /* Single column stack */
+        text-align: center;
+        gap: 30px; /* Comfortable spacing */
+        padding: 0 10px; /* Add side padding inside */
+    }
+    
+    /* Ensure inputs don't overflow */
+    .footer-col input, 
+    .footer-col button {
+        box-sizing: border-box; /* Forces padding inside width calculation */
+        max-width: 100%; /* Never wider than screen */
+    }
+
+    /* Adjust Hero text for smaller screens */
+    .hero p {
+        font-size: 1rem;
+        margin-bottom: 1.5rem;
+        text-shadow: 0 0 15px rgba(255, 255, 255, 0.4); /* Stronger glow on mobile */
+    }
+}
