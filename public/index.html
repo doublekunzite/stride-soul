@@ -38,8 +38,7 @@
     <section class="hero">
         <div class="hero-content">
             <h1>Run Your Story.</h1>
-            <p>Premium running shoes</p> 
-			<p>from top global brands.</p>
+            <p>Premium running shoes from top global brands.</p>
             <a href="#shop" class="btn-primary">Shop New Arrivals</a>
         </div>
     </section>
@@ -54,42 +53,42 @@
         <div class="product-grid">
             <h2 class="section-title" style="grid-column: 1 / -1; text-align: left; margin-bottom: 20px;">Featured Collection</h2>
             
-            <div class="product-card" onclick="openModal(1)">
+            <div class="product-card" onclick="openModal(1)" tabindex="0" role="button">
                 <div class="product-image" style="background-image: url('images/1.jpg');"></div>
                 <div class="product-info">
                     <h3>Urban Runner</h3>
                     <div class="price">$120.00</div>
                 </div>
             </div>
-            <div class="product-card" onclick="openModal(2)">
+            <div class="product-card" onclick="openModal(2)" tabindex="0" role="button">
                 <div class="product-image" style="background-image: url('images/2.jpg');"></div>
                 <div class="product-info">
                     <h3>Classic Vegan Leather</h3>
                     <div class="price">$150.00</div>
                 </div>
             </div>
-            <div class="product-card" onclick="openModal(3)">
+            <div class="product-card" onclick="openModal(3)" tabindex="0" role="button">
                 <div class="product-image" style="background-image: url('images/3.jpg');"></div>
                 <div class="product-info">
                     <h3>Trail Blazer</h3>
                     <div class="price">$135.00</div>
                 </div>
             </div>
-            <div class="product-card" onclick="openModal(4)">
+            <div class="product-card" onclick="openModal(4)" tabindex="0" role="button">
                 <div class="product-image" style="background-image: url('images/4.jpg');"></div>
                 <div class="product-info">
                     <h3>Midnight Sneak</h3>
                     <div class="price">$110.00</div>
                 </div>
             </div>
-            <div class="product-card" onclick="openModal(5)">
+            <div class="product-card" onclick="openModal(5)" tabindex="0" role="button">
                 <div class="product-image" style="background-image: url('images/5.jpg');"></div>
                 <div class="product-info">
                     <h3>Cloud Walker</h3>
                     <div class="price">$140.00</div>
                 </div>
             </div>
-            <div class="product-card" onclick="openModal(6)">
+            <div class="product-card" onclick="openModal(6)" tabindex="0" role="button">
                 <div class="product-image" style="background-image: url('images/6.jpg');"></div>
                 <div class="product-info">
                     <h3>Retro Wave</h3>
@@ -198,6 +197,17 @@
     </div>
 
 	<script src="script.js"></script>
-
+	
+    <!-- Accessibility: Handle Enter key on Product Cards -->
+    <script>
+        document.querySelectorAll('.product-card[role="button"]').forEach(card => {
+            card.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault(); // Prevent scrolling with space
+                    card.click();
+                }
+            });
+        });
+    </script>
 </body>
 </html>

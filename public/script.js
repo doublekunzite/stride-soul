@@ -22,10 +22,12 @@ function injectFooter() {
             </div>
             <div class="footer-col">
                 <h4>Newsletter</h4>
-                <!-- Updated color to #888 for accessibility -->
                 <p style="color: #888; font-size: 0.9rem; margin-bottom: 15px;">Subscribe to get special offers and updates.</p>
                 
                 <form id="newsletter-form" style="display: contents;">
+                    <!-- ADDED: Accessible Label (Hidden visually) -->
+                    <label for="newsletter-email" class="visually-hidden">Email Address</label>
+                    
                     <input 
                         type="email" 
                         id="newsletter-email"
@@ -53,7 +55,7 @@ function injectFooter() {
     if (container) {
         container.innerHTML = footerHTML;
         
-        // --- ATTACH EVENTS IMMEDIATELY AFTER INJECTION ---
+        // --- ATTACH EVENTS ---
         const form = document.getElementById('newsletter-form');
         if (form) {
             form.addEventListener('submit', function(event) {

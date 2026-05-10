@@ -980,3 +980,47 @@ details[open] .faq-question::before {
         padding: 0 15px;
     }
 }
+
+/* --- ACCESSIBILITY FIXES --- */
+
+/* 1. Fix Button Contrast: Darken the button background */
+.btn-primary, 
+#newsletter-btn {
+    background-color: #8a6840 !important; /* Darker bronze/brown */
+    color: #fff !important; 
+    font-weight: 600;
+}
+
+/* Hover state slightly lighter */
+.btn-primary:hover, 
+#newsletter-btn:hover {
+    background-color: #a07848 !important;
+}
+
+/* 2. Screen Reader Only Text (For Labels) */
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* 3. Product Card Keyboard Focus (Fixes Device Dependent Handler) */
+/* This shows a border when navigating with Tab key */
+.product-card:focus {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 4px;
+    background-color: #1a1a1a;
+}
+
+/* 4. Hero Subtitle Glow (Re-confirmed) */
+.hero p {
+    color: #e0e0e0;
+    text-shadow: 0 0 15px rgba(255, 255, 255, 0.4), 0 2px 4px rgba(0,0,0,0.9);
+    background: transparent;
+}
