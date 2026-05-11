@@ -239,13 +239,13 @@ function initIndexPage() {
     }
 
     // --- UPDATED SUBTOTAL LOGIC ---
-    function updateCartUI() {
+        function updateCartUI() {
         cartCount.textContent = cart.length;
 
-        // 1. Calculate Subtotal
-        let subtotal = 0;
+        // 1. Calculate Total
+        let total = 0;
         cart.forEach(item => {
-            subtotal += item.price;
+            total += item.price;
         });
 
         // 2. Generate Item HTML
@@ -262,18 +262,26 @@ function initIndexPage() {
                 </div>
             `).join('');
 
-        // 3. Generate Subtotal HTML (only if items exist)
-        const subtotalHTML = cart.length > 0 
-            ? `<div class="cart-subtotal" style="margin-top: 20px; padding-top: 15px; border-top: 1px solid #333;">
-                <div style="display: flex; justify-content: space-between; color: #fff; font-weight: 600;">
-                    <span>Subtotal</span>
-                    <span>$${subtotal.toFixed(2)}</span>
-                </div>
-               </div>`
-            : '';
+        // 3. Inject Items
+        drawerItems.innerHTML = itemsHTML;
 
-        // 4. Inject into Drawer
-        drawerItems.innerHTML = itemsHTML + subtotalHTML;
+        // 4. Update the BOTTOM Footer Total (The big one near Checkout)
+        const drawerFooter = document.querySelector('.drawer-footer'); // Select the footer div
+        if (drawerFooter) {
+            if (cart.length === 0) {
+                // If cart is empty, just show the button (or hide it if you prefer)
+                drawerFooter.innerHTML = `<button class="checkout-btn">Proceed to Checkout</button>`;
+            } else {
+                // If items exist, show Total and Button
+                drawerFooter.innerHTML = `
+                    <div style="margin-bottom: 15px; display: flex; justify-content: space-between; font-size: 1.2rem; color: #fff; font-weight: bold;">
+                        <span>Total</span>
+                        <span>$${total.toFixed(2)}</span>
+                    </div>
+                    <button class="checkout-btn">Proceed to Checkout</button>
+                `;
+            }
+        }
     }
 
     function openDrawer() { cartDrawer.classList.add('open'); }
