@@ -1072,3 +1072,58 @@ header nav a {
 .qty-btn:first-child { border-radius: 4px 0 0 4px; border-right: none; }
 .qty-btn:last-child { border-radius: 0 4px 4px 0; border-left: none; }
 .qty-btn:hover { background: #333; }
+
+/* --- QUANTITY SELECTOR FIXES --- */
+
+/* 1. Add spacing below the whole quantity section so it isn't cramped */
+.modal-right .size-selector:last-of-type {
+    margin-bottom: 30px; 
+}
+
+/* 2. Fix alignment of buttons and input */
+.qty-options {
+    display: flex;
+    align-items: stretch; /* Forces all children to same height */
+    margin-top: 10px;
+}
+
+.qty-btn {
+    background: #222;
+    border: 1px solid #444;
+    color: #fff;
+    width: 40px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: background 0.2s;
+    display: flex;           /* Flex to center the +/- text */
+    align-items: center;     /* Vertically center text */
+    justify-content: center; /* Horizontally center text */
+}
+
+.qty-btn:first-child { border-radius: 4px 0 0 4px; border-right: none; }
+.qty-btn:last-child { border-radius: 0 4px 4px 0; border-left: none; }
+.qty-btn:hover { background: #333; }
+
+/* 3. Fix Input appearance */
+#qty-input {
+    width: 50px;
+    text-align: center;
+    background: #222;
+    border: 1px solid #444;
+    color: #fff;
+    font-size: 1rem;
+    padding: 0; /* Remove padding so it aligns perfectly */
+    display: flex;
+    align-items: center; /* Center content vertically */
+    justify-content: center;
+}
+
+/* Remove spinners (arrows) from number input */
+#qty-input::-webkit-outer-spin-button,
+#qty-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+#qty-input {
+    -moz-appearance: textfield; /* Firefox */
+}
