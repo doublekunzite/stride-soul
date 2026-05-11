@@ -104,7 +104,15 @@
     </section>
 
     <!-- MODAL (Product Detail) -->
-                <div class="modal-right">
+    <div class="modal-overlay" id="modal-overlay">
+        <div class="modal-content">
+            <!-- LEFT SIDE: IMAGE -->
+            <div class="modal-left">
+                <div class="modal-image" id="modal-image"></div>
+            </div>
+            
+            <!-- RIGHT SIDE: DETAILS -->
+            <div class="modal-right">
                 <span class="modal-close" id="modal-close">&times;</span>
                 <h2 id="modal-title">Product Name</h2>
                 <div class="modal-price" id="modal-price">$0.00</div>
@@ -116,7 +124,7 @@
                     </div>
                 </div>
 
-                <!-- NEW: Quantity Selector -->
+                <!-- Quantity Selector -->
                 <div class="size-selector" style="margin-top: 20px;">
                     <label>Quantity:</label>
                     <div class="qty-options" id="qty-options">
@@ -128,6 +136,8 @@
 
                 <button class="add-to-cart-btn" id="add-to-cart-btn">Add to Cart</button>
             </div>
+        </div>
+    </div>
 
     <!-- CART DRAWER -->
     <div class="cart-drawer" id="cart-drawer">
@@ -147,8 +157,7 @@
         </div>
     </div>
 
-        <div id="footer-container"></div>
-
+    <div id="footer-container"></div>
 
     <!-- Chat Widget -->
     <div id="chat-widget">
@@ -162,8 +171,6 @@
                 <span>Powered by DeepSeek V4 Flash</span>
             </div>
         </div>
-		
-
         
         <div id="chat-messages">
             <div class="message bot-msg">Hello! I'm your AI running coach. Ask me anything about our shoes!</div>
@@ -177,22 +184,15 @@
         </div>
 
         <div id="chat-input-area">
-		            <label for="user-input" class="visually-hidden">Type a message</label>
-
+            <label for="user-input" class="visually-hidden">Type a message</label>
             <input type="text" id="user-input" placeholder="Type a message..." onkeypress="handleEnter(event)">
             <button id="send-btn" onclick="sendMessage()">➤</button>
         </div>
     </div>
     <button id="chat-toggle" onclick="toggleChat()">💬</button>
 
-    <!-- Toast Notification Element -->
-    <div id="toast" class="toast">
-        <i class="fas fa-check-circle" style="color: #10B981;"></i>
-        <span>Successfully Subscribed!</span>
-    </div>
-
-	<script src="script.js"></script>
-	
+    <script src="script.js"></script>
+    
     <!-- Accessibility: Handle Enter key on Product Cards -->
     <script>
         document.querySelectorAll('.product-card[role="button"]').forEach(card => {
