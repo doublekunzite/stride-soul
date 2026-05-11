@@ -54,7 +54,6 @@ function injectFooter() {
     if (container) {
         container.innerHTML = footerHTML;
         
-        // --- ATTACH EVENTS ---
         const form = document.getElementById('newsletter-form');
         if (form) {
             form.addEventListener('submit', function(event) {
@@ -165,7 +164,6 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // --- 4. INDEX PAGE LOGIC (Modal & Cart) ---
-// --- 4. INDEX PAGE LOGIC (Modal & Cart) ---
 function initIndexPage() {
     const modalOverlay = document.getElementById('modal-overlay');
     const modalImage = document.getElementById('modal-image');
@@ -263,68 +261,6 @@ function initIndexPage() {
         }
         updateCartUI();
     }
-
-    function updateCartUI() {
-        // 1. Update Badge Count
-        const totalItemsCount = cart.reduce((sum, item) => sum + item.quantity, 0);
-        cartCount.textContent = totalItemsCount;
-
-        // 2. Calculate Total Price
-        let total = 0;
-        cart.forEach(item => {
-            total += (item.price * item.quantity);
-        });
-
-        // 3. Generate Items HTML
-        const itemsHTML = cart.length === 0 
-            ? `<p style="color: #666; text-align: center; margin-top: 50px;">Your cart is empty.</p>`
-            : cart.map(item => `
-                <div class="cart-item">
-                    <div class="cart-item-img" style="background-image: url('${item.image}')"></div>
-                    <div class="cart-item-details">
-                        <div class="cart-item-title">${item.name} (Size: ${item.selectedSize})</div>
-                        <div class="cart-item-meta">
-                            <span style="color: var(--primary-color); font-weight: 600;">$${(item.price * item.quantity).toFixed(2)}</span>
-                            <span style="color: #666; margin: 0 5px;">•</span>
-                            <span style="color: #888;">Qty: ${item.quantity}</span>
-                        </div>
-                        <button class="cart-item-remove" onclick="removeFromCart(${item.id}, '${item.selectedSize}')">Remove</button>
-                    </div>
-                </div>
-            `).join('');
-
-        // 4. Inject Items
-        drawerItems.innerHTML = itemsHTML;
-
-        // 5. Update Footer Total
-        const drawerFooter = document.querySelector('.drawer-footer');
-        if (drawerFooter) {
-            if (cart.length === 0) {
-                drawerFooter.innerHTML = `<button class="checkout-btn">Proceed to Checkout</button>`;
-            } else {
-                drawerFooter.innerHTML = `
-                    <div style="margin-bottom: 15px; display: flex; justify-content: space-between; font-size: 1.2rem; color: #fff; font-weight: bold;">
-                        <span>Total</span>
-                        <span>$${total.toFixed(2)}</span>
-                    </div>
-                    <button class="checkout-btn">Proceed to Checkout</button>
-                `;
-            }
-        }
-    }
-
-    function openDrawer() { cartDrawer.classList.add('open'); }
-    function closeDrawer() { cartDrawer.classList.remove('open'); }
-
-    modalClose.addEventListener('click', closeModal);
-    modalOverlay.addEventListener('click', (e) => { if (e.target === modalOverlay) closeModal(); });
-    addToCartBtn.addEventListener('click', addToCart);
-    cartBtn.addEventListener('click', openDrawer);
-    drawerClose.addEventListener('click', closeDrawer);
-    
-    // Run once on load
-    updateCartUI();
-}
 
     function updateCartUI() {
         // 1. Update Badge Count
