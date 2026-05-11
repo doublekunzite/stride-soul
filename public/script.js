@@ -261,8 +261,15 @@ function initIndexPage() {
         }
         updateCartUI();
     }
+	
+    window.handleCheckout = function() {
+        showToast('Your order has been placed! (demo)');
+        cart = []; // Empty the cart
+        updateCartUI(); // Refresh the UI (shows empty state)
+        closeDrawer(); // Close the slider
+    }
 
-        function updateCartUI() {
+            function updateCartUI() {
         // 1. Update Badge Count
         const totalItemsCount = cart.reduce((sum, item) => sum + item.quantity, 0);
         cartCount.textContent = totalItemsCount;
@@ -286,8 +293,8 @@ function initIndexPage() {
                             <span style="color: #666; margin: 0 5px;">•</span>
                             <span style="color: #888;">Qty: ${item.quantity}</span>
                         </div>
-                        <!-- FIXED: Pass ID and Size, not cartId -->
-                        <button class="cart-item-remove" onclick="removeFromCart(${item.id}, '${item.selectedSize}')">Remove</button>
+                        <!-- FIX: Removed quotes around ${item.selectedSize} so it passes a Number, not a String -->
+                        <button class="cart-item-remove" onclick="removeFromCart(${item.id}, ${item.selectedSize})">Remove</button>
                     </div>
                 </div>
             `).join('');
@@ -306,7 +313,8 @@ function initIndexPage() {
                         <span>Total</span>
                         <span>$${total.toFixed(2)}</span>
                     </div>
-                    <button class="checkout-btn">Proceed to Checkout</button>
+                    <!-- ADDED onclick handler -->
+                    <button class="checkout-btn" onclick="handleCheckout()">Proceed to Checkout</button>
                 `;
             }
         }
