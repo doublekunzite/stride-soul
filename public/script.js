@@ -222,33 +222,63 @@ function initIndexPage() {
         event.target.classList.add('active');
     }
 
+     // UPDATED: Logic to handle Quantity
     window.addToCart = function() {
         if (!selectedSize) { alert("Please select a size first."); return; }
         if (!currentProduct) return;
 
-        const item = { ...currentProduct, selectedSize: selectedSize, cartId: Date.now() };
-        cart.push(item);
+        // Check if item already exists in cart (Same ID + Same Size)
+        const existingItem = cart.find(item => item.id === currentProduct.id && item.selectedSize === selectedSize);
+
+        if (existingItem) {
+            // If it exists, just increase quantity
+            existingItem.quantity += 1;
+        } else {
+            // If it doesn't exist, add new item with quantity 1
+            const item = { 
+                ...currentProduct, 
+                selectedSize: selectedSize, 
+                quantity: 1, // Default quantity
+                cartId: Date.now() 
+            };
+            cart.push(item);
+        }
+
         updateCartUI();
         closeModal();
         openDrawer();
     }
 
-    window.removeFromCart = function(cartId) {
-        cart = cart.filter(item => item.cartId !== cartId);
+     // UPDATED: Logic to remove/decrease quantity
+    window.removeFromCart = function(id, size) {
+        // Find the item
+        const itemIndex = cart.findIndex(item => item.id === id && item.selectedSize === size);
+        
+        if (itemIndex > -1) {
+            // If quantity > 1, decrease it
+            if (cart[itemIndex].quantity > 1) {
+                cart[itemIndex].quantity -= 1;
+            } else {
+                // If quantity is 1, remove item completely
+                cart.splice(itemIndex, 1);
+            }
+        }
         updateCartUI();
     }
 
-    // --- UPDATED SUBTOTAL LOGIC ---
-        function updateCartUI() {
-        cartCount.textContent = cart.length;
+    // UPDATED: UI to display Quantity and calculate Total correctly
+    function updateCartUI() {
+        // Calculate total items count (for the header badge)
+        const totalItemsCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+        cartCount.textContent = totalItemsCount;
 
-        // 1. Calculate Total
+        // Calculate Total Price (Price * Quantity)
         let total = 0;
         cart.forEach(item => {
-            total += item.price;
+            total += (item.price * item.quantity);
         });
 
-        // 2. Generate Item HTML
+        // Generate Items HTML
         const itemsHTML = cart.length === 0 
             ? `<p style="color: #666; text-align: center; margin-top: 50px;">Your cart is empty.</p>`
             : cart.map(item => `
@@ -256,23 +286,25 @@ function initIndexPage() {
                     <div class="cart-item-img" style="background-image: url('${item.image}')"></div>
                     <div class="cart-item-details">
                         <div class="cart-item-title">${item.name} (Size: ${item.selectedSize})</div>
-                        <div class="cart-item-price">$${item.price}</div>
-                        <button class="cart-item-remove" onclick="removeFromCart(${item.cartId})">Remove</button>
+                        <div class="cart-item-meta">
+                            <span style="color: var(--primary-color); font-weight: 600;">$${item.price}</span>
+                            <span style="color: #666; margin: 0 5px;">•</span>
+                            <span style="color: #888;">Qty: ${item.quantity}</span>
+                        </div>
+                        <button class="cart-item-remove" onclick="removeFromCart(${item.id}, '${item.selectedSize}')">Remove</button>
                     </div>
                 </div>
             `).join('');
 
-        // 3. Inject Items
+        // Inject Items
         drawerItems.innerHTML = itemsHTML;
 
-        // 4. Update the BOTTOM Footer Total (The big one near Checkout)
-        const drawerFooter = document.querySelector('.drawer-footer'); // Select the footer div
+        // Update Footer Total
+        const drawerFooter = document.querySelector('.drawer-footer');
         if (drawerFooter) {
             if (cart.length === 0) {
-                // If cart is empty, just show the button (or hide it if you prefer)
                 drawerFooter.innerHTML = `<button class="checkout-btn">Proceed to Checkout</button>`;
             } else {
-                // If items exist, show Total and Button
                 drawerFooter.innerHTML = `
                     <div style="margin-bottom: 15px; display: flex; justify-content: space-between; font-size: 1.2rem; color: #fff; font-weight: bold;">
                         <span>Total</span>
