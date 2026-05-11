@@ -262,7 +262,7 @@ function initIndexPage() {
         updateCartUI();
     }
 
-    function updateCartUI() {
+        function updateCartUI() {
         // 1. Update Badge Count
         const totalItemsCount = cart.reduce((sum, item) => sum + item.quantity, 0);
         cartCount.textContent = totalItemsCount;
@@ -286,6 +286,7 @@ function initIndexPage() {
                             <span style="color: #666; margin: 0 5px;">•</span>
                             <span style="color: #888;">Qty: ${item.quantity}</span>
                         </div>
+                        <!-- FIXED: Pass ID and Size, not cartId -->
                         <button class="cart-item-remove" onclick="removeFromCart(${item.id}, '${item.selectedSize}')">Remove</button>
                     </div>
                 </div>
