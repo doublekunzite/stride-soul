@@ -238,17 +238,18 @@ function initIndexPage() {
         updateCartUI();
     }
 
-        function updateCartUI() {
+    // --- UPDATED SUBTOTAL LOGIC ---
+    function updateCartUI() {
         cartCount.textContent = cart.length;
 
-        // Calculate Subtotal
+        // 1. Calculate Subtotal
         let subtotal = 0;
         cart.forEach(item => {
             subtotal += item.price;
         });
 
-        // Helper for HTML items
-        const cartItemsHTML = cart.length === 0 
+        // 2. Generate Item HTML
+        const itemsHTML = cart.length === 0 
             ? `<p style="color: #666; text-align: center; margin-top: 50px;">Your cart is empty.</p>`
             : cart.map(item => `
                 <div class="cart-item">
@@ -261,16 +262,18 @@ function initIndexPage() {
                 </div>
             `).join('');
 
-        // Update Drawer Content
-        // We inject the items, and then a new subtotal section
-        drawerItems.innerHTML = cartItemsHTML + `
-            <div class="cart-subtotal" style="margin-top: 20px; padding-top: 15px; border-top: 1px solid #333; display: ${cart.length > 0 ? 'block' : 'none'};">
+        // 3. Generate Subtotal HTML (only if items exist)
+        const subtotalHTML = cart.length > 0 
+            ? `<div class="cart-subtotal" style="margin-top: 20px; padding-top: 15px; border-top: 1px solid #333;">
                 <div style="display: flex; justify-content: space-between; color: #fff; font-weight: 600;">
                     <span>Subtotal</span>
                     <span>$${subtotal.toFixed(2)}</span>
                 </div>
-            </div>
-        `;
+               </div>`
+            : '';
+
+        // 4. Inject into Drawer
+        drawerItems.innerHTML = itemsHTML + subtotalHTML;
     }
 
     function openDrawer() { cartDrawer.classList.add('open'); }
@@ -281,6 +284,9 @@ function initIndexPage() {
     addToCartBtn.addEventListener('click', addToCart);
     cartBtn.addEventListener('click', openDrawer);
     drawerClose.addEventListener('click', closeDrawer);
+    
+    // Run once on load to ensure UI is correct
+    updateCartUI();
 }
 
 // --- 5. CHAT WIDGET LOGIC ---
