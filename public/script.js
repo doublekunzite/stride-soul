@@ -25,7 +25,6 @@ function injectFooter() {
                 <p style="color: #888; font-size: 0.9rem; margin-bottom: 15px;">Subscribe to get special offers and updates.</p>
                 
                 <form id="newsletter-form" style="display: contents;">
-                    <!-- ADDED: Accessible Label (Hidden visually) -->
                     <label for="newsletter-email" class="visually-hidden">Email Address</label>
                     
                     <input 
@@ -82,13 +81,7 @@ function injectFooter() {
     }
 }
 
-// Make sure you still have the showToast function somewhere in this file:
-/*
-function showToast(message) { ... } 
-*/
-
-// Add this right after injectFooter function in script.js
-
+// --- TOAST SYSTEM ---
 function injectToastStyles() {
     const css = `
     #toast-notification {
@@ -100,7 +93,7 @@ function injectToastStyles() {
         border-radius: 8px;
         padding: 16px;
         position: fixed;
-        z-index: 1000000; /* Above everything */
+        z-index: 1000000; 
         bottom: 30px;
         left: 50%;
         transform: translateX(-50%);
@@ -121,9 +114,7 @@ function injectToastStyles() {
     document.head.appendChild(style);
 }
 
-// Add this helper function to actually show the toast
 function showToast(message) {
-    // Create toast element if it doesn't exist
     let toast = document.getElementById('toast-notification');
     if (!toast) {
         toast = document.createElement('div');
@@ -132,18 +123,10 @@ function showToast(message) {
     }
 
     toast.innerHTML = message;
-    
-    // Inject styles (safe to call multiple times)
     injectToastStyles();
-
-    // Add the "show" class
     toast.className = "show";
-
-    // After 3 seconds, remove the show class
     setTimeout(function(){ toast.className = toast.className.replace("show", ""); }, 3000);
 }
-
-// Make it global so HTML onclick can use it
 window.showToast = showToast;
 
 // --- 2. PRODUCT DATA & STATE ---
@@ -165,7 +148,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 1. Inject Footer
     injectFooter();
 
-    // 2. Inject Toast Container (hidden)
+    // 2. Inject Toast Styles
     injectToastStyles(); 
 
     // 3. Initialize Index Page Logic
@@ -197,7 +180,6 @@ function initIndexPage() {
     const drawerClose = document.getElementById('drawer-close');
     const drawerItems = document.getElementById('drawer-items');
 
-    // Make functions global so HTML onclick="" can see them
     window.openModal = function(id) {
         currentProduct = products.find(p => p.id === id);
         if (!currentProduct) return;
@@ -222,7 +204,6 @@ function initIndexPage() {
         event.target.classList.add('active');
     }
 
-     // UPDATED: Logic to handle Quantity
     window.addToCart = function() {
         if (!selectedSize) { alert("Please select a size first."); return; }
         if (!currentProduct) return;
@@ -231,54 +212,50 @@ function initIndexPage() {
         const existingItem = cart.find(item => item.id === currentProduct.id && item.selectedSize === selectedSize);
 
         if (existingItem) {
-            // If it exists, just increase quantity
             existingItem.quantity += 1;
         } else {
-            // If it doesn't exist, add new item with quantity 1
             const item = { 
                 ...currentProduct, 
                 selectedSize: selectedSize, 
-                quantity: 1, // Default quantity
+                quantity: 1,
                 cartId: Date.now() 
             };
             cart.push(item);
         }
+        
+        // Show feedback toast
+        showToast(`${currentProduct.name} added to cart!`);
 
         updateCartUI();
         closeModal();
         openDrawer();
     }
 
-     // UPDATED: Logic to remove/decrease quantity
     window.removeFromCart = function(id, size) {
-        // Find the item
         const itemIndex = cart.findIndex(item => item.id === id && item.selectedSize === size);
         
         if (itemIndex > -1) {
-            // If quantity > 1, decrease it
             if (cart[itemIndex].quantity > 1) {
                 cart[itemIndex].quantity -= 1;
             } else {
-                // If quantity is 1, remove item completely
                 cart.splice(itemIndex, 1);
             }
         }
         updateCartUI();
     }
 
-    // UPDATED: UI to display Quantity and calculate Total correctly
     function updateCartUI() {
-        // Calculate total items count (for the header badge)
+        // 1. Update Badge Count
         const totalItemsCount = cart.reduce((sum, item) => sum + item.quantity, 0);
         cartCount.textContent = totalItemsCount;
 
-        // Calculate Total Price (Price * Quantity)
+        // 2. Calculate Total Price
         let total = 0;
         cart.forEach(item => {
             total += (item.price * item.quantity);
         });
 
-        // Generate Items HTML
+        // 3. Generate Items HTML
         const itemsHTML = cart.length === 0 
             ? `<p style="color: #666; text-align: center; margin-top: 50px;">Your cart is empty.</p>`
             : cart.map(item => `
@@ -287,7 +264,7 @@ function initIndexPage() {
                     <div class="cart-item-details">
                         <div class="cart-item-title">${item.name} (Size: ${item.selectedSize})</div>
                         <div class="cart-item-meta">
-                            <span style="color: var(--primary-color); font-weight: 600;">$${item.price}</span>
+                            <span style="color: var(--primary-color); font-weight: 600;">$${(item.price * item.quantity).toFixed(2)}</span>
                             <span style="color: #666; margin: 0 5px;">•</span>
                             <span style="color: #888;">Qty: ${item.quantity}</span>
                         </div>
@@ -296,10 +273,10 @@ function initIndexPage() {
                 </div>
             `).join('');
 
-        // Inject Items
+        // 4. Inject Items
         drawerItems.innerHTML = itemsHTML;
 
-        // Update Footer Total
+        // 5. Update Footer Total
         const drawerFooter = document.querySelector('.drawer-footer');
         if (drawerFooter) {
             if (cart.length === 0) {
@@ -325,7 +302,7 @@ function initIndexPage() {
     cartBtn.addEventListener('click', openDrawer);
     drawerClose.addEventListener('click', closeDrawer);
     
-    // Run once on load to ensure UI is correct
+    // Run once on load
     updateCartUI();
 }
 
@@ -339,7 +316,6 @@ function initChatWidget() {
     const userInput = document.getElementById('user-input');
     const sampleArea = document.getElementById('sample-area');
 
-    // Make functions global for HTML onclick
     window.toggleChat = function() {
         const isVisible = chatWidget.style.display === 'flex';
         chatWidget.style.display = isVisible ? 'none' : 'flex';
@@ -411,8 +387,3 @@ function initChatWidget() {
         messagesDiv.scrollTop = messagesDiv.scrollHeight; 
     }
 }
-
-
-
-// Make global for HTML
-window.handleNewsletterSubmit = handleNewsletterSubmit;
