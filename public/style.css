@@ -664,6 +664,13 @@ nav a:hover { color: #fff; }
     
     .nature-banner { background-attachment: scroll; height: 300px; }
     .banner-overlay { background: linear-gradient(to bottom, rgba(18,18,18,0.1), rgba(18,18,18,0.4)); }
+	
+	.product-image {
+        background-size: contain; /* Shows the whole image */
+        background-repeat: no-repeat;
+        background-position: center;
+        background-color: #1e1e1e; /* Fills empty space with card color */
+    }
     
     .hero h1 { font-size: 2.5rem; }
     .product-grid { grid-template-columns: 1fr 1fr; gap: 1rem; }
