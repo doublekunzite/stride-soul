@@ -104,37 +104,30 @@
     </section>
 
     <!-- MODAL (Product Detail) -->
-    <div class="modal-overlay" id="modal-overlay">
-        <div class="modal-content">
-            <div class="modal-left">
-                <div class="modal-image" id="modal-image"></div>
-            </div>
-            <div class="modal-right">
+                <div class="modal-right">
                 <span class="modal-close" id="modal-close">&times;</span>
                 <h2 id="modal-title">Product Name</h2>
                 <div class="modal-price" id="modal-price">$0.00</div>
                 
                 <div class="size-selector">
                     <label>Select Size (US):</label>
-                    <div class="size-options" id="size-options"></div>
+                    <div class="size-options" id="size-options">
+                        <!-- Sizes injected via JS -->
+                    </div>
                 </div>
-                
-                <div class="quantity-selector" style="margin-top: 30px; margin-bottom: 20px;">
 
+                <!-- NEW: Quantity Selector -->
+                <div class="size-selector" style="margin-top: 20px;">
                     <label>Quantity:</label>
-                    <select id="quantity-select" class="quantity-dropdown">
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
-                        <option value="4">4</option>
-                        <option value="5">5</option>
-                    </select>
+                    <div class="qty-options" id="qty-options">
+                        <button class="qty-btn" onclick="changeQty(-1)">-</button>
+                        <input type="number" id="qty-input" value="1" min="1" readonly style="width: 50px; text-align: center; background: #222; border: 1px solid #444; color: #fff; font-size: 1rem; padding: 8px 0;">
+                        <button class="qty-btn" onclick="changeQty(1)">+</button>
+                    </div>
                 </div>
 
                 <button class="add-to-cart-btn" id="add-to-cart-btn">Add to Cart</button>
             </div>
-        </div>
-    </div>
 
     <!-- CART DRAWER -->
     <div class="cart-drawer" id="cart-drawer">

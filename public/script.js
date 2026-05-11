@@ -180,7 +180,7 @@ function initIndexPage() {
     const drawerClose = document.getElementById('drawer-close');
     const drawerItems = document.getElementById('drawer-items');
 
-    window.openModal = function(id) {
+       window.openModal = function(id) {
         currentProduct = products.find(p => p.id === id);
         if (!currentProduct) return;
         modalImage.style.backgroundImage = `url('${currentProduct.image}')`;
@@ -189,8 +189,23 @@ function initIndexPage() {
         sizeOptions.innerHTML = currentProduct.sizes.map(size => `
             <button class="size-btn" onclick="selectSize(event, ${size})">${size}</button>
         `).join('');
+        
         selectedSize = null;
+        
+        // NEW: Reset Quantity Input to 1
+        const qtyInput = document.getElementById('qty-input');
+        if (qtyInput) qtyInput.value = 1;
+
         modalOverlay.style.display = 'flex';
+    }
+	
+	    // NEW: Handle Quantity Buttons in Modal
+    window.changeQty = function(amount) {
+        const input = document.getElementById('qty-input');
+        let currentVal = parseInt(input.value);
+        let newVal = currentVal + amount;
+        if (newVal < 1) newVal = 1; // Prevent going below 1
+        input.value = newVal;
     }
 
     window.closeModal = function() {
@@ -204,24 +219,35 @@ function initIndexPage() {
         event.target.classList.add('active');
     }
 
-    window.addToCart = function() {
+        window.addToCart = function() {
         if (!selectedSize) { alert("Please select a size first."); return; }
         if (!currentProduct) return;
+
+        // NEW: Get quantity from input
+        const qtyInput = document.getElementById('qty-input');
+        const quantity = parseInt(qtyInput.value);
 
         // Check if item already exists in cart (Same ID + Same Size)
         const existingItem = cart.find(item => item.id === currentProduct.id && item.selectedSize === selectedSize);
 
         if (existingItem) {
-            existingItem.quantity += 1;
+            // If it exists, add the new quantity to existing
+            existingItem.quantity += quantity;
         } else {
+            // If it doesn't exist, add new item with specific quantity
             const item = { 
                 ...currentProduct, 
                 selectedSize: selectedSize, 
-                quantity: 1,
+                quantity: quantity, // Use selected quantity
                 cartId: Date.now() 
             };
             cart.push(item);
         }
+
+        updateCartUI();
+        closeModal();
+        openDrawer();
+    }
         
         // Show feedback toast
         showToast(`${currentProduct.name} added to cart!`);

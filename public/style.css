@@ -1051,3 +1051,24 @@ header nav a {
 .tech-badge {
     font-size: 0.75rem; /* Slightly larger than previous */
 }
+
+/* Quantity Selector in Modal */
+.qty-options {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    margin-top: 10px;
+}
+.qty-btn {
+    background: #222;
+    border: 1px solid #444;
+    color: #fff;
+    width: 35px;
+    height: 35px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.qty-btn:first-child { border-radius: 4px 0 0 4px; border-right: none; }
+.qty-btn:last-child { border-radius: 0 4px 4px 0; border-left: none; }
+.qty-btn:hover { background: #333; }
