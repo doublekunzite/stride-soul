@@ -15,7 +15,8 @@ html { scroll-behavior: smooth; }
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: var(--bg);
+    /* REMOVE background-color from here so blobs show through */
+    background-color: transparent; 
     color: var(--fg);
     overflow-x: hidden;
     line-height: 1.6;
