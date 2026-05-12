@@ -13,43 +13,46 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
 html { scroll-behavior: smooth; }
 
+/* 1. Make Body Transparent so blobs show through */
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    /* REMOVE background-color from here so blobs show through */
+    /* REMOVE background-color from body */
     background-color: transparent; 
     color: var(--fg);
     overflow-x: hidden;
     line-height: 1.6;
 }
 
-/* --- ANIMATED BLOBS --- */
+/* 2. Put the dark background on the Container, not the body */
 .blob-container {
     position: fixed;
     top: 0; left: 0; right: 0; bottom: 0;
-    z-index: -2; 
-    background-color: var(--bg); 
+    z-index: -1; /* Standard behind-content z-index */
+    background-color: var(--bg); /* The dark page background goes here */
     overflow: hidden;
     pointer-events: none;
 }
+
+/* 3. Restore Visible Colors and Slow Movement */
 .blob {
     position: absolute;
     border-radius: 42% 58% 70% 30% / 45% 45% 55% 55%;
     filter: blur(80px);
     opacity: 0.5;
-    /* INCREASED DURATION: 60s for drift, 20s for morph (slower, more subtle) */
+    /* Slow duration: 60s drift, 20s morph */
     animation: drift 60s infinite linear, morph 20s infinite ease-in-out;
 }
 
-/* Individual Colors and Sizes */
-.blob-1 { top: 10%; left: 5%; width: 40vw; height: 40vw; background: #1a1a1a; animation-duration: 65s, 22s; }
-.blob-2 { top: 60%; left: 70%; width: 50vw; height: 50vw; background: #141414; animation-duration: 70s, 25s; animation-delay: -5s; }
-.blob-3 { top: 40%; left: 30%; width: 30vw; height: 30vw; background: #111; animation-duration: 55s, 18s; animation-delay: -10s; }
-.blob-4 { top: 80%; left: 10%; width: 20vw; height: 20vw; background: #181818; animation-duration: 80s, 28s; animation-delay: -15s; }
-.blob-5 { top: 10%; left: 80%; width: 25vw; height: 25vw; background: #101010; animation-duration: 60s, 20s; animation-delay: -3s; }
+/* VISIBLE COLORS (Restored from your working version) */
+.blob-1 { top: 10%; left: 5%; width: 40vw; height: 40vw; background: #ffadad; animation-duration: 65s, 22s; }
+.blob-2 { top: 60%; left: 70%; width: 50vw; height: 50vw; background: #a0c4ff; animation-duration: 70s, 25s; animation-delay: -5s; }
+.blob-3 { top: 40%; left: 30%; width: 30vw; height: 30vw; background: #caffbf; animation-duration: 55s, 18s; animation-delay: -10s; }
+.blob-4 { top: 80%; left: 10%; width: 20vw; height: 20vw; background: #bdb2ff; animation-duration: 80s, 28s; animation-delay: -15s; }
+.blob-5 { top: 10%; left: 80%; width: 25vw; height: 25vw; background: #ffd6a5; animation-duration: 60s, 20s; animation-delay: -3s; }
 
 @keyframes drift {
     0% { transform: translate(0, 0) rotate(0deg); }
-    15% { transform: translate(20px, -30px) rotate(45deg); } /* Reduced translation slightly */
+    15% { transform: translate(20px, -30px) rotate(45deg); }
     30% { transform: translate(-15px, 50px) rotate(90deg); }
     45% { transform: translate(40px, -10px) rotate(135deg); }
     60% { transform: translate(-25px, 25px) rotate(180deg); }
@@ -59,7 +62,7 @@ body {
 
 @keyframes morph {
     0% { border-radius: 42% 58% 70% 30% / 45% 45% 55% 55%; transform: scale(1); }
-    25% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; transform: scale(1.05); } /* Reduced scale intensity */
+    25% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; transform: scale(1.05); }
     50% { border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%; transform: scale(0.95); }
     75% { border-radius: 50% 50% 40% 60% / 40% 50% 50% 60%; transform: scale(1.02); }
     100% { border-radius: 42% 58% 70% 30% / 45% 45% 55% 55%; transform: scale(1); }
