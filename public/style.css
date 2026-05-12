@@ -23,32 +23,30 @@ body {
     line-height: 1.6;
 }
 
-/* 2. Put the dark background on the Container, not the body */
+/* --- ANIMATED BLOBS --- */
 .blob-container {
     position: fixed;
     top: 0; left: 0; right: 0; bottom: 0;
-    z-index: -1; /* Standard behind-content z-index */
-    background-color: var(--bg); /* The dark page background goes here */
+    z-index: -1; 
+    background-color: var(--bg); 
     overflow: hidden;
     pointer-events: none;
 }
-
-/* 3. Restore Visible Colors and Slow Movement */
 .blob {
     position: absolute;
     border-radius: 42% 58% 70% 30% / 45% 45% 55% 55%;
     filter: blur(80px);
-    opacity: 0.5;
-    /* Slow duration: 60s drift, 20s morph */
+    opacity: 0.25; /* REDUCED from 0.5 to 0.25 for subtlety */
     animation: drift 60s infinite linear, morph 20s infinite ease-in-out;
 }
 
-/* VISIBLE COLORS (Restored from your working version) */
-.blob-1 { top: 10%; left: 5%; width: 40vw; height: 40vw; background: #ffadad; animation-duration: 65s, 22s; }
-.blob-2 { top: 60%; left: 70%; width: 50vw; height: 50vw; background: #a0c4ff; animation-duration: 70s, 25s; animation-delay: -5s; }
-.blob-3 { top: 40%; left: 30%; width: 30vw; height: 30vw; background: #caffbf; animation-duration: 55s, 18s; animation-delay: -10s; }
-.blob-4 { top: 80%; left: 10%; width: 20vw; height: 20vw; background: #bdb2ff; animation-duration: 80s, 28s; animation-delay: -15s; }
-.blob-5 { top: 10%; left: 80%; width: 25vw; height: 25vw; background: #ffd6a5; animation-duration: 60s, 20s; animation-delay: -3s; }
+/* SMALLER SIZES & DARKER, MUTED COLORS */
+/* Reduced width/height from 40-50vw to 15-25vw */
+.blob-1 { top: 10%; left: 5%; width: 20vw; height: 20vw; background: #8a5c5c; animation-duration: 65s, 22s; }
+.blob-2 { top: 60%; left: 70%; width: 25vw; height: 25vw; background: #5c6a8a; animation-duration: 70s, 25s; animation-delay: -5s; }
+.blob-3 { top: 40%; left: 30%; width: 15vw; height: 15vw; background: #6a8a5c; animation-duration: 55s, 18s; animation-delay: -10s; }
+.blob-4 { top: 80%; left: 10%; width: 18vw; height: 18vw; background: #7a5c8a; animation-duration: 80s, 28s; animation-delay: -15s; }
+.blob-5 { top: 5%; left: 80%; width: 15vw; height: 15vw; background: #8a7a5c; animation-duration: 60s, 20s; animation-delay: -3s; }
 
 @keyframes drift {
     0% { transform: translate(0, 0) rotate(0deg); }
