@@ -1,11 +1,12 @@
 /* style.css */
+
 :root {
-    --bg: #121212; /* Base background color */
+    --bg: #121212; 
     --bg-elevated: #0f0f0f;
     --fg: #e8e8e3;
     --muted: #888888;
     --accent: #b8956e;
-    --primary-color: #b8956e; /* Mapped for consistency */
+    --primary-color: #b8956e; 
     --card: #1e1e1e;
     --border: #222222;
 }
@@ -13,19 +14,20 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
 html { scroll-behavior: smooth; }
 
-/* 1. Make HTML/Body transparent to start clean */
+/* 1. FORCE Transparency on HTML and Body for Mobile Compatibility */
 html, body {
-    background-color: transparent !important;
+    background: transparent !important;
+    min-height: 100%; /* Ensure they span the full height */
 }
 
 /* 2. The Container sits at Layer 0 (Bottom) */
 .blob-container {
     position: fixed;
     top: 0; left: 0; right: 0; bottom: 0;
-    z-index: 0; /* Changed from -1 to 0 */
-    background-color: var(--bg); /* Background color lives here now */
+    z-index: 0; 
+    background-color: var(--bg); /* The dark background sits HERE now */
     overflow: hidden;
-    pointer-events: none; /* Ensures you can click through it */
+    pointer-events: none;
 }
 
 /* 3. Blobs live inside the container */
@@ -33,7 +35,7 @@ html, body {
     position: absolute;
     border-radius: 42% 58% 70% 30% / 45% 45% 55% 55%;
     filter: blur(50px);
-    opacity: 0.2;
+    opacity: 0.35; /* INCREASED from 0.2 to 0.35 for visibility */
     animation: drift 45s infinite linear, morph 15s infinite ease-in-out;
 }
 
