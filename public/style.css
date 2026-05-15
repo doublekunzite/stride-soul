@@ -13,40 +13,56 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
 html { scroll-behavior: smooth; }
 
-/* 1. Make Body Transparent so blobs show through */
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    /* REMOVE background-color from body */
-    background-color: transparent; 
-    color: var(--fg);
-    overflow-x: hidden;
-    line-height: 1.6;
+/* 1. Make HTML/Body transparent to start clean */
+html, body {
+    background-color: transparent !important;
 }
 
-/* --- ANIMATED BLOBS --- */
+/* 2. The Container sits at Layer 0 (Bottom) */
 .blob-container {
     position: fixed;
     top: 0; left: 0; right: 0; bottom: 0;
-    z-index: -1; 
-    background-color: var(--bg); 
+    z-index: 0; /* Changed from -1 to 0 */
+    background-color: var(--bg); /* Background color lives here now */
     overflow: hidden;
-    pointer-events: none;
+    pointer-events: none; /* Ensures you can click through it */
 }
+
+/* 3. Blobs live inside the container */
 .blob {
     position: absolute;
     border-radius: 42% 58% 70% 30% / 45% 45% 55% 55%;
-    filter: blur(50px); /* REDUCED blur for more definition */
-    opacity: 0.25; /* INCREASED opacity */
-    /* Faster speeds: 45s drift, 15s morph */
+    filter: blur(50px);
+    opacity: 0.4;
     animation: drift 45s infinite linear, morph 15s infinite ease-in-out;
 }
 
-/* BRIGHTER COLORS & MEDIUM SIZES */
+/* Sizes & Colors (Same as before) */
 .blob-1 { top: 10%; left: 5%; width: 20vw; height: 20vw; background: #d4a5a5; animation-duration: 50s, 17s; }
 .blob-2 { top: 60%; left: 70%; width: 25vw; height: 25vw; background: #a5b8d4; animation-duration: 55s, 19s; animation-delay: -5s; }
 .blob-3 { top: 40%; left: 30%; width: 15vw; height: 15vw; background: #b8d4a5; animation-duration: 40s, 14s; animation-delay: -10s; }
 .blob-4 { top: 80%; left: 10%; width: 18vw; height: 18vw; background: #c4a5d4; animation-duration: 60s, 21s; animation-delay: -15s; }
 .blob-5 { top: 5%; left: 80%; width: 15vw; height: 15vw; background: #d4c4a5; animation-duration: 45s, 15s; animation-delay: -3s; }
+
+/* 4. Content sits at Layer 1 (Top) */
+/* We give "position: relative" and "z-index: 1" to your main content wrappers */
+header, 
+section, 
+.main-footer, 
+#footer-container,
+.cart-drawer,
+.modal-overlay,
+#chat-widget,
+#chat-toggle {
+    position: relative; /* Required to use z-index */
+    z-index: 1; /* Sits on top of the blobs (z-index 0) */
+}
+
+/* Ensure Header stays above Cart Drawer specifically */
+header { z-index: 100; }
+.cart-drawer { z-index: 1000; }
+.modal-overlay { z-index: 2000; }
+#chat-widget { z-index: 1500; }
 
 @keyframes drift {
     0% { transform: translate(0, 0) rotate(0deg); }
