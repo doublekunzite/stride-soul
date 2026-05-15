@@ -1,5 +1,4 @@
 /* style.css */
-
 :root {
     --bg: #121212; 
     --bg-elevated: #0f0f0f;
@@ -11,38 +10,39 @@
     --border: #222222;
 
     /* --- DESKTOP BLOB COLORS (Darker/Muted for subtlety) --- */
-    --blob-color-1: #6d4f4f; /* Dark Muted Pink */
-    --blob-color-2: #4f5a6d; /* Dark Muted Blue */
-    --blob-color-3: #5a6d4f; /* Dark Muted Green */
-    --blob-color-4: #5f4f6d; /* Dark Muted Purple */
-    --blob-color-5: #6d5f4f; /* Dark Muted Orange */
+    --blob-color-1: #6d4f4f; 
+    --blob-color-2: #4f5a6d; 
+    --blob-color-3: #5a6d4f; 
+    --blob-color-4: #5f4f6d; 
+    --blob-color-5: #6d5f4f; 
     
-    --blob-opacity: 0.2; /* Very subtle on desktop */
-    --blob-blur: 60px;   /* Softer blur on desktop */
+    --blob-opacity: 0.2; 
+    --blob-blur: 60px;   
 }
 
 /* --- MOBILE OVERRIDES --- */
 @media (max-width: 768px) {
     :root {
-        /* -- MOBILE BLOB COLORS (Brighter for visibility) --- */
-        --blob-color-1: #d4a5a5; /* Bright Pink */
-        --blob-color-2: #a5b8d4; /* Bright Blue */
-        --blob-color-3: #b8d4a5; /* Bright Green */
-        --blob-color-4: #c4a5d4; /* Bright Purple */
-        --blob-color-5: #d4c4a5; /* Bright Orange */
+        --blob-color-1: #d4a5a5; 
+        --blob-color-2: #a5b8d4; 
+        --blob-color-3: #b8d4a5; 
+        --blob-color-4: #c4a5d4; 
+        --blob-color-5: #d4c4a5; 
 
-        --blob-opacity: 0.55;   /* Much more visible on mobile */
-        --blob-blur: 40px;     /* Tighter blur prevents 'smudge' look */
+        --blob-opacity: 0.55;   
+        --blob-blur: 40px;     
     }
 }
 
-/* --- BASE STYLES --- */
 * { margin: 0; padding: 0; box-sizing: border-box; }
 html { scroll-behavior: smooth; }
 
-html, body {
-    background: transparent !important;
-    min-height: 100%;
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: transparent !important; /* Keeps blobs visible */
+    color: var(--fg); /* RESTORES WHITE TEXT */
+    overflow-x: hidden;
+    line-height: 1.6;
 }
 
 /* 2. The Container sits at Layer 0 (Bottom) */
@@ -50,7 +50,7 @@ html, body {
     position: fixed;
     top: 0; left: 0; right: 0; bottom: 0;
     z-index: 0; 
-    background-color: var(--bg); 
+    background-color: var(--bg); /* The dark background sits HERE now */
     overflow: hidden;
     pointer-events: none;
 }
@@ -59,7 +59,6 @@ html, body {
 .blob {
     position: absolute;
     border-radius: 42% 58% 70% 30% / 45% 45% 55% 55%;
-    /* Uses the variables defined above */
     filter: blur(var(--blob-blur));
     opacity: var(--blob-opacity);
     animation: drift 45s infinite linear, morph 15s infinite ease-in-out;
@@ -72,7 +71,6 @@ html, body {
 .blob-4 { top: 80%; left: 10%; width: 18vw; height: 18vw; background: var(--blob-color-4); animation-duration: 60s, 21s; animation-delay: -15s; }
 .blob-5 { top: 5%; left: 80%; width: 15vw; height: 15vw; background: var(--blob-color-5); animation-duration: 45s, 15s; animation-delay: -3s; }
 
-
 /* 4. Content sits at Layer 1 (Top) */
 /* We give "position: relative" and "z-index: 1" to your main content wrappers */
 header, 
@@ -83,11 +81,11 @@ section,
 .modal-overlay,
 #chat-widget,
 #chat-toggle {
-    position: relative; /* Required to use z-index */
-    z-index: 1; /* Sits on top of the blobs (z-index 0) */
+    position: relative; 
+    z-index: 1; 
 }
 
-/* Ensure Header stays above Cart Drawer specifically */
+/* Specific high z-index for overlays */
 header { z-index: 100; }
 .cart-drawer { z-index: 1000; }
 .modal-overlay { z-index: 2000; }
@@ -110,6 +108,9 @@ header { z-index: 100; }
     75% { border-radius: 50% 50% 40% 60% / 40% 50% 50% 60%; transform: scale(1.02); }
     100% { border-radius: 42% 58% 70% 30% / 45% 45% 55% 55%; transform: scale(1); }
 }
+
+/* --- HEADER --- */
+/* ... Continue with the rest of your CSS file ... */
 
 /* --- HEADER --- */
 header {
